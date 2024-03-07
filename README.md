@@ -1,8 +1,8 @@
 # College-Management-System
 
 ### Models
-
     - User
+    - Faculty
     - College
     - Department
     - Course
