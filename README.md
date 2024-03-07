@@ -3,7 +3,6 @@
 ### Models
 
     - User
-    - College
     - Department
     - Course
     - Subject
