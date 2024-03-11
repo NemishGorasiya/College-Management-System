@@ -1,0 +1,13 @@
+.sideBar {
+    background: rgb(181, 181, 170);
+    display: inline-block;
+}
+.sideBar .sideBarNavLink {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.sideBar .sideBarNavLink img.sideBarIcon {
+    height: 30px;
+    width: 30px;
+}

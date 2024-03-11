@@ -1,0 +1,17 @@
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgb(181, 181, 170);
+    height: auto;
+    padding: 10px;
+}
+.topBar .topBarLeft {
+    display: flex;
+    align-items: center;
+}
+.topBar .topBarLeft img.logo{
+   height: 65px;
+   width: 65px;
+}
+
