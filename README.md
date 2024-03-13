@@ -1,9 +1,8 @@
 # College-Management-System
 
-
 ## User Module
 
-Login for all will be different, 
+Login for all will be different,
 
 ### Workflow
 
@@ -11,12 +10,12 @@ Admin will be inherently created => Admins will add Faculty => Faculty will add 
 
 Administrator will add departments
 
-**Student** - 
+**Student** -
 
 - `enrollmentNumber` : Unique identification number assigned to the student for enrollment.
 - `name` : Name of the student.
 - `dob`: Date of birth of the student.
-- `﻿doa` : Date of admission of the studen.
+- `doa` : Date of admission of the studen.
 - `email` : Email address of the student, used for communication.
 - `gender` : Gender of the student (options: "Male", "Female", "Other").
 - `parentPhoneNumber` : Phone number of the student's parent or guardian.
@@ -25,9 +24,9 @@ Administrator will add departments
 - `address` : Address of the student's residence.
 - `age` : Age of the student.
 - `semester` : Semester in which the student is currently enrolled.
-- `﻿department` : Department of the current student.
-- `﻿passOutYear` : Year of the pass-out of the user.
-- `﻿profilePicture` : Profile Picture of the user.
+- `department` : Department of the current student.
+- `passOutYear` : Year of the pass-out of the user.
+- `profilePicture` : Profile Picture of the user.
 
 **Faculty / Admin(privileged user)** -
 
@@ -43,7 +42,7 @@ Administrator will add departments
 - `salary` : Salary of the faculty member.
 - `semesters` : Semesters the faculty member is responsible for teaching.
 - `subjects` : Subjects taught by the faculty member.
-- `﻿profilePicture` : Profile picture of the faculty.
+- `profilePicture` : Profile picture of the faculty.
   
 **Admin:** -
 
@@ -51,11 +50,12 @@ Administrator will add departments
 - `fullName` : Full name of the admin. (String, Required)
 - `phone` : Phone number of the admin for contact purposes. (String)
 - `doj` : Date of joining of the admin.
-- 
+-
 - `isActive` : Indicates whether the admin account is currently active. (Boolean, Default: true)
-- `﻿profilePicture` : URL or file path to the admin's profile picture or avatar.
+- `profilePicture` : URL or file path to the admin's profile picture or avatar.
 
 ### Models
+
     - Student ✅
     - Faculty ✅
     - Admin ✅
@@ -71,5 +71,4 @@ Administrator will add departments
     - Participating Companies
     - Recruiter login and other functionalities
 
-    
 We'll use `pnpm` for package management. checkout at [PNPM](https://pnpm.io/)
