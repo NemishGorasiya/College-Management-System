@@ -76,4 +76,4 @@ adminSchema.plugin(passportLocalMongoose, {
     unlockInterval: 60000,
 });
 
-export default model("Faculty", adminSchema, "faculties");
+export default model("Admin", adminSchema, "admins");

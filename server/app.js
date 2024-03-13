@@ -7,8 +7,10 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import connectDB from './config/db.config.js';
 import logger from './config/winston.config.js';
-import User from "./models/User.js";
 import authRoutes from "./routes/auth.routes.js";
+import Student from "./models/Student.js";
+import Faculty from "./models/Faculty.js";
+import Admin from "./models/Admin.js";
 config();
 
 const app = express();
@@ -32,9 +34,32 @@ app.use(session({
 //passport middleware for the server - to authenticate the user
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use('student', new LocalStrategy(Student.authenticate())); //authenticate the student
+passport.use('faculty', new LocalStrategy(Faculty.authenticate())); //authenticate the faculty
+passport.use('admin', new LocalStrategy(Admin.authenticate())); //authenticate the admin
+passport.serializeUser(function (user, done) {
+    let userGroup;
+    if (user instanceof Student) {
+        userGroup = "student";
+    } else if (user instanceof Faculty) {
+        userGroup = "faculty";
+    } else {
+        userGroup = "admin";
+    }
+    done(null, { id: user.id, userGroup });
+});
+passport.deserializeUser(function (id, done) {
+    if (id.userGroup === "student") {
+        Student.deserializeUser()(id.id, done);
+    } else if (id.userGroup === "faculty") {
+        Faculty.deserializeUser()(id.id, done);
+    } else if (id.userGroup === "admin") {
+        Admin.deserializeUser()(id.id, done);
+    }
+    else {
+        done(new Error("User Group not found"), null);
+    }
+});
 
 //logger for the server - log every request to the console
 app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) } }));
