@@ -57,18 +57,18 @@ adminSchema.plugin(passportLocalMongoose, {
     attempts: "attempts",
     lastLogin: "lastLogin",
     passwordValidator: (password, cb) => {
-        if (password.length < 8) {
-            return cb({ message: "Password is too short" });
-        }
-        if (!password.match(/[a-z]/)) {
-            return cb({ message: "Password must contain at least one lowercase letter" });
-        }
-        if (!password.match(/[A-Z]/)) {
-            return cb({ message: "Password must contain at least one uppercase letter" });
-        }
-        if (!password.match(/[0-9]/)) {
-            return cb({ message: "Password must contain at least one number" });
-        }
+        // if (password.length < 8) {
+        //     return cb({ message: "Password is too short" });
+        // }
+        // if (!password.match(/[a-z]/)) {
+        //     return cb({ message: "Password must contain at least one lowercase letter" });
+        // }
+        // if (!password.match(/[A-Z]/)) {
+        //     return cb({ message: "Password must contain at least one uppercase letter" });
+        // }
+        // if (!password.match(/[0-9]/)) {
+        //     return cb({ message: "Password must contain at least one number" });
+        // }
         cb(null);
     },
     // limitAttempts: true,
