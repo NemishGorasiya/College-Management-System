@@ -44,6 +44,7 @@ Administrator will add departments
 - `semesters` : Semesters the faculty member is responsible for teaching.
 - `subjects` : Subjects taught by the faculty member.
 - `profilePicture` : Profile picture of the faculty.
+- `isHOD`: true if the user is a HOD of the department.
   
 **Admin:** -
 
@@ -55,13 +56,41 @@ Administrator will add departments
 - `isActive` : Indicates whether the admin account is currently active. (Boolean, Default: true)
 - `profilePicture` : URL or file path to the admin's profile picture or avatar.
 
+Department and Subject
+
+**Department:**
+
+- `name` : Name of the department.
+- `departmentId` : Unique identifier for the department.
+- `headOfDepartment` : Name or ID of the faculty member who heads the department. (virtuals) to be calculated by checking the one with isHOD flag ON
+- `contactEmail` : Email address for contacting the department.
+- `contactPhone` : Phone number for contacting the department.
+- `officeLocation` : Location or office room number where the department is located within the college campus.
+- `budget` : Budget allocated to the department for academic and administrative expenses.
+- `researchAreas` : Areas of research or specialization within the department.
+- `facilities` : List of facilities or resources available to students and faculty within the department (e.g., labs, libraries, equipment).
+- `accreditation` : Accreditation status or certifications obtained by the department.
+- `events` : Upcoming events or activities organized by the department.
+
+**Subject:**
+
+- `name` - Name of the subject
+- `subject code` - Subject Code.
+- `semester` - Semester of the subject.
+- `department` - Department of the subject
+- `description` - Description of the subject
+- `credit` - Number of credits assigned to the subject.
+- `hoursPerWeek` - Number of hourse per week.
+- `resources` -    Additional resources or materials available to students for studying the subject (e.g., online lectures, tutorials).
+- `syllabus` - will be added later.
+
 ### Models
 
     - Student ✅
     - Faculty ✅
     - Admin ✅
-    - Department
-    - Subject
+    - Department ✅
+    - Subject ✅
     - Result
     - Exams
     - Payment
