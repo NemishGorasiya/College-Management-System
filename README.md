@@ -28,13 +28,14 @@ Administrator will add departments
 - `passOutYear` : Year of the pass-out of the user.
 - `profilePicture` : Profile Picture of the user.
 
-**Faculty / Admin(privileged user)** -
+  **Faculty** -
 
 - `name` : Name of the faculty member.
 - `department` : Department to which the faculty member is assigned.
 - `address` : Address of the faculty member's residence or office.
 - `phone_no` : Phone number of the faculty member.
 - `email` : Email address of the faculty member.
+- `designation` : Designation of the faculty member.
 - `qualification` : Array of qualifications attained by the faculty member.
 - `experience` : Number of years of teaching experience.
 - `doj` : Date of joining (employment start date) of the faculty member.
