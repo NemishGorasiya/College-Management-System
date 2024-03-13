@@ -1,11 +1,11 @@
 # College-Management-System
 
 
-##User Module
+## User Module
 
 Login for all will be different, 
 
-###Workflow
+### Workflow
 
 Admin will be inherently created => Admins will add Faculty => Faculty will add Students (will support bulk insertion using some method). => All the 3 users can login to their accounts.
 
