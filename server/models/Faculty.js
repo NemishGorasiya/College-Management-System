@@ -60,6 +60,10 @@ const facultySchema = new Schema({
     profilePicture: {
         type: String,
     },
+    isHOD: {
+        type: Boolean,
+        default: false,
+    },
 }, {
     timestamps: true,
     toJSON: {
