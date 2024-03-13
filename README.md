@@ -11,7 +11,7 @@ Admin will be inherently created => Admins will add Faculty => Faculty will add 
 
 Administrator will add departments
 
-**Student **- 
+**Student** - 
 
 - `enrollmentNumber` : Unique identification number assigned to the student for enrollment.
 - `name` : Name of the student.
@@ -45,7 +45,7 @@ Administrator will add departments
 - `subjects` : Subjects taught by the faculty member.
 - `﻿profilePicture` : Profile picture of the faculty.
   
-**Admin:**
+**Admin:** -
 
 - `email` : Email address of the admin, used for communication and password recovery. (String, Required, Unique)
 - `fullName` : Full name of the admin. (String, Required)
