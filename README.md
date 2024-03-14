@@ -86,7 +86,65 @@ Department and Subject
 
 **Exams:**
 
+This schema represents an exam within a college management system.
 
+- `name`: Name of the exam. (String, required)
+- `description`: Description of the exam. (String, required)
+- `totalMarks`: Total marks allocated for the exam. (Number, required)
+- `subject`: Reference to the Subject schema representing the subject associated with the exam. (ObjectId, required)
+- `examType`: Type of the exam, chosen from predefined options. (String, enum, required)
+  - Valid options: "Mid-Semester", "End-Semester", "Quiz", "Assignment", "Lab", "Project", "Viva", "Other"
+  - The totalMarks and exam type must be consistent according to the following rules:
+    - Mid-Semester: 30 totalMarks
+    - End-Semester: 70 totalMarks
+    - Quiz: Total marks less than 100
+    - Assignment: Total marks less than 100
+    - Lab: 100 totalMarks
+    - Project: 100 totalMarks
+    - Viva: 20 totalMarks
+- `date`: Date of the exam. (Date, required)
+- `duration`: Duration of the exam in hours. (Number, required)
+
+Additional features:
+
+- `Validation`: The schema includes validation to ensure that the exam type and totalMarks are consistent.
+- `Timestamps`: The schema automatically generates createdAt and updatedAt timestamps.
+
+**ExamResult:**
+
+This schema represents the result of an exam for a student within a college management system.
+
+- `student`: Reference to the Student schema representing the student who took the exam. (ObjectId, required)
+- `exam`: Reference to the Exam schema representing the exam for which the result is recorded. (ObjectId, required)
+- `marks`: Marks obtained by the student in the exam. (Number, required)
+- `percentage` (Virtual Field): Percentage of marks obtained by the student in the exam, calculated based on the total marks of the exam. (Virtual)
+- `grade` (Virtual Field): Grade obtained by the student in the exam, determined based on the percentage of marks obtained. (Virtual)
+
+Additional features:
+
+- `Timestamps`: The schema automatically generates createdAt and updatedAt timestamps.
+- `Virtual Fields`: The schema includes virtual fields to calculate the percentage and grade based on the marks obtained and the total marks of the exam.
+- `JSON and Object Serialization`: The virtual fields are included in the JSON and Object representations of the schema.
+
+**Final Result Schema:**
+
+This schema represents the final result of a student for a semester within a college management system.
+
+- `student`: Reference to the Student schema representing the student for whom the final result is recorded. (ObjectId, required)
+- `semester`: Semester for which the final result is recorded. (Number, required)
+- `examResults`: Array of references to ExamResult schema representing the individual exam results of the student for the semester. (Array of ObjectId, required)
+- `achievedMarks` (Virtual Field): Total marks achieved by the student in all exams for the semester. (Virtual)
+- `totalMarks` (Virtual Field): Total marks possible in all exams for the semester. (Virtual)
+- `percentage` (Virtual Field): Percentage of marks achieved by the student in the semester. (Virtual)
+- `grade` (Virtual Field): Grade obtained by the student in the semester based on the percentage of marks achieved. (Virtual)
+- `spi` (Virtual Field): Semester Performance Index (SPI) calculated based on the percentage of marks achieved. (Virtual)
+
+Additional features:
+
+- `Timestamps`: The schema automatically generates createdAt and updatedAt timestamps.
+- `Virtual Fields`: The schema includes virtual fields to calculate the achieved marks, total marks, percentage, grade, and SPI based on the exam results.
+- `JSON and Object Serialization`: The virtual fields are included in the JSON and Object representations of the schema.
+- `Aggregation`: Aggregation pipeline is used to compute the achieved marks and total marks from the individual exam results.
 
 ### Models
 
