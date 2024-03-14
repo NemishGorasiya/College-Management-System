@@ -84,6 +84,10 @@ Department and Subject
 - `resources` -    Additional resources or materials available to students for studying the subject (e.g., online lectures, tutorials).
 - `syllabus` - will be added later.
 
+**Exams:**
+
+
+
 ### Models
 
     - Student ✅
@@ -91,8 +95,9 @@ Department and Subject
     - Admin ✅
     - Department ✅
     - Subject ✅
-    - Result
     - Exams
+    - Result
+    - Assignments
     - Payment
     - Syllabus
 
