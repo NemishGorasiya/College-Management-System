@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import express from 'express';
+import "express-async-errors";
 import session from "express-session";
 import { createServer } from 'http';
 import morgan from 'morgan';
@@ -7,15 +8,27 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import connectDB from './config/db.config.js';
 import logger from './config/winston.config.js';
-import authRoutes from "./routes/auth.routes.js";
-import Student from "./models/Student.js";
-import Faculty from "./models/Faculty.js";
-import Admin from "./models/Admin.js";
+import { errorHandler, notFoundHandler } from "./errors/errorHandlers.js";
+import Admin from "./modules/Admin/Admin.js";
+import adminRoutes from "./modules/Admin/admin.routes.js";
+import Faculty from "./modules/Faculty/Faculty.js";
+import facultyRoutes from "./modules/Faculty/faculty.routes.js";
+import Student from "./modules/Student/Student.js";
+import studentRoutes from "./modules/Student/student.routes.js";
+import actuator from "express-actuator";
+
 config();
 
 const app = express();
 const server = createServer(app);
 const PORT = process.env.PORT || 3000;
+const actuatorConfig = {
+    infoGitMode: "full",
+    infoBuildTime: true,
+    infoDependencies: true,
+    infoContributors: true,
+    infoEnvironment: true,
+}
 
 //setting up the middlwares for the server
 app.use(express.json());
@@ -30,6 +43,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24, //1 day
     }
 }));
+app.use(actuator(actuatorConfig));
 
 //passport middleware for the server - to authenticate the user
 app.use(passport.initialize());
@@ -66,12 +80,16 @@ app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) 
 
 //routes for the server
 app.get('/', (_, res) => {
-    res.send("Hello, World!");
+    return res.send("Welcome to the college management system");
 });
 
-app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
+app.use('/faculty', facultyRoutes);
+app.use('/student', studentRoutes);
 
 //error handlers and not found handlers
+app.use("*", notFoundHandler);
+app.use(errorHandler);
 
 
 //starting the server

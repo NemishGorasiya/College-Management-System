@@ -1,6 +1,6 @@
 import { Router } from "express";
 import httpStatus from "http-status";
-import Admin from "../models/Admin.js";
+import Admin from "./Admin.js";
 import passport from "passport";
 
 const router = Router({ mergeParams: true })

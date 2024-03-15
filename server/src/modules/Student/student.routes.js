@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import httpStatus from 'http-status';
-import Faculty from '../models/Faculty.js';
+import Student from './Student.js';
 
 
 const router = Router({ mergeParams: true });
 
-//!PATH: /auth/faculty  
+//!PATH: /auth/student  
 
 export default router;
