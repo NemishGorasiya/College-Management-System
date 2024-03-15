@@ -153,9 +153,11 @@ Additional features:
     - Admin ✅
     - Department ✅
     - Subject ✅
-    - Exams
-    - Result
-    - Assignments
+    - Exams ✅
+    - ExamResult ✅
+    - FinalResult✅
+    - Assignments ✅
+    - SubmittedAssignment ✅
     - Payment
     - Syllabus
 

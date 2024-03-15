@@ -21,7 +21,7 @@ const examSchema = new Schema({
     },
     examType: {
         type: String,
-        enum: ["Mid-Semester", "End-Semester", "Quiz", "Assignment", "Lab", "Project", "Viva", "Other"],
+        enum: ["Mid-Semester", "End-Semester", "Quiz", "Lab", "Project", "Viva", "Other"],
         validate: {
             validator: function (v) {
                 //assert the totalMarks and exam-type are consistent
@@ -34,8 +34,6 @@ const examSchema = new Schema({
                         return this.totalMarks === 70; //end-semester has 70 totalMarks
                     case "Quiz":
                         return this.totalMarks ? this.totalMarks < 100 : false; //quiz has totalMarks less than 100
-                    case "Assignment":
-                        return this.totalMarks ? this.totalMarks < 100 : false; //assignment has totalMarks less than 100
                     case "Lab":
                         return this.totalMarks === "100"; //lab has 100 totalMarks
                     case "Project":
