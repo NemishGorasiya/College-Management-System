@@ -2,7 +2,11 @@ import { Schema, Types, model } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
 
 const facultySchema = new Schema({
-    name: {
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
         type: String,
         required: true,
     },
@@ -73,6 +77,10 @@ const facultySchema = new Schema({
         virtuals: true,
     }
 });
+
+facultySchema.virtual("fullName").get(function () {
+    return `${this.firstName} ${this.lastName}`;
+})
 
 facultySchema.plugin(passportLocalMongoose, {
     usernameField: "email", // username is email

@@ -7,11 +7,12 @@ export const notFoundHandler = (req, res) => {
 }
 
 export const errorHandler = (err, req, res, next) => {
-    //log the error
+    //log the error if it is a server error
     if (err.status >= 500) {
         logger.error(err.message);
     }
 
+    //send the response
     let errObj = { message: err.message };
 
     if (process.env.NODE_ENV !== "prod") {

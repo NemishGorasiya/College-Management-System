@@ -2,37 +2,15 @@ import { Router } from "express";
 import httpStatus from "http-status";
 import Admin from "./Admin.js";
 import passport from "passport";
-
+import { registerAdmin } from "./admin.controllers.js";
+import { validate } from "express-validation";
+import { adminSchema } from "./admin.schema.js";
 const router = Router({ mergeParams: true })
 
 //!PATH: /auth/admin
 
 router
-    .post("/register", async (req, res) => {
-        try {
-            const { email, phoneNumber, address, dob, doj, fullName, profilePicture } = req.body;
-
-            if (!email || !phoneNumber || !address || !dob || !doj || !fullName) {
-                return res.status(httpStatus.OK).json({ message: "Please provide all the details" });
-            }
-
-            const newAdmin = new Admin({
-                email,
-                phoneNumber,
-                address,
-                dob,
-                doj,
-                fullName,
-                profilePicture,
-            });
-
-            await Admin.register(newAdmin, req.body.password);
-
-            res.status(httpStatus.CREATED).json({ message: "Admin created successfully" });
-        } catch (err) {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
-        }
-    });
+    .post("/register", validate(adminSchema), registerAdmin);
 
 
 router
