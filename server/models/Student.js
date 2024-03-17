@@ -1,7 +1,7 @@
-import { Schema, model, connect } from "mongoose";
-import passportLocalMongoose from "passport-local-mongoose";
+import { Schema, Types, model } from 'mongoose';
+import passportLocalMongoose from 'passport-local-mongoose';
 
-const userSchema = new Schema({
+const studentSchema = new Schema({
     enrollmentNumber: {
         type: Number,
         required: true,
@@ -11,7 +11,11 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    dateOfBirth: {
+    dob: {
+        type: Date,
+        required: true,
+    },
+    doa: {
         type: Date,
         required: true,
     },
@@ -22,22 +26,34 @@ const userSchema = new Schema({
     },
     gender: {
         type: String,
-        enum: ["Male", "Female", "Other"]
-    },
-    parentPhoneNumber: {
-        type: Number,
+        enum: ["MALE", "FEMALE", "OTHERS"],
         required: true,
     },
     bloodGroup: {
         type: String,
         enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+        required: true,
     },
     phoneNumber: {
         type: Number,
         required: true,
     },
+    fatherName: {
+        type: String,
+        required: true,
+    },
+    motherName: {
+        type: String,
+        required: true,
+    },
+    parentPhoneNumber: {
+        type: Number,
+        length: 10,
+        required: true,
+    },
     address: {
         type: String,
+        required: true,
     },
     age: {
         type: Number,
@@ -45,26 +61,36 @@ const userSchema = new Schema({
     },
     semester: {
         type: Number,
+        enum: [1, 2, 3, 4, 5, 6, 7, 8],
         required: true,
     },
+    passOutYear: {
+        type: Number,
+        required: true,
+    },
+    department: {
+        type: Types.ObjectId,
+        required: true,
+        ref: "Department",
+    },
+    profilePicture: {
+        type: String,
+    },
 }, {
-    timeseries: true,
     timestamps: true,
     toJSON: {
         virtuals: true,
     },
     toObject: {
         virtuals: true,
-    }
-})
+    },
+});
 
-userSchema.pre("save", function (next) {
-    this.age = new Date().getFullYear() - this.dateOfBirth.getFullYear();
-    next();
-})
+studentSchema.virtual("fullName").get(function () {
+    return this.name;
+});
 
-
-userSchema.plugin(passportLocalMongoose, {
+studentSchema.plugin(passportLocalMongoose, {
     usernameField: "enrollmentNumber",
     passwordError: "Invalid password",
     userNotFound: "Invalid enrollment number",
@@ -94,9 +120,6 @@ userSchema.plugin(passportLocalMongoose, {
     // limitAttempts: true,
     // maxAttempts: 10,
     unlockInterval: 60000,
-})
+});
 
-
-const User = model("User", userSchema);
-
-export default User;
+export default model("Student", studentSchema, "students");
