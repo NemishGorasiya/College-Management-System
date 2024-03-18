@@ -166,4 +166,13 @@ Additional features:
     - Participating Companies
     - Recruiter login and other functionalities
 
+### Features to be added - Feauture Request, Bug Report, Book Store, Forum
+
+## Frontend
+
+- Landing Page  
+- Youtube Video Gallery integration of the college.
+- Syllabus section of the college
+- Fee Payment frontend
+
 We'll use `pnpm` for package management. checkout at [PNPM](https://pnpm.io/)
