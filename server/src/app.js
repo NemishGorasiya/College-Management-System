@@ -20,6 +20,8 @@ import facultyRoutes from "./modules/Faculty/faculty.routes.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
 import { userLogout } from "./modules/General/general.controller.js";
+import RedisStore from 'connect-redis';
+import { createClient } from 'redis';
 
 config();
 
@@ -34,6 +36,18 @@ const actuatorConfig = {
     infoEnvironment: true,
 }
 
+//! Redis Store
+const redisClient = createClient(); // automatically uses port 6379 on localhost to connect to the Redis server
+redisClient.connect().catch(err => {
+    logger.error(`Error connecting to Redis server: ${err}`);
+    process.exit(1);
+})
+const RedisSessionStore = new RedisStore({
+    client: redisClient,
+    prefix: 'session:',
+});
+
+
 //setting up the middlwares for the server
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -46,7 +60,7 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, //1 day
     },
-    store: new session.MemoryStore() //store the session in memory
+    store: RedisSessionStore     //store the session in memory
 }));
 app.use(actuator(actuatorConfig));
 
