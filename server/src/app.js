@@ -1,3 +1,4 @@
+import RedisStore from 'connect-redis';
 import { config } from "dotenv";
 import express from 'express';
 import actuator from "express-actuator";
@@ -8,6 +9,7 @@ import httpStatus from "http-status";
 import morgan from 'morgan';
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { createClient } from 'redis';
 import connectDB from './config/db.config.js';
 import logger from './config/winston.config.js';
 import CustomError from "./errors/CustomError.js";
@@ -17,11 +19,9 @@ import Admin from "./modules/Admin/Admin.js";
 import adminRoutes from "./modules/Admin/admin.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
+import { userLogout } from "./modules/General/general.controller.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
-import { userLogout } from "./modules/General/general.controller.js";
-import RedisStore from 'connect-redis';
-import { createClient } from 'redis';
 
 config();
 
