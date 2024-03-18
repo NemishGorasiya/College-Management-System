@@ -7,7 +7,11 @@ const studentSchema = new Schema({
         required: true,
         unique: true,
     },
-    name: {
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
         type: String,
         required: true,
     },
@@ -87,7 +91,7 @@ const studentSchema = new Schema({
 });
 
 studentSchema.virtual("fullName").get(function () {
-    return this.name;
+    return `${this.firstName} ${this.lastName}`;
 });
 
 studentSchema.plugin(passportLocalMongoose, {

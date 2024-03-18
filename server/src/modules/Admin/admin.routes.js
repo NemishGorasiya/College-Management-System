@@ -1,46 +1,22 @@
 import { Router } from "express";
-import httpStatus from "http-status";
-import Admin from "./Admin.js";
+import { validate } from "express-validation";
 import passport from "passport";
-
+import { registerAdmin, loginAdmin, logoutAdmin } from "./admin.controllers.js";
+import { adminRegisterSchema, adminLoginSchema } from "./admin.schema.js";
+import httpStatus from "http-status";
+import { isAuthenticated } from "../../middlewares/middlewares.js";
 const router = Router({ mergeParams: true })
 
 //!PATH: /auth/admin
 
 router
-    .post("/register", async (req, res) => {
-        try {
-            const { email, phoneNumber, address, dob, doj, fullName, profilePicture } = req.body;
-
-            if (!email || !phoneNumber || !address || !dob || !doj || !fullName) {
-                return res.status(httpStatus.OK).json({ message: "Please provide all the details" });
-            }
-
-            const newAdmin = new Admin({
-                email,
-                phoneNumber,
-                address,
-                dob,
-                doj,
-                fullName,
-                profilePicture,
-            });
-
-            await Admin.register(newAdmin, req.body.password);
-
-            res.status(httpStatus.CREATED).json({ message: "Admin created successfully" });
-        } catch (err) {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
-        }
-    });
+    .post("/register", validate(adminRegisterSchema), registerAdmin);
 
 
 router
-    .post("/login", passport.authenticate("admin", { failureRedirect: "/auth/error" }), (req, res) => {
-        console.log(req.user instanceof Admin);
+    .post("/login", validate(adminLoginSchema), passport.authenticate("admin", { failureRedirect: "/error" }), loginAdmin);
 
-
-        res.status(httpStatus.OK).json({ message: "Logged in successfully" });
-    });
+router
+    .get("/logout", isAuthenticated, logoutAdmin)
 
 export default router;

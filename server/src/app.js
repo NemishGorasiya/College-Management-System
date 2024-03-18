@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import express from 'express';
+import actuator from "express-actuator";
 import "express-async-errors";
 import session from "express-session";
 import { createServer } from 'http';
@@ -8,14 +9,16 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import connectDB from './config/db.config.js';
 import logger from './config/winston.config.js';
-import { errorHandler, notFoundHandler } from "./errors/errorHandlers.js";
+import { authErrorHandler, errorHandler, notFoundHandler } from "./errors/errorHandlers.js";
 import Admin from "./modules/Admin/Admin.js";
 import adminRoutes from "./modules/Admin/admin.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
-import actuator from "express-actuator";
+import { isAuthenticated } from "./middlewares/middlewares.js";
+import CustomError from "./errors/CustomError.js";
+import httpStatus from "http-status";
 
 config();
 
@@ -41,7 +44,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, //1 day
-    }
+    },
+    store: new session.MemoryStore() //store the session in memory
 }));
 app.use(actuator(actuatorConfig));
 
@@ -52,26 +56,32 @@ passport.use('student', new LocalStrategy(Student.authenticate())); //authentica
 passport.use('faculty', new LocalStrategy(Faculty.authenticate())); //authenticate the faculty
 passport.use('admin', new LocalStrategy(Admin.authenticate())); //authenticate the admin
 passport.serializeUser(function (user, done) {
-    let userGroup;
+    //Custom User Serialization
     if (user instanceof Student) {
-        userGroup = "student";
+        done(null, { enrollmentNumber: user.enrollmentNumber, type: 'student' });
     } else if (user instanceof Faculty) {
-        userGroup = "faculty";
+        done(null, { email: user.email, type: 'faculty' });
+    } else if (user instanceof Admin) {
+        done(null, { email: user.email, type: 'admin' });
     } else {
-        userGroup = "admin";
+        done(new CustomError(httpStatus.INTERNAL_SERVER_ERROR, "User type not found"));
     }
-    done(null, { id: user.id, userGroup });
 });
-passport.deserializeUser(function (id, done) {
-    if (id.userGroup === "student") {
-        Student.deserializeUser()(id.id, done);
-    } else if (id.userGroup === "faculty") {
-        Faculty.deserializeUser()(id.id, done);
-    } else if (id.userGroup === "admin") {
-        Admin.deserializeUser()(id.id, done);
-    }
-    else {
-        done(new Error("User Group not found"), null);
+
+passport.deserializeUser(function (user, done) {
+    //Custom User Deserialization
+    switch (user.type) {
+        case 'student':
+            Student.deserializeUser()(user.enrollmentNumber, done);
+            break;
+        case 'admin':
+            Admin.deserializeUser()(user.email, done);
+            break;
+        case 'faculty':
+            Faculty.deserializeUser()(user.email, done);
+            break;
+        default:
+            done(new CustomError(httpStatus.INTERNAL_SERVER_ERROR, "User type not found"));
     }
 });
 
@@ -86,11 +96,21 @@ app.get('/', (_, res) => {
 app.use('/admin', adminRoutes);
 app.use('/faculty', facultyRoutes);
 app.use('/student', studentRoutes);
+app.use('/user/logout', isAuthenticated, (req, res) => {
+    req.logout();
+    return res.send("Logged out successfully");
+})
 
-//error handlers and not found handlers
+
+//TODO: experimental route, remove it and add real routes
+app.use('/department', isAuthenticated, (_, res) => {
+    return res.send("Department details");
+})
+
+//auth error, normal error handlers and not found handlers
+app.use('/error', authErrorHandler);
 app.use("*", notFoundHandler);
 app.use(errorHandler);
-
 
 //starting the server
 async function start() {

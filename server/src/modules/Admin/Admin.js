@@ -23,7 +23,11 @@ const adminSchema = new Schema({
         type: Date,
         required: true,
     },
-    fullName: {
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
         type: String,
         required: true,
     },
@@ -43,6 +47,10 @@ const adminSchema = new Schema({
         virtuals: true,
     },
 });
+
+adminSchema.virtual("fullName").get(function () {
+    return `${this.firstName} ${this.lastName}`;
+})
 
 adminSchema.plugin(passportLocalMongoose, {
     usernameField: "email", // username is email
