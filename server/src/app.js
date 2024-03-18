@@ -4,21 +4,22 @@ import actuator from "express-actuator";
 import "express-async-errors";
 import session from "express-session";
 import { createServer } from 'http';
+import httpStatus from "http-status";
 import morgan from 'morgan';
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import connectDB from './config/db.config.js';
 import logger from './config/winston.config.js';
+import CustomError from "./errors/CustomError.js";
 import { authErrorHandler, errorHandler, notFoundHandler } from "./errors/errorHandlers.js";
+import { isAuthenticated } from "./middlewares/middlewares.js";
 import Admin from "./modules/Admin/Admin.js";
 import adminRoutes from "./modules/Admin/admin.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
-import { isAuthenticated } from "./middlewares/middlewares.js";
-import CustomError from "./errors/CustomError.js";
-import httpStatus from "http-status";
+import { userLogout } from "./modules/General/general.controller.js";
 
 config();
 
@@ -96,10 +97,7 @@ app.get('/', (_, res) => {
 app.use('/admin', adminRoutes);
 app.use('/faculty', facultyRoutes);
 app.use('/student', studentRoutes);
-app.use('/user/logout', isAuthenticated, (req, res) => {
-    req.logout();
-    return res.send("Logged out successfully");
-})
+app.use('/user/logout', isAuthenticated, userLogout);
 
 
 //TODO: experimental route, remove it and add real routes
@@ -121,6 +119,20 @@ async function start() {
     server.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
-}
+
+    const shutdownHandler = () => {
+        logger.info(`shutting down the server`);
+        server.close(() => {
+            logger.info("Server is shut down");
+            process.exit(0);
+        });
+    }
+
+    //graceful shutdown
+    process.on('SIGINT', shutdownHandler);
+    process.on('SIGTERM', shutdownHandler);
+    process.on('uncaughtException', shutdownHandler);
+    process.on('unhandledRejection', shutdownHandler);
+};
 
 start();

@@ -16,7 +16,7 @@ export const adminRegisterSchema = {
 
 export const adminLoginSchema = {
   body: Joi.object({
-    email: Joi.string().email().required().messages({ "string.email": "Email is required" }),
+    username: Joi.string().email().required().messages({ "string.email": "Email is required" }),
     password: Joi.string().required().min(3).messages({ "string.min": "Password is required and must be at least 3 characters long" }),
   })
 };
