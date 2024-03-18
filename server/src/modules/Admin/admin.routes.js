@@ -5,7 +5,7 @@ import { loginAdmin, registerAdmin } from "./admin.controllers.js";
 import { adminLoginSchema, adminRegisterSchema } from "./admin.schema.js";
 const router = Router({ mergeParams: true })
 
-//!PATH: /admin
+//!PATH: /api/admin
 
 router
     .post("/register", validate(adminRegisterSchema, {
@@ -15,7 +15,7 @@ router
 router
     .post("/login", validate(adminLoginSchema, {
         keyByField: true,
-    }), passport.authenticate("admin", { failureRedirect: "/error" }), loginAdmin);
+    }), passport.authenticate("admin", { failureRedirect: "/api/error" }), loginAdmin);
 
 
 export default router;

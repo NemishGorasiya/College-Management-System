@@ -9,12 +9,12 @@ import passport from 'passport';
 
 const router = Router({ mergeParams: true });
 
-//!PATH: /student 
+//!PATH: /api/student 
 
 router
     .post("/register", isAuthenticated, checkPermissions(Admin), studentRegister);
 
 router
-    .post("/login", passport.authenticate('student', { failureRedirect: '/error' }), studentLogin);
+    .post("/login", passport.authenticate('student', { failureRedirect: '/api/error' }), studentLogin);
 
 export default router;

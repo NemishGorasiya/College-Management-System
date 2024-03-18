@@ -17,6 +17,7 @@ import { authErrorHandler, errorHandler, notFoundHandler } from "./errors/errorH
 import { isAuthenticated } from "./middlewares/middlewares.js";
 import Admin from "./modules/Admin/Admin.js";
 import adminRoutes from "./modules/Admin/admin.routes.js";
+import departmentRoutes from "./modules/Department/department.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
 import { userLogout } from "./modules/General/general.controller.js";
@@ -104,23 +105,21 @@ passport.deserializeUser(function (user, done) {
 app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) } }));
 
 //routes for the server
-app.get('/', (_, res) => {
+app.get('/api/', (_, res) => {
     return res.send("Welcome to the college management system");
 });
 
-app.use('/admin', adminRoutes);
-app.use('/faculty', facultyRoutes);
-app.use('/student', studentRoutes);
-app.use('/user/logout', isAuthenticated, userLogout);
+app.use('/api/admin', adminRoutes);
+app.use('/api/faculty', facultyRoutes);
+app.use('/api/student', studentRoutes);
+app.use('/api/user/logout', isAuthenticated, userLogout);
 
 
 //TODO: experimental route, remove it and add real routes
-app.use('/department', isAuthenticated, (_, res) => {
-    return res.send("Department details");
-})
+app.use('/api/department', departmentRoutes)
 
 //auth error, normal error handlers and not found handlers
-app.use('/error', authErrorHandler);
+app.use('/api/error', authErrorHandler);
 app.use("*", notFoundHandler);
 app.use(errorHandler);
 

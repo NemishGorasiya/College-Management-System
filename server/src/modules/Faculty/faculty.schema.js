@@ -17,7 +17,7 @@ export const registerFacultySchema = {
         address: Joi.string().required().messages({
             "string.base": "Address must be a string",
         }),
-        phoneNumber: Joi.number().required().min(10).max(10).messages({
+        phoneNumber: Joi.number().required().min(1000000000).max(9999999999).messages({
             "number.base": "Phone number must be a number",
             "number.min": "Parent phone number must be of 10 digits",
             "number.max": "Parent phone number must be of 10 digits",

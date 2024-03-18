@@ -27,6 +27,7 @@ export const registerAdmin = async (req, res) => {
 
   await Admin.register(newAdmin, req.body.password);
 
+
   return res.status(httpStatus.CREATED).json({ message: "Admin created successfully" });
 };
 

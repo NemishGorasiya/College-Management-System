@@ -1,8 +1,6 @@
 import winston from "winston";
 import { __dirname } from "../../paths.config.js";
 
-console.log(__dirname);
-
 const filePath = __dirname + "/src/logs";
 
 const consoleFormat = winston.format.combine(
