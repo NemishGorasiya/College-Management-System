@@ -24,6 +24,8 @@ const submittedAssignmentSchema = new Schema({
     toObject: { virtuals: true }
 });
 
+
+//TODO: remove virtuals while development is done
 submittedAssignmentSchema.virtual("percentage").get(async function () {
     const assignement = await this.model('Assignment').findOne({ _id: this.assignment });
 

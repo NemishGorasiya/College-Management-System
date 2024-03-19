@@ -115,8 +115,6 @@ app.use('/api/faculty', facultyRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/user/logout', isAuthenticated, userLogout);
 
-
-//TODO: experimental route, remove it and add real routes
 app.use('/api/department', departmentRoutes);
 app.use('/api/subject', subjectRoutes);
 
