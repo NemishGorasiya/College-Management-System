@@ -4,6 +4,7 @@ const departmentSchema = new Schema({
     name: {
         type: String,
         required: true,
+        unique: true,
     },
     contactEmail: {
         type: String,
@@ -39,18 +40,22 @@ const departmentSchema = new Schema({
         required: true,
         default: "https://placehold.co/600x400/EEE/31343C?font=montserrat&text=Montserrat",
     },
+    doe: {
+        type: Date,
+        required: true,
+    },
+    hod: {
+        type: Schema.Types.ObjectId,
+        ref: "Faculty",
+    }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
 });
 
-departmentSchema.virtual("hod").get(function () {
-    return this.model("Faculty").findOne({
-        department: this._id,
-        isHOD: true,
-    })
-})
+//create a index for the department name
+departmentSchema.index({ name: 1 }, { unique: true });
 
 departmentSchema.virtual("faculties", {
     ref: "Faculty",
@@ -72,5 +77,6 @@ departmentSchema.virtual("students", {
     foreignField: "department",
     justOne: false,
 });
+
 
 export default model('Department', departmentSchema, "departments");

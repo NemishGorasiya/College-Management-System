@@ -14,7 +14,6 @@ const SubjectResourcesSchema = new Schema({
         required: true,
     },
 }, {
-    _id: false,
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
@@ -40,7 +39,7 @@ const subjectSchema = new Schema({
         enum: [1, 2, 3, 4, 5, 6, 7, 8],
         required: true,
     },
-    desciption: {
+    description: {
         type: String,
         required: true,
     },
@@ -60,15 +59,18 @@ const subjectSchema = new Schema({
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-})
+});
+
+subjectSchema.index({ semester: 1, department: 1 }, { unique: true });
+subjectSchema.index({ subjectCode: 1 }, { unique: true });
 
 //virtuals property for faculties of subject
-subjectSchema.virtual("faculties").get(function () {
-    return this.model("Faculty").find({
-        subjects: {
-            $in: [this._id]
-        }
-    })
-});
+// subjectSchema.virtual("faculties").get(function () {
+//     return this.model("Faculty").find({
+//         subjects: {
+//             $in: [this._id]
+//         }
+//     })
+// });
 
 export default model("Subject", subjectSchema, "subjects");

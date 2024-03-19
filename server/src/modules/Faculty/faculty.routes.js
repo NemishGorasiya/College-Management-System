@@ -9,7 +9,7 @@ import { validate } from 'express-validation';
 
 const router = Router({ mergeParams: true });
 
-//!PATH: /faculty
+//!PATH: /api/faculty
 
 router
     .post("/register", isAuthenticated, checkPermissions(Admin), validate(registerFacultySchema, {
@@ -17,6 +17,6 @@ router
     }), registerFaculty);
 
 router
-    .post("/login", passport.authenticate("faculty", { failureRedirect: "/error" }), loginFaculty);
+    .post("/login", passport.authenticate("faculty", { failureRedirect: "/api/error" }), loginFaculty);
 
 export default router;

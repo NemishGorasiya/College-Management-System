@@ -27,6 +27,7 @@ export const registerAdmin = async (req, res) => {
 
   await Admin.register(newAdmin, req.body.password);
 
+
   return res.status(httpStatus.CREATED).json({ message: "Admin created successfully" });
 };
 
@@ -49,3 +50,37 @@ export const loginAdmin = async (req, res) => {
     user: req.user,
   })
 };
+
+/**
+ * Update an admin  - access - only admin
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ * @returns 
+ */
+export const updateAdmin = async (req, res) => {
+  const { adminId } = req.params;
+
+  const admin = await Admin.findById({ _id: adminId });
+
+  for (let item in req.body) {
+    admin[item] = req.body[item];
+  }
+
+  await admin.save();
+
+  return res.status(httpStatus.OK).json({ message: "Admin updated successfully" });
+};
+
+/**
+ * Delete an admin - access - only admin
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ * @returns 
+ */
+export const deleteAdmin = async (req, res) => {
+  const { adminId } = req.params;
+
+  await Admin.deleteOne({ _id: adminId });
+
+  return res.status(httpStatus.OK).json({ message: "Admin deleted successfully" });
+};  

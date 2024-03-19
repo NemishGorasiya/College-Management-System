@@ -1,7 +1,7 @@
 import winston from "winston";
-import { __dirname } from "./paths.config.js";
+import { __dirname } from "../../paths.config.js";
 
-const filePath = __dirname + "./../logs";
+const filePath = __dirname + "/src/logs";
 
 const consoleFormat = winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),

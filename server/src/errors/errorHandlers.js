@@ -28,12 +28,9 @@ export const errorHandler = (err, req, res, next) => {
     }
 
     if (process.env.NODE_ENV !== "prod" && err instanceof ValidationError) {
-        errObj.details = err.details.body.map(detail => {
-            return {
-                message: detail.message,
-                path: detail.path.join(".")
-            }
-        });
+        console.log(err.details);
+        errObj.message = "Validation Error";
+        errObj.details = err.details;
 
         err.statusMessage = "Validation Error";
     }
