@@ -2,7 +2,7 @@ import { Router } from "express";
 import { validate } from "express-validation";
 import passport from "passport";
 import { loginAdmin, registerAdmin, updateAdmin } from "./admin.controllers.js";
-import { adminLoginSchema, adminRegisterSchema, adminUpdateSchema } from "./admin.schema.js";
+import { adminLoginSchema, adminRegisterSchema, adminUpdateSchema, adminDeleteSchema } from "./admin.schema.js";
 import { checkPermissions, isAuthenticated } from "../../middlewares/middlewares.js";
 import Admin from "./Admin.js";
 const router = Router({ mergeParams: true })
@@ -18,8 +18,11 @@ router
     .post("/login", validate(adminLoginSchema, { keyByField: true, }), passport.authenticate("admin", { failureRedirect: "/api/error" }), loginAdmin);
 
 router
-    .patch("/update/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminUpdateSchema), updateAdmin)
-    .delete("/delete/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminDeleteSchema),);
+    .use(isAuthenticated, checkPermissions(Admin),);
+
+router
+    .patch("/update/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminUpdateSchema, { keyByField: true, }), updateAdmin)
+    .delete("/delete/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminDeleteSchema, { keyByField: true, }),);
 
 
 export default router;

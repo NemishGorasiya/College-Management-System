@@ -16,6 +16,6 @@ router
 
 router
     .get("/", checkPermissions(Admin, Student, Faculty), getDepartments)
-    .post("/create", checkPermissions(Admin), validate(createDepartmentSchema), createDepartment);
+    .post("/create", checkPermissions(Admin), validate(createDepartmentSchema, { keyByField: true, }), createDepartment);
 
 export default router;

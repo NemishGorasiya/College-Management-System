@@ -32,13 +32,13 @@ export const adminUpdateSchema = {
     lastName: Joi.string().optional().messages({ "any.required": "Last name is required" }),
     profilePicture: Joi.string().uri().optional().messages({ "string.uri": "Profile picture must be a valid URL" }),
   }),
-  params: {
+  params: Joi.object({
     adminId: Joi.string().required().messages({ "string.base": "Admin ID is required" }),
-  }
+  }),
 };
 
 export const adminDeleteSchema = {
-  params: {
+  params: Joi.object({
     adminId: Joi.string().required().messages({ "string.base": "Admin ID is required" }),
-  }
+  }),
 };

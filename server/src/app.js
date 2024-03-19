@@ -23,6 +23,7 @@ import facultyRoutes from "./modules/Faculty/faculty.routes.js";
 import { userLogout } from "./modules/General/general.controller.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
+import subjectRoutes from "./modules/Subject/subject.routes.js";
 
 config();
 
@@ -116,7 +117,8 @@ app.use('/api/user/logout', isAuthenticated, userLogout);
 
 
 //TODO: experimental route, remove it and add real routes
-app.use('/api/department', departmentRoutes)
+app.use('/api/department', departmentRoutes);
+app.use('/api/subject', subjectRoutes);
 
 //auth error, normal error handlers and not found handlers
 app.use('/api/error', authErrorHandler);
