@@ -17,6 +17,7 @@ import { authErrorHandler, errorHandler, notFoundHandler } from "./errors/errorH
 import { isAuthenticated } from "./middlewares/middlewares.js";
 import Admin from "./modules/Admin/Admin.js";
 import adminRoutes from "./modules/Admin/admin.routes.js";
+import assignmentRoutes from "./modules/Assignment/assignment.routes.js";
 import departmentRoutes from "./modules/Department/department.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
@@ -117,6 +118,7 @@ app.use('/api/user/logout', isAuthenticated, userLogout);
 
 app.use('/api/department', departmentRoutes);
 app.use('/api/subject', subjectRoutes);
+app.use('/api/assigment', assignmentRoutes);
 
 //auth error, normal error handlers and not found handlers
 app.use('/api/error', authErrorHandler);

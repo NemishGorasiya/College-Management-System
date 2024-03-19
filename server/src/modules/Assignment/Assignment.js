@@ -33,8 +33,4 @@ const assignmentSchema = new Schema({
     toObject: { virtuals: true }
 });
 
-assignmentSchema.virtual("percentage").get(function () {
-    return (this.totalMarks / 100) * 100;
-});
-
 export default model("Assignment", assignmentSchema, "assignments");
