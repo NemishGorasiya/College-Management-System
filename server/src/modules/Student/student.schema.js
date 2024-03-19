@@ -2,7 +2,7 @@ import { Joi } from "express-validation";
 
 export const studentRegisterSchema = {
     body: Joi.object({
-        enrollmentNumber: Joi.number().required().min(10).max(10).messages({
+        enrollmentNumber: Joi.number().required().min(1000000000).max(9999999999).messages({
             "number.base": "Enrollment number must be a number",
             "number.min": "Enrollment number must be of 10 digits",
             "number.max": "Enrollment number must be of 10 digits",
@@ -32,7 +32,7 @@ export const studentRegisterSchema = {
             "string.base": "Blood group must be a string",
             "valid.string": "Blood group must be A+, A-, B+, B-, AB+, AB-, O+, O-",
         }),
-        phoneNumber: Joi.number().required().min(10).max(10).messages({
+        phoneNumber: Joi.number().required().min(1000000000).max(9999999999).messages({
             "number.base": "Phone number must be a number",
             "number.min": "Parent phone number must be of 10 digits",
             "number.max": "Parent phone number must be of 10 digits",
@@ -43,7 +43,7 @@ export const studentRegisterSchema = {
         motherName: Joi.string().required().messages({
             "string.base": "Mother name must be a string",
         }),
-        parentPhoneNumber: Joi.number().required().min(10).max(10).messages({
+        parentPhoneNumber: Joi.number().required().min(1000000000).max(9999999999).messages({
             "number.base": "Parent phone number must be a number",
             "number.min": "Parent phone number must be of 10 digits",
             "number.max": "Parent phone number must be of 10 digits",

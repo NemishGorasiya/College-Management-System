@@ -1,3 +1,4 @@
+import RedisStore from 'connect-redis';
 import { config } from "dotenv";
 import express from 'express';
 import actuator from "express-actuator";
@@ -8,6 +9,7 @@ import httpStatus from "http-status";
 import morgan from 'morgan';
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { createClient } from 'redis';
 import connectDB from './config/db.config.js';
 import logger from './config/winston.config.js';
 import CustomError from "./errors/CustomError.js";
@@ -15,13 +17,13 @@ import { authErrorHandler, errorHandler, notFoundHandler } from "./errors/errorH
 import { isAuthenticated } from "./middlewares/middlewares.js";
 import Admin from "./modules/Admin/Admin.js";
 import adminRoutes from "./modules/Admin/admin.routes.js";
+import departmentRoutes from "./modules/Department/department.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
+import { userLogout } from "./modules/General/general.controller.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
-import { userLogout } from "./modules/General/general.controller.js";
-import RedisStore from 'connect-redis';
-import { createClient } from 'redis';
+import subjectRoutes from "./modules/Subject/subject.routes.js";
 
 config();
 
@@ -104,23 +106,22 @@ passport.deserializeUser(function (user, done) {
 app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) } }));
 
 //routes for the server
-app.get('/', (_, res) => {
+app.get('/api/', (_, res) => {
     return res.send("Welcome to the college management system");
 });
 
-app.use('/admin', adminRoutes);
-app.use('/faculty', facultyRoutes);
-app.use('/student', studentRoutes);
-app.use('/user/logout', isAuthenticated, userLogout);
+app.use('/api/admin', adminRoutes);
+app.use('/api/faculty', facultyRoutes);
+app.use('/api/student', studentRoutes);
+app.use('/api/user/logout', isAuthenticated, userLogout);
 
 
 //TODO: experimental route, remove it and add real routes
-app.use('/department', isAuthenticated, (_, res) => {
-    return res.send("Department details");
-})
+app.use('/api/department', departmentRoutes);
+app.use('/api/subject', subjectRoutes);
 
 //auth error, normal error handlers and not found handlers
-app.use('/error', authErrorHandler);
+app.use('/api/error', authErrorHandler);
 app.use("*", notFoundHandler);
 app.use(errorHandler);
 
