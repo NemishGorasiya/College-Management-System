@@ -11,7 +11,7 @@ export const registerFacultySchema = {
         department: Joi.string().required().messages({
             "string.base": "Department must be a string",
         }),
-        designation: Joi.string().required().messages({
+        designation: Joi.string().valid("PROFESSOR", "ASSOCIATE_PROFESSOR", "ASSISTANT_PROFESSOR", "LECTURER").required().messages({
             "string.base": "Designation must be a string",
         }),
         address: Joi.string().required().messages({
@@ -43,7 +43,7 @@ export const registerFacultySchema = {
         salary: Joi.number().required().messages({
             "number.base": "Salary must be a number",
         }),
-        semesters: Joi.array().required().messages({
+        semesters: Joi.array().required().min(1).max(8).messages({
             "array.base": "Semesters must be an array",
         }),
         subjects: Joi.array().required().messages({

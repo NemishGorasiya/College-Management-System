@@ -57,7 +57,7 @@ export const getDepartments = async (req, res) => {
     //if limit is not there - search all pages
 
     // Added pagination
-    const departments = await Department.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy }); //this uses dynamic keying
+    const departments = await Department.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy }).populate("subjects").populate("faculties").populate("students"); //this uses dynamic keying
 
     return res.status(httpStatus.OK).json({
         message: "Departments fetched successfully",
