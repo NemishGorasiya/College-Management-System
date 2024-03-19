@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import Department from "./Department.js";
+import Faculty from "../Faculty/Faculty.js";
 
 export const createDepartment = async (req, res) => {
     const {
@@ -63,4 +64,59 @@ export const getDepartments = async (req, res) => {
         message: "Departments fetched successfully",
         departments
     })
-}
+};
+
+export const updateDepartment = async (req, res) => {
+    const { id } = req.params;
+
+    const department = await Department.findById(id);
+
+    if (!department) {
+        return res.status(httpStatus.NOT_FOUND).json({
+            message: "Department not found"
+        })
+    }
+
+    const keys = Object(req.body).keys;
+
+    if (keys.includes("hod")) {
+        const faculty = await Faculty.findById(req.body.hod);
+        if (!faculty) {
+            return res.status(httpStatus.NOT_FOUND).json({
+                message: "Faculty not found"
+            });
+        }
+
+        faculty.isHOD = true;
+        await faculty.save();
+    }
+
+    for (let key in req.body) {
+        department[key] = req.body[key];
+    }
+
+    await department.save();
+
+    return res.status(httpStatus.OK).json({
+        message: "Department updated successfully",
+        department,
+    });
+};
+
+export const deleteDepartment = async (req, res) => {
+    const { id } = req.params;
+
+    const department = await Department.findById(id);
+
+    if (!department) {
+        return res.status(httpStatus.NOT_FOUND).json({
+            message: "Department not found"
+        })
+    }
+
+    await department.deleteOne({ _id: id });
+
+    return res.status(httpStatus.OK).json({
+        message: "Department deleted successfully"
+    });
+};

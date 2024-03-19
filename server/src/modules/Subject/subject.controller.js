@@ -60,4 +60,45 @@ export const getSubjects = async (req, res) => {
         message: "Subjects fetched successfully",
         subjects,
     })
+};
+
+export const updateSubject = async (req, res) => {
+    const { id } = req.params;
+
+    const subject = await Subject.findById(id);
+
+    if (!subject) {
+        return res.status(httpStatus.NOT_FOUND).json({
+            message: "Subject not found"
+        })
+    }
+
+    for (let key in req.body) {
+        subject[key] = req.body[key];
+    }
+
+    await subject.save();
+
+    return res.status(httpStatus.OK).json({
+        message: "Subject updated successfully",
+        subject,
+    });
+};
+
+export const deleteSubject = async (req, res) => {
+    const { id } = req.params;
+
+    const subject = await Subject.findById(id);
+
+    if (!subject) {
+        return res.status(httpStatus.NOT_FOUND).json({
+            message: "Subject not found"
+        })
+    }
+
+    await Subject.deleteOne({ _id: id });
+
+    return res.status(httpStatus.OK).json({
+        message: "Subject deleted successfully",
+    })
 }

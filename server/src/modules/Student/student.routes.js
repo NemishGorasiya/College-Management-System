@@ -3,9 +3,9 @@ import { validate } from 'express-validation';
 import passport from 'passport';
 import { checkPermissions, isAuthenticated } from '../../middlewares/middlewares.js';
 import Admin from '../Admin/Admin.js';
-import { studentLogin, studentRegister, studentUpdate } from './student.controllers.js';
+import { studentLogin, studentRegister, studentUpdate, studentDelete } from './student.controllers.js';
 import Student from './Student.js';
-import { studentLoginSchema, studentRegisterSchema, studentUpdateSchema } from './student.schema.js';
+import { studentLoginSchema, studentRegisterSchema, studentUpdateSchema, studentDeleteSchema } from './student.schema.js';
 
 
 const router = Router({ mergeParams: true });

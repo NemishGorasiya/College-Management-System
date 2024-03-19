@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { registerFaculty, loginFaculty, updateFaculty, deleteFaculty } from './faculty.controller.js';
-import { registerFacultySchema, facultyLoginSchema, facultyUpdateSchema, facultyDeleteSchema } from './faculty.schema.js';
+import { validate } from 'express-validation';
+import passport from 'passport';
 import { checkPermissions, isAuthenticated } from '../../middlewares/middlewares.js';
 import Admin from '../Admin/Admin.js';
-import passport from 'passport';
-import { validate } from 'express-validation';
+import { deleteFaculty, loginFaculty, registerFaculty, updateFaculty } from './faculty.controller.js';
 import Faculty from './Faculty.js';
+import { facultyDeleteSchema, facultyLoginSchema, facultyUpdateSchema, registerFacultySchema } from './faculty.schema.js';
 
 
 const router = Router({ mergeParams: true });

@@ -1,10 +1,9 @@
 import httpStatus from "http-status";
-import Admin from "./Admin.js";
-import StudentUpdateRequest from "../Student/StudentUpdateRequest.js";
+import Faculty from "../Faculty/Faculty.js";
 import FacultyUpdateRequest from "../Faculty/FacultyUpdateRequest.js";
 import Student from "../Student/Student.js";
-import Faculty from "../Faculty/Faculty.js";
-import { rmSync } from "fs";
+import StudentUpdateRequest from "../Student/StudentUpdateRequest.js";
+import Admin from "./Admin.js";
 
 /**
  * registerAdmin - register a new admin
