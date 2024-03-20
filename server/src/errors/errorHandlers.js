@@ -28,7 +28,6 @@ export const errorHandler = (err, req, res, next) => {
     }
 
     if (process.env.NODE_ENV !== "prod" && err instanceof ValidationError) {
-        console.log(err.details);
         errObj.message = "Validation Error";
         errObj.details = err.details;
 

@@ -1,5 +1,7 @@
 import httpStatus from "http-status";
+import Subject from "../Subject/Subject.js";
 import Student from "./Student.js";
+import Assignment from "../Assignment/Assignment.js";
 import StudentUpdateRequest from "./StudentUpdateRequest.js";
 
 export const studentRegister = async (req, res) => {
@@ -101,4 +103,45 @@ export const studentDelete = async (req, res) => {
     })
 
     return res.status(httpStatus.OK).json({ message: "Student deleted successfully" });
+};
+
+const getStudentSubjects = async (department, semester) => {
+    return await Subject.find({
+        department,
+        semester
+    }).populate("department").sort({
+        createdAt: -1,
+    }).select("_id");
 }
+
+export const studentGetSubjects = async (req, res) => {
+    //get the subjects of the students
+    const { semester, department } = req.user;
+
+    const subjects = await getStudentSubjects(department, semester);
+
+    return res.status(httpStatus.OK).send({
+        message: "Student's subjects fetched successfully",
+        subjects
+    });
+};
+
+export const studentGetAssignments = async (req, res) => {
+    //to get the student assignments we need to find the subjects it listens to
+    const { department, semester } = req.user;
+
+    let subjects = await getStudentSubjects(department, semester);
+
+    //find the assignemnts for the subjects;
+    const assignments = await Assignment.find({
+        subject: {
+            $in: [subjects]
+        }
+    }).populate("subject").populate("faculty");
+
+
+    return res.status(httpStatus.OK).send({
+        message: "Student's assignment fetched successfully",
+        assignments
+    })
+};

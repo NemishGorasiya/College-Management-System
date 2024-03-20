@@ -81,3 +81,27 @@ export const deleteAssignment = async (req, res) => {
 
   return res.status(httpStatus.OK).json({ message: "Assignment deleted successfully" });
 };
+
+export const getAllAssignments = async (req, res) => {
+  let { search, limit, page } = req.query;
+  const filterObj = {};
+
+  limit = (parseInt(limit) == 0 || limit == null || limit == undefined) ? 0 : (parseInt(limit) || 10);
+
+  if (search) {
+    filterObj.name = {
+      $regex: new RegExp(search),
+      $options: "i"
+    }
+  }
+
+  page = parseInt(page);
+
+  const assignments = await Assignment.find(filterObj).limit(limit).skip((page - 1) * limit).sort({ createdAt: -1, dueDate: 1 }).populate("subject").populate("faculty");
+
+
+  return res.status(httpStatus.OK).json({
+    message: "Assignments fetched successfully",
+    assignments
+  })
+};

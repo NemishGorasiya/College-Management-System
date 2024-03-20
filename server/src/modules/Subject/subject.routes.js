@@ -12,6 +12,6 @@ const router = Router({ mergeParams: true });
 router
     .get("/", isAuthenticated, getSubjects)
     .post("/create", isAuthenticated, checkPermissions(Admin), validate(createSubjectSchema, { keyByField: true }), createSubject)
-    .patch("update/:id", isAuthenticated, checkPermissions(Admin), validate(updateSubjectSchema, { keyByField: true }), updateSubject)
-    .delete("delete/:id", isAuthenticated, checkPermissions(Admin), validate(deleteSubjectSchema, { keyByField: true }), deleteSubject);
+    .patch("/update/:id", isAuthenticated, checkPermissions(Admin), validate(updateSubjectSchema, { keyByField: true }), updateSubject)
+    .delete("/delete/:id", isAuthenticated, checkPermissions(Admin), validate(deleteSubjectSchema, { keyByField: true }), deleteSubject);
 export default router;

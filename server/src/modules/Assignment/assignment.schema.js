@@ -53,5 +53,20 @@ export const updateAssignmentSchema = {
       'date.base': 'Due date should be a date',
       'any.required': 'Due date is required'
     }),
+  }),
+  params: Joi.object({
+    id: Joi.string().required().min(1).messages({
+      'string.base': "id must be a string",
+      'string.min': "id must be of length 1",
+    }),
   })
 };
+
+export const deleteAssignmentSchema = {
+  params: Joi.object({
+    id: Joi.string().required().min(1).messages({
+      'string.base': "id must be a string",
+      'string.min': "id must be of length 1",
+    }),
+  })
+}
