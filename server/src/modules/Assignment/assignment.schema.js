@@ -20,7 +20,6 @@ export const createAssignmentSchema = {
       'string.base': 'Subject should be a string',
       'any.required': 'Subject is required'
     }),
-
     dueDate: Joi.date().greater('now').required().messages({
       'date.base': 'Due date should be a date',
       'any.required': 'Due date is required'
