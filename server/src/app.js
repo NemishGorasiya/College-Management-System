@@ -121,7 +121,7 @@ app.use('/api/user/logout', isAuthenticated, userLogout);
 
 app.use('/api/department', departmentRoutes);
 app.use('/api/subject', subjectRoutes);
-app.use('/api/assigment', assignmentRoutes);
+app.use('/api/assignment', assignmentRoutes);
 
 app.use('/api/uploads', uploadRoutes);
 
