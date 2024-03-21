@@ -16,3 +16,29 @@ export const createSubjectSchema = {
         })).required().messages({ "any.required": "Resources are required" }),
     })
 }
+
+export const updateSubjectSchema = {
+    params: Joi.object({
+        id: Joi.string().required().messages({ "any.required": "Subject ID is required" }),
+    }),
+    body: Joi.object({
+        name: Joi.string().optional().messages({ "any.optional": "Subject name is optional" }),
+        subjectCode: Joi.number().optional().messages({ "any.optional": "Subject code is optional" }),
+        department: Joi.string().optional().messages({ "any.optional": "Department ID is optional" }),
+        semester: Joi.number().optional().min(1).max(8).messages({ "any.optional": "Semester is optional" }),
+        description: Joi.string().optional().messages({ "any.optional": "Description is optional" }),
+        credits: Joi.number().optional().min(0).max(30).messages({ "any.optional": "Credits are optional" }),
+        hoursPerWeek: Joi.number().optional().messages({ "any.optional": "Hours per week are optional" }),
+        resources: Joi.array().items(Joi.object({
+            name: Joi.string().optional().messages({ "any.optional": "Resource name is optional" }),
+            link: Joi.string().optional().uri().messages({ "any.optional": "Resource link is optional", "string.uri": "Resource link must be a uri" }),
+            description: Joi.string().optional().messages({ "any.optional": "Resource description is optional" }),
+        })).optional().messages({ "any.optional": "Resources are optional" }),
+    }).keys().min(1).messages({ "object.min": "At least one field is required to update" })
+};
+
+export const deleteSubjectSchema = {
+    params: Joi.object({
+        id: Joi.string().required().messages({ "any.required": "Subject ID is required" }),
+    })
+}

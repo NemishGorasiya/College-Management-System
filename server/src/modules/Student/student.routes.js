@@ -3,8 +3,9 @@ import { validate } from 'express-validation';
 import passport from 'passport';
 import { checkPermissions, isAuthenticated } from '../../middlewares/middlewares.js';
 import Admin from '../Admin/Admin.js';
-import { studentLogin, studentRegister } from './student.controllers.js';
-import { studentLoginSchema, studentRegisterSchema } from './student.schema.js';
+import { studentLogin, studentRegister, studentUpdate, studentDelete, studentGetAssignments, studentGetSubjects } from './student.controllers.js';
+import Student from './Student.js';
+import { studentLoginSchema, studentRegisterSchema, studentUpdateSchema, studentDeleteSchema } from './student.schema.js';
 
 
 const router = Router({ mergeParams: true });
@@ -12,9 +13,12 @@ const router = Router({ mergeParams: true });
 //!PATH: /api/student 
 
 router
-    .post("/register", isAuthenticated, checkPermissions(Admin), validate(studentRegisterSchema, { keyByField: true }), studentRegister);
+    .post("/register", isAuthenticated, checkPermissions(Admin), validate(studentRegisterSchema, { keyByField: true }), studentRegister)
+    .post("/login", validate(studentLoginSchema, { keyByField: true }), passport.authenticate('student', { failureRedirect: '/api/error' }), studentLogin)
+    .patch("/update/request", isAuthenticated, checkPermissions(Student, Admin), validate(studentUpdateSchema, { keyByField: true }), studentUpdate)
+    .delete("/delete/:studentId", isAuthenticated, checkPermissions(Admin), validate(studentDeleteSchema, { keyByField: true }), studentDelete)
+    .get("/assignments", isAuthenticated, checkPermissions(Student), studentGetAssignments)
+    .get("/subjects", isAuthenticated, checkPermissions(Student), studentGetSubjects);
 
-router
-    .post("/login", validate(studentLoginSchema, { keyByField: true }), passport.authenticate('student', { failureRedirect: '/api/error' }), studentLogin);
 
 export default router;

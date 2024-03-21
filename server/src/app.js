@@ -17,6 +17,7 @@ import { authErrorHandler, errorHandler, notFoundHandler } from "./errors/errorH
 import { isAuthenticated } from "./middlewares/middlewares.js";
 import Admin from "./modules/Admin/Admin.js";
 import adminRoutes from "./modules/Admin/admin.routes.js";
+import assignmentRoutes from "./modules/Assignment/assignment.routes.js";
 import departmentRoutes from "./modules/Department/department.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
@@ -24,6 +25,7 @@ import { userLogout } from "./modules/General/general.controller.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
 import subjectRoutes from "./modules/Subject/subject.routes.js";
+import uploadRoutes from "./modules/Uploads/upload.routes.js";
 
 config();
 
@@ -36,7 +38,7 @@ const actuatorConfig = {
     infoDependencies: true,
     infoContributors: true,
     infoEnvironment: true,
-}
+};
 
 //! Redis Store
 const redisClient = createClient(); // automatically uses port 6379 on localhost to connect to the Redis server
@@ -48,6 +50,8 @@ const RedisSessionStore = new RedisStore({
     client: redisClient,
     prefix: 'session:',
 });
+
+
 
 
 //setting up the middlwares for the server
@@ -115,10 +119,11 @@ app.use('/api/faculty', facultyRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/user/logout', isAuthenticated, userLogout);
 
-
-//TODO: experimental route, remove it and add real routes
 app.use('/api/department', departmentRoutes);
 app.use('/api/subject', subjectRoutes);
+app.use('/api/assigment', assignmentRoutes);
+
+app.use('/api/uploads', uploadRoutes);
 
 //auth error, normal error handlers and not found handlers
 app.use('/api/error', authErrorHandler);

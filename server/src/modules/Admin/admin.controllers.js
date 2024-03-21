@@ -1,4 +1,8 @@
 import httpStatus from "http-status";
+import Faculty from "../Faculty/Faculty.js";
+import FacultyUpdateRequest from "../Faculty/FacultyUpdateRequest.js";
+import Student from "../Student/Student.js";
+import StudentUpdateRequest from "../Student/StudentUpdateRequest.js";
 import Admin from "./Admin.js";
 
 /**
@@ -83,4 +87,68 @@ export const deleteAdmin = async (req, res) => {
   await Admin.deleteOne({ _id: adminId });
 
   return res.status(httpStatus.OK).json({ message: "Admin deleted successfully" });
-};  
+};
+
+
+export const updateRequestsAdmin = async (req, res) => {
+  const studentRequests = await StudentUpdateRequest.find({ status: "PENDING" }).populate("student");
+
+  const facultyRequests = await FacultyUpdateRequest.find({ status: "PENDING" }).populate("faculty");
+
+  return res.status(httpStatus.OK).json({
+    studentRequests,
+    facultyRequests,
+  })
+};
+
+export const approveRequest = async (req, res) => {
+  const { requestId } = req.params;
+
+  const studentRequest = await StudentUpdateRequest.findById({ _id: requestId });
+
+  const facultyRequest = await FacultyUpdateRequest.findById({ _id: requestId });
+
+  if (!studentRequest && !facultyRequest) {
+    return res.status(httpStatus.NOT_FOUND).json({ message: "Request not found" });
+  }
+
+  let changed;
+
+  if (studentRequest) {
+    studentRequest.status = "APPROVED";
+    studentRequest.actionBy = req.user._id; //admin id
+    await studentRequest.save();
+
+    //make changes to the student
+    const student = await Student.findById({ _id: studentRequest.student });
+
+    for (let item in studentRequest.changes) {
+      student[item] = studentRequest.changes[item];
+    }
+
+    await student.save();
+
+    changed = student;
+  } else {
+    facultyRequest.status = "APPROVED";
+    facultyRequest.actionBy = req.user._id; //admin id
+    await facultyRequest.save();
+
+    //make changes to the faculty
+    const faculty = await Faculty.findById({ _id: facultyRequest.faculty });
+
+    for (let item in facultyRequest.changes) {
+      faculty[item] = facultyRequest.changes[item];
+    }
+
+    await faculty.save();
+
+    changed = faculty;
+  }
+
+
+  return res.status(httpStatus.OK).json({
+    message: "Request approved successfully",
+    changed,
+  })
+}

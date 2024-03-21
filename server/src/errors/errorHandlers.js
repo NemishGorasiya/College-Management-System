@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
 import logger from "../config/winston.config.js";
 import { ValidationError } from 'express-validation';
+import multer from 'multer';
 
 export const notFoundHandler = (req, res) => {
     res.statusMessage = "Not Found";
@@ -28,11 +29,17 @@ export const errorHandler = (err, req, res, next) => {
     }
 
     if (process.env.NODE_ENV !== "prod" && err instanceof ValidationError) {
-        console.log(err.details);
         errObj.message = "Validation Error";
         errObj.details = err.details;
 
         err.statusMessage = "Validation Error";
+    }
+
+    if (process.env.NODE_ENV !== "prod" && err instanceof multer.MulterError) {
+        errObj.message = err.message;
+        errObj.name = err?.name;
+        errObj.code = err?.code;
+        errObj.field = err?.field;
     }
 
     res.statusMessage = err.statusMessage || "Internal Server Error";
