@@ -56,7 +56,6 @@ export const getDepartments = async (req, res) => {
     }
 
     //if limit is not there - search all pages
-
     // Added pagination
     const departments = await Department.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy }).populate("subjects").populate("faculties").populate("students"); //this uses dynamic keying
 
