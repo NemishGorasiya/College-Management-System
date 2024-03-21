@@ -85,6 +85,7 @@ const uploadedSchema = new Schema({
 uploadedSchema.virtual('response').get(function () {
     return {
         id: this._id,
+        asset: this.asset_id,
         public_id: this.public_id,
         width: this.width,
         height: this.height,
