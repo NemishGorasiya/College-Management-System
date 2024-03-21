@@ -10,7 +10,7 @@ export const createAssignment = async (req, res) => {
     dueDate,
   } = req.body;
 
-  const subjects = req.user.subjects.map((subject) => subject._id);
+  const subjects = req.user.subjects.map((subject) => subject._id.toString());
 
   if (!subjects.includes(subject)) {
     return res.status(httpStatus.FORBIDDEN).json({ message: "You are not allowed to create assignment for this subject" });
