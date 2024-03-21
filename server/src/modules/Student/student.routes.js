@@ -18,7 +18,8 @@ router
     .patch("/update/request", isAuthenticated, checkPermissions(Student, Admin), validate(studentUpdateSchema, { keyByField: true }), studentUpdate)
     .delete("/delete/:studentId", isAuthenticated, checkPermissions(Admin), validate(studentDeleteSchema, { keyByField: true }), studentDelete)
     .get("/assignments", isAuthenticated, checkPermissions(Student), studentGetAssignments)
-    .get("/subjects", isAuthenticated, checkPermissions(Student), studentGetSubjects);
+    .get("/subjects", isAuthenticated, checkPermissions(Student), studentGetSubjects)
+    .post("/submit/assignment", isAuthenticated, checkPermissions(Student));
 
 
 export default router;

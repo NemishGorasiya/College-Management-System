@@ -158,3 +158,13 @@ export const studentDeleteSchema = {
         }),
     })
 };
+
+export const studentSubmitAssignmentSchema = {
+    body: Joi.object({
+        subjectId: Joi.string().required(),
+        file: Joi.string().uri().required(),
+    }),
+    params: Joi.object({
+        assignmentId: Joi.string().required(),
+    })
+}
