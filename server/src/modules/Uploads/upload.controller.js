@@ -19,8 +19,9 @@ export const uploadHandler = async (req, res) => {
     }
 
     await cloudinary.uploader.upload(path, {
-        folder: "ClgMgmtSys",
+        folder: `ClgMgmtSys/${req.user._id}`,
         use_filename: true,
+        optimize: true,
     }, async (err, result) => {
         if (err) {
             throw new CustomError(err.http_code, err.message);
