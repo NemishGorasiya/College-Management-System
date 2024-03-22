@@ -3,6 +3,8 @@ import Subject from "../Subject/Subject.js";
 import Student from "./Student.js";
 import Assignment from "../Assignment/Assignment.js";
 import StudentUpdateRequest from "./StudentUpdateRequest.js";
+import CustomError from "../../errors/CustomError.js";
+import SubmittedAssignment from "../Assignment/SubmittedAssignment.js";
 
 export const studentRegister = async (req, res) => {
     const {
@@ -19,7 +21,6 @@ export const studentRegister = async (req, res) => {
         motherName,
         parentPhoneNumber,
         address,
-        age,
         semester,
         passOutYear,
         profilePicture,
@@ -40,12 +41,12 @@ export const studentRegister = async (req, res) => {
         motherName,
         parentPhoneNumber,
         address,
-        age,
         semester,
         passOutYear,
         profilePicture,
         department,
     });
+
     await Student.register(newStudent, req.body.password);
 
     return res.status(httpStatus.CREATED).json({ message: "Student created successfully", student: newStudent.id });
@@ -111,7 +112,7 @@ const getStudentSubjects = async (department, semester) => {
         semester
     }).populate("department").sort({
         createdAt: -1,
-    }).select("_id");
+    });
 }
 
 export const studentGetSubjects = async (req, res) => {
@@ -132,16 +133,64 @@ export const studentGetAssignments = async (req, res) => {
 
     let subjects = await getStudentSubjects(department, semester);
 
-    //find the assignemnts for the subjects;
-    const assignments = await Assignment.find({
+    let assignments = await Assignment.find({
         subject: {
-            $in: [subjects]
+            $in: subjects.map(subject => subject._id)
         }
-    }).populate("subject").populate("faculty");
+    }).populate("subject").sort({
+        dueDate: 1,
+        createdAt: -1,
+    });
 
+    let submittedAssignments = [];
+    let nonSubmittedAssignments = [];
+
+    for (let assignment of assignments) {
+        if (assignment.students.find(student => student.student.toString() === req.user._id.toString())) {
+            submittedAssignments.push(assignment);
+        } else {
+            nonSubmittedAssignments.push(assignment);
+        }
+    }
 
     return res.status(httpStatus.OK).send({
         message: "Student's assignment fetched successfully",
-        assignments
+        submittedAssignments,
+        assignments: nonSubmittedAssignments
+    })
+};
+
+export const studentSubmitAssignment = async (req, res) => {
+    const { subjectId, file } = req.body;
+    const { _id } = req.user;
+    const { assignmentId } = req.params;
+
+    const assignment = await Assignment.findById(assignmentId);
+
+    if (!assignment) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
+    }
+
+    if (assignment.subject.toString() !== subjectId) {
+        throw new CustomError(httpStatus.BAD_REQUEST, "Assignment does not belong to the subject");
+    }
+
+    const studentSubjects = await getStudentSubjects(req.user.department, req.user.semester);
+
+    if (!studentSubjects.find(subject => subject._id.toString() === subjectId)) {
+        throw new CustomError(httpStatus.FORBIDDEN, "You are not allowed to submit assignment for this subject");
+    }
+
+    const submittedAssignment = await SubmittedAssignment.create({
+        student: _id,
+        assignment: assignmentId,
+        subject: subjectId,
+        file
+    });
+
+    return res.status(httpStatus.CREATED).send({
+        message: "Assignment submitted successfully",
+        submittedAssignment,
+        assignment
     })
 };
