@@ -35,16 +35,16 @@ const examSchema = new Schema({
                     case "Quiz":
                         return this.totalMarks ? this.totalMarks < 100 : false; //quiz has totalMarks less than 100
                     case "Lab":
-                        return this.totalMarks === "100"; //lab has 100 totalMarks
+                        return this.totalMarks === 100; //lab has 100 totalMarks
                     case "Project":
-                        return this.totalMarks === "100"; //project has 100 totalMarks
+                        return this.totalMarks === 100; //project has 100 totalMarks
                     case "Viva":
-                        return this.totalMarks === "20"; //these types have 100 marks
+                        return this.totalMarks === 20; //these types have 100 marks
                     default:
                         return false; //invalid type
                 }
             },
-            message: "Exam type must be specified"
+            message: "Total marks and exam type are inconsistent or invalid"
         },
         required: true,
     },
@@ -60,6 +60,4 @@ const examSchema = new Schema({
     timestamps: true,
 });
 
-const Exams = model('Exams', examSchema, "exams");
-
-module.exports = Exams;
+export default Exam;
