@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import CustomError from "../../errors/CustomError.js";
+import httpStatus from "http-status";
 
 const submittedAssignmentSchema = new Schema({
     student: {
@@ -24,6 +26,28 @@ const submittedAssignmentSchema = new Schema({
     toObject: { virtuals: true }
 });
 
+submittedAssignmentSchema.index({ student: 1, assignment: 1 }, { unique: true });
+
+submittedAssignmentSchema.pre("save", async function (next) {
+    const assignment = await this.model("Assignment").findById(this.assignment);
+
+    if (!assignment) {
+        throw new CustomError(httpStatus.BAD_REQUEST, "Assignment not found");
+    }
+
+    if (Date.now() > assignment.dueDate) {
+        throw new CustomError(httpStatus.BAD_REQUEST, "Assignment is overdue");
+    }
+
+    assignment.students.push({
+        student: this.student,
+        subimission: this._id
+    })
+
+    await assignment.save();
+
+    next();
+})
 
 //TODO: remove virtuals while development is done
 // submittedAssignmentSchema.virtual("percentage").get(async function () {

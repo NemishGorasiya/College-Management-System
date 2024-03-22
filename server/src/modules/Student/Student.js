@@ -1,5 +1,7 @@
 import { Schema, Types, model } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
+import CustomError from '../../errors/CustomError.js';
+import httpStatus from 'http-status';
 
 const studentSchema = new Schema({
     enrollmentNumber: {
@@ -92,6 +94,21 @@ const studentSchema = new Schema({
 
 studentSchema.virtual("fullName").get(function () {
     return `${this.firstName} ${this.lastName}`;
+});
+
+studentSchema.pre("save", async function (next) {
+    const department = await this.model("Department").findById(this.department);
+
+    if (!department) {
+        return next(new CustomError(httpStatus.BAD_REQUEST, "Department not found"));
+    }
+
+    next();
+})
+
+studentSchema.pre("save", function (next) {
+    this.age = new Date().getFullYear() - this.dob.getFullYear();
+    next();
 });
 
 studentSchema.plugin(passportLocalMongoose, {
