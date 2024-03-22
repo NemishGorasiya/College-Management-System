@@ -26,6 +26,9 @@ dependencies:
   express-async-errors:
     specifier: ^3.1.1
     version: 3.1.1(express@4.18.3)
+  express-fileupload:
+    specifier: ^1.5.0
+    version: 1.5.0
   express-health-check:
     specifier: ^0.3.2
     version: 0.3.2
@@ -71,6 +74,9 @@ dependencies:
   redis:
     specifier: ^4.6.13
     version: 4.6.13
+  streamifier:
+    specifier: ^0.1.1
+    version: 0.1.1
   winston:
     specifier: ^3.12.0
     version: 3.12.0
@@ -557,6 +563,13 @@ packages:
       express: ^4.16.2
     dependencies:
       express: 4.18.3
+    dev: false
+
+  /express-fileupload@1.5.0:
+    resolution: {integrity: sha512-jSW3w9evqM37VWkEPkL2Ck5wUo2a8qa03MH+Ou/0ZSTpNlQFBvSLjU12k2nYcHhaMPv4JVvv6+Ac1OuLgUZb7w==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      busboy: 1.6.0
     dev: false
 
   /express-health-check@0.3.2:
@@ -1313,6 +1326,11 @@ packages:
   /statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /streamifier@0.1.1:
+    resolution: {integrity: sha512-zDgl+muIlWzXNsXeyUfOk9dChMjlpkq0DRsxujtYPgyJ676yQ8jEm6zzaaWHFDg5BNcLuif0eD2MTyJdZqXpdg==}
+    engines: {node: '>=0.10'}
     dev: false
 
   /streamsearch@1.1.0:
