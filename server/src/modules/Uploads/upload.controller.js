@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
-import CustomError from "../../errors/CustomError.js";
 import httpStatus from "http-status";
-import fsPromises from "node:fs/promises"
+import streamifier from "streamifier";
+import CustomError from "../../errors/CustomError.js";
 import Upload from "./Upload.js";
 
 cloudinary.config({
@@ -12,15 +12,16 @@ cloudinary.config({
 })
 
 export const uploadHandler = async (req, res) => {
-    const { path } = req.file;
+    const { originalname } = req.file;
 
-    if (!path && !req.file) {
+    if (!req.file) {
         throw new CustomError(httpStatus.INTERNAL_SERVER_ERROR, "Image was not uploaded");
     }
 
-    await cloudinary.uploader.upload(path, {
+    const uploadStream = cloudinary.uploader.upload_stream({
+        resource_type: "auto",
         folder: `ClgMgmtSys/${req.user._id}`,
-        use_filename: true,
+        filename_override: originalname,
         optimize: true,
     }, async (err, result) => {
         if (err) {
@@ -30,15 +31,14 @@ export const uploadHandler = async (req, res) => {
             result.createdBy = req.user._id;
             const newUpload = await Upload.create(result);
 
-            await fsPromises.unlink(path);
-
             return res.status(httpStatus.CREATED).send({
                 message: "File Uploaded Successfully",
                 response: newUpload.response,
             })
         } catch (err) {
-            console.log(err);
             throw new CustomError(err.status || httpStatus.INTERNAL_SERVER_ERROR, err.message);
         }
     })
+
+    streamifier.createReadStream(req.file.buffer).pipe(uploadStream, { end: true });
 }
