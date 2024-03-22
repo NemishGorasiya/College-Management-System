@@ -68,4 +68,13 @@ export const deleteAssignmentSchema = {
       'string.min': "id must be of length 1",
     }),
   })
-}
+};
+
+export const updateSubmittedAssignmentSchema = {
+  body: Joi.object({
+    marks: Joi.number().required().min(0),
+  }),
+  params: Joi.object({
+    submissionId: Joi.string().required().min(1),
+  })
+};

@@ -27,6 +27,18 @@ const assignmentSchema = new Schema({
         ref: "Faculty",
         required: true
     },
+    students: [
+        {
+            student: {
+                type: Schema.Types.ObjectId,
+                ref: "Student"
+            },
+            submission: {
+                type: Schema.Types.ObjectId,
+                ref: "SubmittedAssignment"
+            }
+        }
+    ]
 }, {
     timestamps: true,
     toJSON: { virtuals: true },

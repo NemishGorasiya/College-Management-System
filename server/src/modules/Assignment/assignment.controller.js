@@ -1,5 +1,8 @@
 import httpStatus from "http-status";
 import Assignment from "./Assignment.js";
+import CustomError from "../../errors/CustomError.js";
+import SubmittedAssignment from "./SubmittedAssignment.js";
+import Student from "../Student/Student.js";
 
 export const createAssignment = async (req, res) => {
   const {
@@ -37,7 +40,6 @@ export const getOwnAssignments = async (req, res) => {
     createdAt: -1, //recently created first
     dueDate: 1 //due date in ascending order (earliest due date first)
   });
-
 
   return res.status(httpStatus.OK).json(assignment);
 };
@@ -105,3 +107,77 @@ export const getAllAssignments = async (req, res) => {
     assignments
   })
 };
+
+export const getAssignmentSubmissions = async (req, res) => {
+  const { assignmentId } = req.params;
+
+  const assignment = await Assignment.findById(assignmentId);
+
+  if (!assignment) {
+    throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
+  }
+
+  const submissions = await SubmittedAssignment.find({
+    assignment: assignmentId
+  }).populate("student").sort({
+    createdAt: -1,
+  });
+
+  return res.status(httpStatus.OK).json({
+    message: "Submissions fetched successfully",
+    submissions,
+    assignment
+  })
+};
+
+export const getAssignment = async (req, res) => {
+  const { assignmentId } = req.params;
+
+  const assignment = await Assignment.findById(assignmentId).populate("subject").populate("students.student").populate("students.submission");
+
+  if (!assignment) {
+    throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
+  }
+
+  //find the students who have not submitted the assignment
+  const students = await Student.find({
+    department: assignment.subject.department,
+    semester: assignment.subject.semester
+  });
+
+  const nonSubmittedStudents = [];
+
+  for (let student of students) {
+    assignment.students.forEach(sSubmission => {
+      if (sSubmission.student._id.toString() !== student._id.toString()) {
+        nonSubmittedStudents.push(student);
+      }
+    })
+  }
+
+  return res.status(httpStatus.OK).json({
+    message: "Assignment fetched successfully",
+    assignment,
+    nonSubmittedStudents
+  })
+};
+
+export const updateSubmittedAssignment = async (req, res) => {
+  const { submissionId } = req.params;
+  const { marks } = req.body;
+
+  const submission = await SubmittedAssignment.findById(submissionId).populate("assignment");
+
+  if (!submission) {
+    throw new CustomError(httpStatus.NOT_FOUND, "Submission not found");
+  }
+
+  submission.marks = marks;
+
+  await submission.save();
+
+  return res.status(httpStatus.OK).json({
+    message: "Marks updated successfully",
+    submission
+  });
+}

@@ -51,9 +51,6 @@ export const studentRegisterSchema = {
         address: Joi.string().required().messages({
             "string.base": "Address must be a string",
         }),
-        age: Joi.number().required().messages({
-            "number.base": "Age must be a number",
-        }),
         semester: Joi.number().valid(1, 2, 3, 4, 5, 6, 7, 8).required().messages({
             "number.base": "Semester must be a number",
             "valid.number": "Semester must be 1, 2, 3, 4, 5, 6, 7 or 8",
@@ -156,5 +153,15 @@ export const studentDeleteSchema = {
         studentId: Joi.string().required().messages({
             "string.base": "Student ID must be a string",
         }),
+    })
+};
+
+export const studentSubmitAssignmentSchema = {
+    body: Joi.object({
+        subjectId: Joi.string().required(),
+        file: Joi.string().uri().required(),
+    }),
+    params: Joi.object({
+        assignmentId: Joi.string().required(),
     })
 };
