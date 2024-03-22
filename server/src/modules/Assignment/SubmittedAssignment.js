@@ -75,7 +75,7 @@ submittedAssignmentSchema.pre("save", async function (next) {
             throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be negative");
         }
 
-        this.grade = this.marks >= 90 ? "A+" : this.marks >= 80 ? "A" : this.marks >= 70 ? "B+" : this.marks >= 60 ? "B" : this.marks >= 50 ? "C" : this.marks >= 40 ? "D" : "F";
+        this.grade = this.marks >= 90 ? "A" : this.marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
 
         this.percentage = (this.marks / assignment.totalMarks) * 100;
 
