@@ -19,7 +19,17 @@ const submittedAssignmentSchema = new Schema({
     },
     marks: {
         type: Number,
-    }
+    },
+    grade: {
+        type: String
+    },
+    percentage: {
+        type: Number
+    },
+    isLate: {
+        type: Boolean,
+        default: false
+    },
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
@@ -36,7 +46,7 @@ submittedAssignmentSchema.pre("save", async function (next) {
     }
 
     if (Date.now() > assignment.dueDate) {
-        throw new CustomError(httpStatus.BAD_REQUEST, "Assignment is overdue");
+        this.isLate = true;
     }
 
     assignment.students.push({
@@ -47,38 +57,30 @@ submittedAssignmentSchema.pre("save", async function (next) {
     await assignment.save();
 
     next();
+});
+
+submittedAssignmentSchema.pre("save", async function (next) {
+    if (this.isModified("marks")) {
+        const assignment = await this.model("Assignment").findById(this.assignment);
+
+        if (!assignment) {
+            throw new CustomError(httpStatus.BAD_REQUEST, "Assignment not found");
+        }
+
+        if (this.marks > assignment.totalMarks) {
+            throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be greater than total marks");
+        }
+
+        if (this.marks < 0) {
+            throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be negative");
+        }
+
+        this.grade = this.marks >= 90 ? "A+" : this.marks >= 80 ? "A" : this.marks >= 70 ? "B+" : this.marks >= 60 ? "B" : this.marks >= 50 ? "C" : this.marks >= 40 ? "D" : "F";
+
+        this.percentage = (this.marks / assignment.totalMarks) * 100;
+
+        next();
+    }
 })
-
-//TODO: remove virtuals while development is done
-// submittedAssignmentSchema.virtual("percentage").get(async function () {
-//     const assignement = await this.model('Assignment').findOne({ _id: this.assignment });
-
-//     return (this.marks / assignement.totalMarks) * 100;
-// });
-
-// submittedAssignmentSchema.virtual("grade").get(function () {
-//     // Calculate the grade
-//     if (this.percentage >= 90) {
-//         return "A+";
-//     } else if (this.percentage >= 80) {
-//         return "A";
-//     } else if (this.percentage >= 70) {
-//         return "B+";
-//     } else if (this.percentage >= 60) {
-//         return "B";
-//     } else if (this.percentage >= 50) {
-//         return "C";
-//     } else if (this.percentage >= 40) {
-//         return "D";
-//     } else {
-//         return "F";
-//     }
-// });
-
-// submittedAssignmentSchema.virtual("isLate").get(async function () {
-//     const assignement = await this.model('Assignment').findOne({ _id: this.assignment });
-
-//     return Date.now() > assignement.dueDate;
-// })
 
 export default model("SubmittedAssignment", submittedAssignmentSchema, "submittedAssignments");
