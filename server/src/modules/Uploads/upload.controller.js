@@ -8,7 +8,6 @@ cloudinary.config({
     cloud_name: 'dhjo1bmn7',
     api_key: '791439462714441',
     api_secret: 'wvDK2HBaTYa_PTc7Tm9N-IS_7qY',
-
 })
 
 export const uploadHandler = async (req, res) => {
@@ -23,12 +22,18 @@ export const uploadHandler = async (req, res) => {
         folder: `ClgMgmtSys/${req.user._id}`,
         filename_override: originalname,
         optimize: true,
+        allowed_formats: ["jpeg", "jpg", "png", "gif", "auto", "pdf", "csv", "json"],
     }, async (err, result) => {
         if (err) {
             throw new CustomError(err.http_code, err.message);
         }
         try {
             result.createdBy = req.user._id;
+
+            if (result.format === undefined) {
+                result.format = result.resource_type || "file";
+            }
+
             const newUpload = await Upload.create(result);
 
             return res.status(httpStatus.CREATED).send({

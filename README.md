@@ -166,6 +166,20 @@ Additional features:
     - Participating Companies
     - Recruiter login and other functionalities
 
+### Exam module
+
+    - Faculties can create Quizzes and other examinations individually.
+    - They can create Quizzes and Project submissions
+    - Updates can be applied to the exams by the creators and the admins
+    - Result will be added by the faculties for the students.
+
+  and
+
+    - Hod of the subject will create exams for the Mid-Sems, Viva and Internal Examinations
+    - It should happen by a button generate and a type of exam, starting and ending date - then we generate the exams.
+    - Appropriate updates will be applied to the examinations by the HOD
+    - Faculties of their particular subject will add the marks of the students by their enrollment no using excel sheet uploading 
+
 ### Features to be added - Feauture Request, Bug Report, Book Store, Forum
 
 ## Frontend

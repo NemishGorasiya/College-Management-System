@@ -80,9 +80,16 @@ export const updateDepartment = async (req, res) => {
 
     if (keys.includes("hod")) {
         const faculty = await Faculty.findById(req.body.hod);
+
         if (!faculty) {
             return res.status(httpStatus.NOT_FOUND).json({
                 message: "Faculty not found"
+            });
+        }
+
+        if (faculty.department !== id) {
+            return res.status(httpStatus.BAD_REQUEST).json({
+                message: "Faculty does not belong to this department"
             });
         }
 
