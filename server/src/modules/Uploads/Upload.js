@@ -18,12 +18,10 @@ const uploadedSchema = new Schema({
     ,
     width: {
         type: Number,
-        required: true,
     }
     ,
     height: {
         type: Number,
-        required: true,
     }
     ,
     format: {
@@ -87,8 +85,8 @@ uploadedSchema.virtual('response').get(function () {
         id: this._id,
         asset: this.asset_id,
         public_id: this.public_id,
-        width: this.width,
-        height: this.height,
+        width: this?.width,
+        height: this?.height,
         secure_url: this.secure_url,
         original_filename: this.original_filename,
         createdBy: this.createdBy,

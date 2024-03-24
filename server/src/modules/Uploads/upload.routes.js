@@ -27,7 +27,7 @@ const upload = multer({
     },
     storage: memoryStorage(),
     fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith("image") || file.mimetype.startsWith("video") || file.mimetype.endsWith("pdf") || file.mimetype.endsWith("json")) {
+        if (file.mimetype.startsWith("image") || file.mimetype.startsWith("video") || file.mimetype.endsWith("pdf") || file.mimetype.endsWith("json") || file.mimetype.endsWith("csv")) {
             cb(null, true);
         } else {
             cb(new Error("File type not supported"));

@@ -1,4 +1,7 @@
 import { Schema, Types, model } from 'mongoose';
+import CustomError from "../../errors/CustomError.js";
+import httpStatus from 'http-status';
+import Faculty from "../Faculty/Faculty.js";
 
 // Define sub-schema for different types of exams
 const examSchema = new Schema({
@@ -21,7 +24,7 @@ const examSchema = new Schema({
     },
     examType: {
         type: String,
-        enum: ["Mid-Semester", "End-Semester", "Quiz", "Lab", "Project", "Viva", "Other"],
+        enum: ["Mid-Semester", "Internal Submissions", "Viva", "Quiz", "Project", "Lab"], //no ENd-Semester exams because they are handled by the university
         validate: {
             validator: function (v) {
                 //assert the totalMarks and exam-type are consistent
@@ -56,8 +59,69 @@ const examSchema = new Schema({
         type: Number,
         required: true
     },
+    faculty: {
+        types: Schema.Types.ObjectId,
+        required: true,
+    }
 }, {
     timestamps: true,
+    toJSON: {
+        virtuals: true,
+    },
+    toObject: {
+        virtuals: true,
+    }
 });
+
+const handleHODexams = async (exam, next) => {
+    const faculty = await Faculty.findById(exam)
+
+    if (!faculty) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Faculty not found");
+    }
+
+    if (!faculty.isHOD) {
+        throw new CustomError(httpStatus.FORBIDDEN, "Only HOD can create this exam");
+    }
+
+    if (!faculty.subjects.includes(exam.subject)) {
+        throw new CustomError(httpStatus.FORBIDDEN, "HOD can only create exams for subjects they teach");
+    }
+
+    next();
+};
+
+const handleNormalExams = async (exam, next) => {
+    const faculty = await Faculty.findById(exam)
+
+    if (!faculty) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Faculty not found");
+    }
+
+    if (!faculty.subjects.includes(exam.subject)) {
+        throw new CustomError(httpStatus.FORBIDDEN, "HOD can only create exams for subjects they teach");
+    }
+
+    next();
+}
+
+examSchema.pre("save", function (next) {
+    //handle HOD exams - Viva, Mid-Semester and Internal Exams
+    //handlle normal exams - Quiz, Project, Lab - created by faculty
+    switch (this.examType) {
+        case "Viva":
+        case "Mid-Semester":
+        case "Internal Submissions":
+            handleHODexams(this, next);
+            break;
+        case "Quiz":
+        case "Project":
+        case "Lab":
+            handleNormalExams(this, next);
+            break;
+        default:
+            throw new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type");
+    }
+})
 
 export default Exam;

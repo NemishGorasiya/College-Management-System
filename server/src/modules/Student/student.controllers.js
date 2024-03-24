@@ -1,10 +1,13 @@
+import axios from "axios";
+import csv from "csvtojson";
 import httpStatus from "http-status";
+import CustomError from "../../errors/CustomError.js";
+import Assignment from "../Assignment/Assignment.js";
+import SubmittedAssignment from "../Assignment/SubmittedAssignment.js";
 import Subject from "../Subject/Subject.js";
 import Student from "./Student.js";
-import Assignment from "../Assignment/Assignment.js";
 import StudentUpdateRequest from "./StudentUpdateRequest.js";
-import CustomError from "../../errors/CustomError.js";
-import SubmittedAssignment from "../Assignment/SubmittedAssignment.js";
+import { studentRegisterInterSchema } from "./student.schema.js";
 
 export const studentRegister = async (req, res) => {
     const {
@@ -193,4 +196,48 @@ export const studentSubmitAssignment = async (req, res) => {
         submittedAssignment,
         assignment
     })
+};
+
+export const studentRegisterCSV = async (req, res) => {
+    const { csv_link } = req.body;
+
+    const students = await csvToJson(csv_link);
+
+    const validated = await validateStudents(students);
+
+    //validation successful otherwise error is thrown
+    let registeredStudents = [];
+    for (let student of validated) {
+        const newStudent = new Student(student);
+
+        const registeredStudent = await Student.register(newStudent, student.password);
+
+        registeredStudents.push(registeredStudent);
+    }
+
+    return res.status(httpStatus.OK).send({
+        message: "Students registered successfully",
+        registeredStudents
+    });
+};
+
+async function csvToJson(csv_link) {
+    const { data: resultData } = await axios.get(csv_link, {
+        responseType: "blob", //working
+        // responseType: "stream",
+    });
+
+    const csvConverter = csv({
+        noheader: false,
+        ignoreColumns: /(profilePicture)/
+    });
+
+    const students = await csvConverter.fromString(resultData.toString());
+    // const students = await csvConverter.fromStream(resultData);
+
+    return students;
+};
+
+async function validateStudents(students) {
+    return await studentRegisterInterSchema.validateAsync(students, { abortEarly: false })
 };
