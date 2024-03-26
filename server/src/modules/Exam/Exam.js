@@ -2,6 +2,7 @@ import { Schema, Types, model } from 'mongoose';
 import CustomError from "../../errors/CustomError.js";
 import httpStatus from 'http-status';
 import Faculty from "../Faculty/Faculty.js";
+import { isAfter } from 'date-fns';
 
 // Define sub-schema for different types of exams
 const examSchema = new Schema({
@@ -60,8 +61,9 @@ const examSchema = new Schema({
         required: true
     },
     faculty: {
-        types: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
+        ref: "Faculty",
     }
 }, {
     timestamps: true,
@@ -73,33 +75,38 @@ const examSchema = new Schema({
     }
 });
 
+examSchema.virtual("isCompleted").get(function () {
+    if (isAfter(new Date(), this.date)) {
+        return true;
+    }
+
+    return false;
+})
+
 const handleHODexams = async (exam, next) => {
-    const faculty = await Faculty.findById(exam)
+
+    const faculty = await Faculty.findById(exam.faculty)
 
     if (!faculty) {
-        throw new CustomError(httpStatus.NOT_FOUND, "Faculty not found");
+        next(new CustomError(httpStatus.NOT_FOUND, "Faculty not found"))
     }
 
     if (!faculty.isHOD) {
-        throw new CustomError(httpStatus.FORBIDDEN, "Only HOD can create this exam");
-    }
-
-    if (!faculty.subjects.includes(exam.subject)) {
-        throw new CustomError(httpStatus.FORBIDDEN, "HOD can only create exams for subjects they teach");
+        next(new CustomError(httpStatus.FORBIDDEN, "Only HOD can create this exam"));
     }
 
     next();
 };
 
 const handleNormalExams = async (exam, next) => {
-    const faculty = await Faculty.findById(exam)
+    const faculty = await Faculty.findById(exam.faculty)
 
     if (!faculty) {
-        throw new CustomError(httpStatus.NOT_FOUND, "Faculty not found");
+        next(new CustomError(httpStatus.NOT_FOUND, "Faculty not found"))
     }
 
     if (!faculty.subjects.includes(exam.subject)) {
-        throw new CustomError(httpStatus.FORBIDDEN, "HOD can only create exams for subjects they teach");
+        next(new CustomError(httpStatus.FORBIDDEN, "HOD can only create exams for subjects they teach"));
     }
 
     next();
@@ -120,8 +127,8 @@ examSchema.pre("save", function (next) {
             handleNormalExams(this, next);
             break;
         default:
-            throw new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type");
+            next(new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type"));
     }
 })
 
-export default Exam;
+export default model("Exam", examSchema, "exams");

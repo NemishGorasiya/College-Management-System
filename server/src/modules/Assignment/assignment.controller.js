@@ -18,7 +18,7 @@ export const createAssignment = async (req, res) => {
   if (!subjects.includes(subject)) {
     return res.status(httpStatus.FORBIDDEN).json({ message: "You are not allowed to create assignment for this subject" });
   }
-  //TODO: check the req.user.subjects value before creating the assignment
+
   const assignment = new Assignment({
     name,
     description,

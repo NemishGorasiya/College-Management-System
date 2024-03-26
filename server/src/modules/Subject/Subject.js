@@ -61,8 +61,7 @@ const subjectSchema = new Schema({
     toObject: { virtuals: true },
 });
 
-subjectSchema.index({ semester: 1, department: 1 }, { unique: true });
-subjectSchema.index({ subjectCode: 1 }, { unique: true });
+subjectSchema.index({ semester: 1, department: 1, subjectCode: 1 }, { unique: true });
 
 //virtuals property for faculties of subject
 // subjectSchema.virtual("faculties").get(function () {

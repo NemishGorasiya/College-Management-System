@@ -16,7 +16,6 @@ export const authErrorHandler = (req, res, next) => {
 export const errorHandler = (err, req, res, next) => {
     //log the error if it is a server error
     if (err.status >= 500) {
-        console.log("this is an internal error " + err.message);
         logger.error(err.message);
     }
 
@@ -44,4 +43,4 @@ export const errorHandler = (err, req, res, next) => {
 
     res.statusMessage = err.statusMessage || "Internal Server Error";
     return res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json(errObj);
-}
+};
