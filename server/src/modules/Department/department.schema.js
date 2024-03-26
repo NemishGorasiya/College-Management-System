@@ -57,25 +57,25 @@ export const createDepartmentSchema = {
 
 export const getDepartmentSchema = {
     query: Joi.object({
-        page: Joi.number().optional().min(1).messages({
+        page: Joi.number().optional().default(1).messages({
             'number.base': "Page should be a number",
             'number.min': "Page should be a minimum of 1",
         }),
-        limit: Joi.number().optional().min(1).messages({
+        limit: Joi.number().optional().default(0).messages({
             'number.base': "Limit should be a number",
             'number.min': "Limit should be a minimum of 1",
         }),
         search: Joi.string().optional().messages({
             'string.base': "Search should be a string",
         }),
-        sortBy: Joi.string().optional().messages({
+        sortBy: Joi.string().optional().default("name").messages({
             'string.base': "Sort by should be a string",
         }),
-        orderBy: Joi.string().valid("asc", "desc").optional().messages({
+        orderBy: Joi.string().valid("asc", "desc").default("asc").optional().messages({
             'string.base': "Order by should be a string",
             'any.only': "Order by should be one of the valid values",
         }),
-    }),
+    }, { context: true }),
 };
 
 export const updateDepartmentSchema = {

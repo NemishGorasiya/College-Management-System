@@ -3,7 +3,7 @@ import { validate } from 'express-validation';
 import passport from 'passport';
 import { checkPermissions, isAuthenticated } from '../../middlewares/middlewares.js';
 import Admin from '../Admin/Admin.js';
-import { studentLogin, studentRegister, studentUpdate, studentDelete, studentGetAssignments, studentGetSubjects, studentSubmitAssignment, studentRegisterCSV } from './student.controllers.js';
+import { studentLogin, studentRegister, studentUpdate, studentDelete, studentGetAssignments, studentGetSubjects, studentSubmitAssignment, studentRegisterCSV, studentGetExams, studentGetTimetable } from './student.controllers.js';
 import Student from './Student.js';
 import { studentLoginSchema, studentRegisterSchema, studentUpdateSchema, studentDeleteSchema, studentSubmitAssignmentSchema, studentRegisterCSVSchema } from './student.schema.js';
 
@@ -19,6 +19,8 @@ router
     .patch("/update/request", isAuthenticated, checkPermissions(Student, Admin), validate(studentUpdateSchema, { keyByField: true }), studentUpdate)
     .delete("/delete/:studentId", isAuthenticated, checkPermissions(Admin), validate(studentDeleteSchema, { keyByField: true }), studentDelete)
     .get("/assignments", isAuthenticated, checkPermissions(Student), studentGetAssignments)
+    .get("/exams", isAuthenticated, checkPermissions(Student), studentGetExams)
+    .get("/exams/:examType/timetable", isAuthenticated, checkPermissions(Student), studentGetTimetable)
     .get("/subjects", isAuthenticated, checkPermissions(Student), studentGetSubjects)
     .post("/submit-assignment/:assignmentId", isAuthenticated, checkPermissions(Student), validate(studentSubmitAssignmentSchema, { keyByField: true }), studentSubmitAssignment);
 

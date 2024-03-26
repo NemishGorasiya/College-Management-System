@@ -41,13 +41,6 @@ export const getDepartments = async (req, res) => {
     let { page, limit, search, sortBy, orderBy } = req.query;
     const filterObj = {};
 
-    page = parseInt(page) || 1;
-
-    limit = (parseInt(limit) == 0 || limit == null || limit == undefined) ? 0 : (parseInt(limit) || 10);
-
-    sortBy = sortBy || "name";
-    orderBy = orderBy && (orderBy === "desc") ? "desc" : "asc";
-
     if (search) {
         filterObj.name = {
             $regex: search,

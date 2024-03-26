@@ -1,13 +1,16 @@
-import axios from "axios";
-import csv from "csvtojson";
+
 import httpStatus from "http-status";
 import CustomError from "../../errors/CustomError.js";
+import { csvToJson, validateStudents } from "../../utils/csvToJson.utils.js";
+import { generatePdf } from "../../utils/generatePdf.utils.js";
 import Assignment from "../Assignment/Assignment.js";
 import SubmittedAssignment from "../Assignment/SubmittedAssignment.js";
+import Exam from "../Exam/Exam.js";
 import Subject from "../Subject/Subject.js";
 import Student from "./Student.js";
 import StudentUpdateRequest from "./StudentUpdateRequest.js";
 import { studentRegisterInterSchema } from "./student.schema.js";
+import fs from "fs";
 
 export const studentRegister = async (req, res) => {
     const {
@@ -109,7 +112,7 @@ export const studentDelete = async (req, res) => {
     return res.status(httpStatus.OK).json({ message: "Student deleted successfully" });
 };
 
-const getStudentSubjects = async (department, semester) => {
+export const getSubjects = async (department, semester) => {
     return await Subject.find({
         department,
         semester
@@ -122,7 +125,7 @@ export const studentGetSubjects = async (req, res) => {
     //get the subjects of the students
     const { semester, department } = req.user;
 
-    const subjects = await getStudentSubjects(department, semester);
+    const subjects = await getSubjects(department, semester);
 
     return res.status(httpStatus.OK).send({
         message: "Student's subjects fetched successfully",
@@ -134,7 +137,7 @@ export const studentGetAssignments = async (req, res) => {
     //to get the student assignments we need to find the subjects it listens to
     const { department, semester } = req.user;
 
-    let subjects = await getStudentSubjects(department, semester);
+    let subjects = await getSubjects(department, semester);
 
     let assignments = await Assignment.find({
         subject: {
@@ -178,7 +181,7 @@ export const studentSubmitAssignment = async (req, res) => {
         throw new CustomError(httpStatus.BAD_REQUEST, "Assignment does not belong to the subject");
     }
 
-    const studentSubjects = await getStudentSubjects(req.user.department, req.user.semester);
+    const studentSubjects = await getSubjects(req.user.department, req.user.semester);
 
     if (!studentSubjects.find(subject => subject._id.toString() === subjectId)) {
         throw new CustomError(httpStatus.FORBIDDEN, "You are not allowed to submit assignment for this subject");
@@ -203,7 +206,7 @@ export const studentRegisterCSV = async (req, res) => {
 
     const students = await csvToJson(csv_link);
 
-    const validated = await validateStudents(students);
+    const validated = await validateStudents(studentRegisterInterSchema, students);
 
     //validation successful otherwise error is thrown
     let registeredStudents = [];
@@ -221,23 +224,89 @@ export const studentRegisterCSV = async (req, res) => {
     });
 };
 
-async function csvToJson(csv_link) {
-    const { data: resultData } = await axios.get(csv_link, {
-        responseType: "blob", //working
-        // responseType: "stream",
+export const studentGetExams = async (req, res) => {
+    const { department, semester } = req.user;
+
+    let subjects = await getSubjects(department, semester);
+
+    //TODO: add pagination, filter by date, exam type, faculty and isCompleted or not
+
+    let exams = await Exam.find({
+        subject: {
+            $in: subjects.map(subject => subject._id)
+        }
+    }).populate("subject").populate("faculty").sort({
+        date: 1,
+        createdAt: -1,
     });
 
-    const csvConverter = csv({
-        noheader: false,
-        ignoreColumns: /(profilePicture)/
+    return res.status(httpStatus.OK).send({
+        message: "Student's exams fetched successfully",
+        exams
+    });
+};
+
+export const studentGetTimetable = async (req, res) => {
+    const { department, semester } = req.user;
+    let { examType } = req.params;
+
+    switch (examType) {
+        case "midsem":
+            examType = "Mid-Semester";
+            break;
+        case "internal":
+            examType = "Internal Submissions";
+            break;
+        case "viva":
+            examType = "Viva";
+            break;
+        default:
+            throw new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type");
+    }
+
+    let subjects = await getSubjects(department, semester);
+
+    let exams = await Exam.find({
+        subject: {
+            $in: subjects.map(subject => subject._id)
+        },
+        examType: {
+            $regex: examType,
+            $options: "i",
+        }
+    }).populate("subject").populate("faculty").sort({
+        date: 1,
+        createdAt: -1,
     });
 
-    const students = await csvConverter.fromString(resultData.toString());
-    // const students = await csvConverter.fromStream(resultData);
+    if (!exams) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
+    }
 
-    return students;
-};
+    exams = exams.filter(exam => exam.isCompleted === false);
 
-async function validateStudents(students) {
-    return await studentRegisterInterSchema.validateAsync(students, { abortEarly: false })
-};
+    if (exams.length === 0) {
+        return res.status(httpStatus.OK).send({
+            message: "No exams found",
+        });
+    }
+
+    // const { secure_url: urlPath, original_filename, format } = await generatePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
+    const filePath = await generatePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
+
+    // return res.status(httpStatus.OK).send({
+    //     message: "Student's timetable fetched successfully",
+    //     // urlPath,
+    //     // filename: original_filename + "." + format,
+
+    //     filePath
+    // });
+
+    return res.download(filePath, `${req.user.fullName}_${req.user.id}_exams.pdf`, async (err) => {
+        if (err) {
+            throw new CustomError(httpStatus.INTERNAL_SERVER_ERROR, "Error downloading file");
+        }
+
+        fs.unlinkSync(filePath);
+    });
+}
