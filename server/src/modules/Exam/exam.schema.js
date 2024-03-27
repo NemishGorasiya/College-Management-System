@@ -7,7 +7,7 @@ export const createExamSchema = {
         totalMarks: Joi.number().required(),
         subject: Joi.string().required(),
         examType: Joi.string().required().valid("Quiz", "Project", "Lab"),
-        date: Joi.date().required(),
+        date: Joi.date().greater('now').required(),
         duration: Joi.number().required(),
     })
 };
@@ -18,7 +18,7 @@ export const createExamSemesterSchema = {
         description: Joi.string().required(),
         totalMarks: Joi.number().required(),
         examType: Joi.string().required().valid("Mid-Semester", "Internal Submissions", "Viva",),
-        date: Joi.date().required(),
+        date: Joi.date().greater('now').required(),
         duration: Joi.number().required(),
         department: Joi.string().optional(), //admins need to provide this
     }),
@@ -34,7 +34,7 @@ export const updateExamSchema = {
         totalMarks: Joi.number().optional(),
         subject: Joi.string().optional(),
         examType: Joi.string().optional().valid("Quiz", "Project", "Lab", "Mid-Semester", "Internal Submissions", "Viva"),
-        date: Joi.date().optional(),
+        date: Joi.date().greater('now').optional(),
         duration: Joi.number().optional(),
     }),
     params: Joi.object({

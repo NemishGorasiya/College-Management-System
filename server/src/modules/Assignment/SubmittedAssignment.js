@@ -52,7 +52,7 @@ submittedAssignmentSchema.pre("save", async function (next) {
     assignment.students.push({
         student: this.student,
         subimission: this._id
-    })
+    });
 
     await assignment.save();
 

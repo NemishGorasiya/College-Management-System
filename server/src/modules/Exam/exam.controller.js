@@ -112,6 +112,8 @@ export const createExamSemester = async (req, res) => {
 export const getExam = async (req, res) => {
     const examId = req.params.examId;
 
+
+    //TODO: add pagination, sorting and filtering to this
     const exam = await Exam.findById(examId);
 
     if (!exam) {
@@ -126,20 +128,49 @@ export const getExam = async (req, res) => {
 export const updateExam = async (req, res) => {
     const examId = req.params.examId;
 
+    //check if user is Admin and has the department in the body
+    if (req.user instanceof Admin && !req.body.department) {
+        throw new CustomError(httpStatus.BAD_REQUEST, "Department is required for admins");
+    }
+
     const exam = await Exam.findById(examId);
 
+    //if no exam found
     if (!exam) {
         throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
     };
 
+    //if the faculty is not the owner of the exam and not an admin
+    if (exam.faculty.toString() !== req.user._id.toString() && !(req.user instanceof Admin)) {
+        throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only update their exams");
+    }
+
+    //if the exam is already completed and the user is trying to update it
+    if (exam.isCompleted) {
+        throw new CustomError(httpStatus.FORBIDDEN, "Exam is already completed");
+    }
+
+    //if the date is a weekend, move it to the next day until it is not a weekend
+    while (req.body.date && isWeekend(req.body.date)) {
+        req.body.date = addDays(req.body.date, 1);
+    }
+
     for (let key in req.body) {
         if (key === "subject") {
-            const faculty = req.user;
-            if (!faculty.subjects.includes(req.body[key])) {
-                throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only create exams for subjects they teach");
-            };
+            //check if the faculty has subjects in it and admin has the department in it
+            if (req.user instanceof Admin) {
+                const subjects = await getSubjects(req.body.department, req.body.semester);
+                if (!subjects.includes(req.body.subject)) {
+                    throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only update exams for subjects they teach");
+                }
+            } else {
+                if (!req.user.subjects.includes(req.body.subject)) {
+                    throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only update exams for subjects they teach");
+                }
+            }
         }
 
+        //update the exam
         exam[key] = req.body[key];
     }
 
@@ -160,7 +191,7 @@ export const deleteExam = async (req, res) => {
         throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
     };
 
-    if (exam.faculty.toString() !== req.user._id.toString()) {
+    if (exam.faculty.toString() !== req.user._id.toString() && !(req.user instanceof Admin)) {
         throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only delete their exams");
     }
 

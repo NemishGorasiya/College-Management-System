@@ -11,6 +11,8 @@ import Student from "./Student.js";
 import StudentUpdateRequest from "./StudentUpdateRequest.js";
 import { studentRegisterInterSchema } from "./student.schema.js";
 import fs from "fs";
+import ExamResult from "../Result/ExamResult.js";
+import FinalResult from "../Result/FinalResult.js";
 
 export const studentRegister = async (req, res) => {
     const {
@@ -234,11 +236,14 @@ export const studentGetExams = async (req, res) => {
     let exams = await Exam.find({
         subject: {
             $in: subjects.map(subject => subject._id)
-        }
+        },
     }).populate("subject").populate("faculty").sort({
         date: 1,
         createdAt: -1,
     });
+
+    //filter the isCompleted exams here
+    exams = exams.filter(exam => exam.isCompleted === false);
 
     return res.status(httpStatus.OK).send({
         message: "Student's exams fetched successfully",
@@ -250,19 +255,7 @@ export const studentGetTimetable = async (req, res) => {
     const { department, semester } = req.user;
     let { examType } = req.params;
 
-    switch (examType) {
-        case "midsem":
-            examType = "Mid-Semester";
-            break;
-        case "internal":
-            examType = "Internal Submissions";
-            break;
-        case "viva":
-            examType = "Viva";
-            break;
-        default:
-            throw new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type");
-    }
+    examType = getExamType(examType);
 
     let subjects = await getSubjects(department, semester);
 
@@ -309,4 +302,113 @@ export const studentGetTimetable = async (req, res) => {
 
         fs.unlinkSync(filePath);
     });
+};
+
+export const studentGetResults = async (req, res) => {
+    const { department, semester } = req.user;
+
+    //get the subjects of the students  
+    let subjects = await getSubjects(department, semester);
+
+    //get the exams of the subjects
+    let exams = await Exam.find({
+        subject: {
+            $in: subjects.map(subject => subject._id)
+        }
+    });
+
+    //get the results of the student
+    let results = await ExamResult.find({
+        exam: {
+            $in: exams.map(exam => exam._id)
+        },
+        student: req.user._id
+    }).populate("exam").sort({
+        createdAt: -1,
+    });
+
+    return res.status(httpStatus.OK).send({
+        message: "Student's results fetched successfully",
+        results
+    });
+};
+
+export const studentGetFinalResult = async (req, res) => {
+    const { department, semester } = req.user;
+    let { examType } = req.params;
+
+    examType = getExamType(examType);
+
+    //check if the student already made the final result
+    const finalResultExists = await FinalResult.findOne({
+        student: req.user._id,
+        semester,
+        examType
+    }).populate("examResults");
+
+    if (finalResultExists) {
+        return res.status(httpStatus.OK).send({
+            message: "Student's final result fetched successfully",
+            finalResult: finalResultExists
+        });
+    }
+
+    //get the subjects of the students
+    const subjects = await getSubjects(department, semester);
+
+    //check if the student has no exam left to take
+    const exams = await Exam.find({
+        subject: {
+            $in: subjects.map(subject => subject._id)
+        },
+        examType,
+    })
+
+    if (exams.length < 1) {
+        throw new CustomError(httpStatus.BAD_REQUEST, "Student has exams left to take");
+    }
+
+    //get the results of the student
+    const results = await ExamResult.find({
+        student: req.user._id,
+        exam: {
+            $in: exams.map(exam => exam._id)
+        },
+        examType,
+    });
+
+    if (exams.length !== results.length) {
+        throw new CustomError(httpStatus.BAD_REQUEST, "Student has not taken all exams");
+    }
+
+    const finalResult = new FinalResult({
+        student: req.user._id,
+        semester,
+        examResults: results.map(result => result._id),
+        examType
+    });
+
+    await finalResult.save();
+
+    return res.status(httpStatus.OK).send({
+        message: "Final result created successfully",
+        finalResult
+    });
+};
+
+export function getExamType(examType) {
+    switch (examType) {
+        case "midsem":
+            examType = "Mid-Semester";
+            break;
+        case "internal":
+            examType = "Internal Submissions";
+            break;
+        case "viva":
+            examType = "Viva";
+            break;
+        default:
+            throw new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type");
+    }
+    return examType;
 }

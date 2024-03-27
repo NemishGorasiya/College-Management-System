@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import CustomError from "../../errors/CustomError.js";
+import httpStatus from "http-status";
 
 const examResultSchema = new Schema({
     student: {
@@ -14,6 +16,12 @@ const examResultSchema = new Schema({
     marks: {
         type: Number,
         required: true
+    },
+    percentage: {
+        type: Number,
+    },
+    examType: {
+        type: String,
     }
 }, {
     timestamps: true,
@@ -21,18 +29,41 @@ const examResultSchema = new Schema({
     toObject: { virtuals: true }
 });
 
-examResultSchema.virtuals("percentage").get(async function () {
-    const exam = await this.model('Exam').findOne({ _id: this.exam });
+examResultSchema.pre("save", async function (next) {
+    // Check if the marks are less than total marks
+    const exam = await this.model("Exam").findById(this.exam);
 
-    // Calculate the percentage
-    if (exam) {
-        return (this.marks / exam.totalMarks) * 100;
-    } else {
-        return null; // Handle the case where exam document is not found
+    //Check if the student has already taken the exam
+    this.model("ExamResult").findOne({ student: this.student, exam: this.exam })
+        .then(result => {
+            if (result) {
+                next(new CustomError(httpStatus.BAD_REQUEST, "Student has already taken the exam"));
+            } else {
+                next();
+            }
+        })
+        .catch(next);
+
+    // add the exam type to the result
+    this.examType = exam.examType;
+
+    //save the result in the exam
+    if (exam.results === undefined) {
+        exam.results = [];
     }
+
+    exam.results.push({ student: this.student, marks: this.marks });
+
+    this.percentage = (this.marks / exam.totalMarks) * 100;
+
+    await exam.save();
+
+    next();
 });
 
-examResultSchema.virtuals("grade").get(function () {
+examResultSchema.index({ student: 1, exam: 1 }, { unique: true });
+
+examResultSchema.virtual("grade").get(function () {
     // Calculate the grade
     if (this.percentage >= 90) {
         return "A+";
@@ -51,4 +82,4 @@ examResultSchema.virtuals("grade").get(function () {
     }
 });
 
-export default model("ExanResult", examResultSchema, "examResults")
+export default model("ExamResult", examResultSchema, "examResults")

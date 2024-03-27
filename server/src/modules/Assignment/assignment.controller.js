@@ -180,4 +180,4 @@ export const updateSubmittedAssignment = async (req, res) => {
     message: "Marks updated successfully",
     submission
   });
-}
+};
