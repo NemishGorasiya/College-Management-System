@@ -309,4 +309,33 @@ export const studentGetTimetable = async (req, res) => {
 
         fs.unlinkSync(filePath);
     });
-}
+};
+
+export const studentGetResults = async (req, res) => {
+    const { department, semester } = req.user;
+
+    //get the subjects of the students  
+    let subjects = await getSubjects(department, semester);
+
+    //get the exams of the subjects
+    let exams = await Exam.find({
+        subject: {
+            $in: subjects.map(subject => subject._id)
+        }
+    });
+
+    //get the results of the student
+    let results = await ExamResult.find({
+        exam: {
+            $in: exams.map(exam => exam._id)
+        },
+        student: req.user._id
+    }).populate("exam").sort({
+        createdAt: -1,
+    });
+
+    return res.status(httpStatus.OK).send({
+        message: "Student's results fetched successfully",
+        results
+    });
+};

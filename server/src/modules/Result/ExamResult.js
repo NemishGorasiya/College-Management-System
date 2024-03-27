@@ -21,7 +21,27 @@ const examResultSchema = new Schema({
     toObject: { virtuals: true }
 });
 
-examResultSchema.virtuals("percentage").get(async function () {
+examResultSchema.pre("save", function (next) {
+    // Check if the marks are less than total marks
+    const exam = this.model("Exam").findById(this.exam);
+
+    //Check if the student has already taken the exam
+    this.model("ExamResult").findOne({ student: this.student, exam: this.exam })
+        .then(result => {
+            if (result) {
+                next(new Error("Student has already taken the exam"));
+            } else {
+                next();
+            }
+        })
+        .catch(next);
+
+    //save the result in the exam
+    exam.results.push({ student: this.student, marks: this.marks });
+    next();
+});
+
+examResultSchema.virtual("percentage").get(async function () {
     const exam = await this.model('Exam').findOne({ _id: this.exam });
 
     // Calculate the percentage
@@ -32,7 +52,7 @@ examResultSchema.virtuals("percentage").get(async function () {
     }
 });
 
-examResultSchema.virtuals("grade").get(function () {
+examResultSchema.virtual("grade").get(function () {
     // Calculate the grade
     if (this.percentage >= 90) {
         return "A+";
@@ -51,4 +71,4 @@ examResultSchema.virtuals("grade").get(function () {
     }
 });
 
-export default model("ExanResult", examResultSchema, "examResults")
+export default model("ExamResult", examResultSchema, "examResults")

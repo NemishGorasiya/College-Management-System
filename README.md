@@ -180,7 +180,12 @@ Additional features:
     - Appropriate updates will be applied to the examinations by the HOD
     - Faculties of their particular subject will add the marks of the students by their enrollment no using excel sheet uploading 
 
-### Features to be added - Feauture Request, Bug Report, Book Store, Forum
+### Result Module
+
+  - the result will be added for each and every exam
+  - 
+
+### Features to be added - Feature Request, Bug Report, Book Store, Forum
 
 ## Frontend
 

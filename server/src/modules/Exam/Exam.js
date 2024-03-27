@@ -64,7 +64,16 @@ const examSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: "Faculty",
-    }
+    },
+    results: [{
+        student: {
+            type: Schema.Types.ObjectId,
+            ref: "Student",
+        },
+        marks: {
+            type: Number,
+        },
+    }]
 }, {
     timestamps: true,
     toJSON: {

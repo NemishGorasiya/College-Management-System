@@ -27,6 +27,7 @@ import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
 import subjectRoutes from "./modules/Subject/subject.routes.js";
 import uploadRoutes from "./modules/Uploads/upload.routes.js";
+import resultRoutes from "./modules/Result/result.routes.js";
 
 config();
 
@@ -51,9 +52,6 @@ const RedisSessionStore = new RedisStore({
     client: redisClient,
     prefix: 'session:',
 });
-
-
-
 
 //setting up the middlwares for the server
 app.use(express.json());
@@ -125,6 +123,7 @@ app.use('/api/subject', subjectRoutes);
 app.use('/api/assignment', assignmentRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/exam', examRoutes);
+app.use('/api/result', resultRoutes);
 
 //auth error, normal error handlers and not found handlers
 app.use('/api/error', authErrorHandler);
