@@ -16,7 +16,6 @@ router
     .post("/create", isAuthenticated, checkPermissions(Faculty, Admin), validate(createResultSchema, { keyByField: true }), createResult)
     .get("/:resultId", isAuthenticated, checkPermissions(Faculty, Admin), getResult)
     .patch("/:resultId", isAuthenticated, checkPermissions(Faculty, Admin), validate(updateResultSchema, { keyByField: true }), updateResult)
-    .delete("/:resultId", isAuthenticated, checkPermissions(Faculty, Admin), validate(deleteResultSchema, { keyByField: true }), deleteResult)
-    ;
+    .delete("/:resultId", isAuthenticated, checkPermissions(Faculty, Admin), validate(deleteResultSchema, { keyByField: true }), deleteResult);
 
 export default router;

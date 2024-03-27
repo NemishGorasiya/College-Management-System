@@ -14,6 +14,18 @@ const finalResultSchema = new Schema({
         type: [Schema.Types.ObjectId],
         ref: "ExamResult",
         required: true
+    },
+    achievedMarks: {
+        type: Number
+    },
+    totalMarks: {
+        type: Number
+    },
+    percentage: {
+        type: Number
+    },
+    examType: {
+        type: String
     }
 }, {
     timestamps: true,
@@ -21,7 +33,10 @@ const finalResultSchema = new Schema({
     toObject: { virtuals: true }
 });
 
-finalResultSchema.virtual("achievedMarks").get(async function () {
+finalResultSchema.index({ student: 1, semester: 1, examType: 1 }, { unique: true });
+
+finalResultSchema.pre("save", async function (next) {
+    //calculate the achieved marks
     let achievedMarks = 0;
     const examResults = await this.model("ExamResult").aggregate([
         {
@@ -50,13 +65,11 @@ finalResultSchema.virtual("achievedMarks").get(async function () {
         achievedMarks = examResults[0].marks;
     }
 
-    return achievedMarks;
-});
+    this.achievedMarks = achievedMarks;
 
-finalResultSchema.virtual("totalMarks").get(async function () {
-    let totalMarks = 0
-
-    const examResults = this.model("ExamResult").aggregate([
+    //calculate the total marks
+    let totalMarks = 0;
+    const examResults2 = await this.model("ExamResult").aggregate([
         {
             $match: {
                 _id: {
@@ -66,14 +79,14 @@ finalResultSchema.virtual("totalMarks").get(async function () {
         },
         {
             $lookup: {
-                from: "exams",
-                localField: "exam",
-                foreignField: "_id",
-                as: "exam"
+                from: "exams", //collection name
+                localField: "exam", //field in the input document
+                foreignField: "_id", //field in the documents of the "from" collection
+                as: "exam" //output array field
             }
         },
         {
-            $unwind: "$exam"
+            $unwind: "$exam" //deconstructs the array field from the input documents to output a document for each element
         },
         {
             $group: {
@@ -83,18 +96,20 @@ finalResultSchema.virtual("totalMarks").get(async function () {
                 }
             }
         }
-    ]);
+    ])
 
-    if (examResults.length > 0) {
-        totalMarks = examResults[0].totalMarks;
+    if (examResults2.length > 0) {
+        totalMarks = examResults2[0].totalMarks;
     }
 
-    return totalMarks;
+    this.totalMarks = totalMarks;
+
+    //calculate the percentage
+    this.percentage = (this.achievedMarks / this.totalMarks) * 100;
+
+    next();
 });
 
-finalResultSchema.virtual("percentage").get(function () {
-    return (this.achievedMarks / this.totalMarks) * 100;
-});
 
 finalResultSchema.virtual("grade").get(function () {
     if (this.percentage >= 90) {
@@ -117,8 +132,5 @@ finalResultSchema.virtual("grade").get(function () {
 finalResultSchema.virtual("spi").get(function () {
     return (this.percentage / 10) + 0.5;
 });
-
-
-
 
 export default model("FinalResult", finalResultSchema, "finalResults");

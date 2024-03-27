@@ -8,22 +8,17 @@ import ExamResult from "./ExamResult.js";
 export const createResult = async (req, res) => {
     const { student, exam, marks } = req.body;
 
+    //TODO: check if the faculty is the one who created the exam
+
     //need to check if the student has the exam in their subjects
     const studentExists = await Student.findById(student);
 
     if (!studentExists) {
         throw new CustomError(httpStatus.NOT_FOUND, "Student not found");
-    }
-
-    const studentSubject = await getSubjects(studentExists.department, studentExists.semester); //get the subjects of the student
+    };
 
     //check if the student has the exam in their subjects
-    const studentExam = await Exam.find({
-        subject: {
-            $in: studentSubject.map(subject => subject._id)
-        },
-        _id: exam,
-    });
+    const studentExam = await Exam.findById(exam);
 
     //exam does not exist
     if (!studentExam) {
@@ -33,7 +28,12 @@ export const createResult = async (req, res) => {
     //check if the marks are less than total marks
     if (marks > studentExam.totalMarks) {
         throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be greater than total marks");
-    }
+    };
+
+    //check if the exam is completed or not -
+    // if (!studentExam.isCompleted) {
+    //     throw new CustomError(httpStatus.BAD_REQUEST, "Exam is not completed yet");
+    // }
 
     //all checks passed, create the result
     const examResult = new ExamResult({
@@ -79,7 +79,9 @@ export const getAllResults = async (req, res) => {
 export const getResult = async (req, res) => {
     const { resultId } = req.params;
 
-    const result = await ExamResult.findById(id);
+    const result = await ExamResult.findById(resultId);
+    let percentage = await result.percentage;
+    result.percentage = percentage;
 
     if (!result) {
         throw new CustomError(httpStatus.NOT_FOUND, "Result not found");
