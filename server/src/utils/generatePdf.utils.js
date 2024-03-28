@@ -1,18 +1,12 @@
-import { v2 as cloudinary } from 'cloudinary';
 import { format } from 'date-fns';
 import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit-table';
 import { __dirname } from '../../paths.config.js';
+import cloudinary from '../config/cloudinary.config.js';
 import CustomError from '../errors/CustomError.js';
 
-cloudinary.config({
-    cloud_name: 'dhjo1bmn7',
-    api_key: '791439462714441',
-    api_secret: 'wvDK2HBaTYa_PTc7Tm9N-IS_7qY',
-})
-
-export const generatePdfCloud = async (data) => {
+export const generateTimetablePdfCloud = async (data) => {
     return new Promise(async (resolve, reject) => {
         // Create a new PDF document
         const doc = new PDFDocument();
@@ -91,7 +85,7 @@ export const generatePdfCloud = async (data) => {
     })
 };
 
-export const generatePdf = async (data) => {
+export const generateTimetablePdf = async (data) => {
     return new Promise(async (resolve, reject) => {
         // Create a new PDF document
         const doc = new PDFDocument();
@@ -99,6 +93,11 @@ export const generatePdf = async (data) => {
         try {
             // Pipe the PDF content to a file
             const PATH_TO_FILE = path.join(__dirname, `/pdfs/`, (data.filename || `${data.user.fullName}_exams.pdf`));
+
+            if (fs.existsSync(PATH_TO_FILE)) {
+                resolve(PATH_TO_FILE);
+            }
+
             const writeStream = fs.createWriteStream(PATH_TO_FILE);
 
             // Add a title to the PDF
@@ -158,4 +157,4 @@ export const generatePdf = async (data) => {
             reject(error);
         }
     })
-}
+};

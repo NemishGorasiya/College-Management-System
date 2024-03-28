@@ -2,7 +2,7 @@
 import httpStatus from "http-status";
 import CustomError from "../../errors/CustomError.js";
 import { csvToJson, validateStudents } from "../../utils/csvToJson.utils.js";
-import { generatePdf } from "../../utils/generatePdf.utils.js";
+import { generateTimetablePdf } from "../../utils/generatePdf.utils.js";
 import Assignment from "../Assignment/Assignment.js";
 import SubmittedAssignment from "../Assignment/SubmittedAssignment.js";
 import Exam from "../Exam/Exam.js";
@@ -13,6 +13,7 @@ import { studentRegisterInterSchema } from "./student.schema.js";
 import fs from "fs";
 import ExamResult from "../Result/ExamResult.js";
 import FinalResult from "../Result/FinalResult.js";
+import { populate } from "dotenv";
 
 export const studentRegister = async (req, res) => {
     const {
@@ -285,7 +286,7 @@ export const studentGetTimetable = async (req, res) => {
     }
 
     // const { secure_url: urlPath, original_filename, format } = await generatePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
-    const filePath = await generatePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
+    const filePath = await generateTimetablePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
 
     // return res.status(httpStatus.OK).send({
     //     message: "Student's timetable fetched successfully",
@@ -300,7 +301,8 @@ export const studentGetTimetable = async (req, res) => {
             throw new CustomError(httpStatus.INTERNAL_SERVER_ERROR, "Error downloading file");
         }
 
-        fs.unlinkSync(filePath);
+        // fs.unlinkSync(filePath);
+        console.log("File returned successfully");
     });
 };
 
@@ -339,30 +341,44 @@ export const studentGetFinalResult = async (req, res) => {
 
     examType = getExamType(examType);
 
-    //check if the student already made the final result
+    // //check if the student already made the final result
     const finalResultExists = await FinalResult.findOne({
         student: req.user._id,
         semester,
-        examType
-    }).populate("examResults");
+        examType,
+    }).populate("examResults").populate({
+        path: "examResults",
+        populate: {
+            path: "exam",
+            populate: {
+                path: "subject",
+                populate: {
+                    path: "department"
+                },
+            }
+        }
+    }).populate("student");
 
     if (finalResultExists) {
         return res.status(httpStatus.OK).send({
             message: "Student's final result fetched successfully",
             finalResult: finalResultExists
         });
-    }
+    };
 
     //get the subjects of the students
     const subjects = await getSubjects(department, semester);
 
     //check if the student has no exam left to take
-    const exams = await Exam.find({
+    let exams = await Exam.find({
         subject: {
             $in: subjects.map(subject => subject._id)
         },
         examType,
     })
+
+    //TODO: all the exams should be taken by the student - 
+    //isCompleted should be true for all exams - currently the discrepancy is there as exam is not completed
 
     if (exams.length < 1) {
         throw new CustomError(httpStatus.BAD_REQUEST, "Student has exams left to take");
@@ -377,9 +393,10 @@ export const studentGetFinalResult = async (req, res) => {
         examType,
     });
 
+
     if (exams.length !== results.length) {
         throw new CustomError(httpStatus.BAD_REQUEST, "Student has not taken all exams");
-    }
+    };
 
     const finalResult = new FinalResult({
         student: req.user._id,
@@ -390,9 +407,22 @@ export const studentGetFinalResult = async (req, res) => {
 
     await finalResult.save();
 
+    const finalResultPopulated = await FinalResult.findById(finalResult._id).populate("examResults").populate({
+        path: "examResults",
+        populate: {
+            path: "exam",
+            populate: {
+                path: "subject",
+                populate: {
+                    path: "department"
+                },
+            }
+        }
+    }).populate("student");
+
     return res.status(httpStatus.OK).send({
         message: "Final result created successfully",
-        finalResult
+        finalResultPopulated
     });
 };
 
@@ -411,4 +441,4 @@ export function getExamType(examType) {
             throw new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type");
     }
     return examType;
-}
+};
