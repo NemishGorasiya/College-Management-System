@@ -5,6 +5,7 @@ import PDFDocument from 'pdfkit-table';
 import { __dirname } from '../../paths.config.js';
 import cloudinary from '../config/cloudinary.config.js';
 import CustomError from '../errors/CustomError.js';
+import data from './arrayData.utils.cjs';
 
 export const generateTimetablePdfCloud = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -29,7 +30,7 @@ export const generateTimetablePdfCloud = async (data) => {
             })
 
             // Add a title to the PDF
-            doc.fontSize(12).text('L.D. College Of Engineering', {
+            doc.fontSize(10).text('L.D. College Of Engineering', {
                 align: 'center'
             });
             doc.moveDown();
@@ -101,7 +102,7 @@ export const generateTimetablePdf = async (data) => {
             const writeStream = fs.createWriteStream(PATH_TO_FILE);
 
             // Add a title to the PDF
-            doc.fontSize(12).text('L.D. College Of Engineering', {
+            doc.fontSize(10).text('L.D. College Of Engineering', {
                 align: 'center'
             });
             doc.moveDown();
@@ -155,6 +156,90 @@ export const generateTimetablePdf = async (data) => {
             resolve(PATH_TO_FILE)
         } catch (error) {
             reject(error);
+        }
+    })
+};
+
+export const generateFinalResultPdf = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            const { user, finalResult, filename } = data;
+
+            const doc = new PDFDocument();
+
+            const PATH_TO_FILE = path.join(__dirname, `/pdfs/`, (filename || `${user.fullName}_final_result.pdf`));
+
+            if (fs.existsSync(PATH_TO_FILE)) {
+                resolve(PATH_TO_FILE);
+            };
+
+            doc.fontSize(20).text('L.D. College Of Engineering', { align: 'center' });
+
+            doc.moveDown();
+
+            doc.fontSize(16).text('Final Result', { align: 'center' });
+
+            doc.moveDown();
+
+            doc.fontSize(10).text(`Name: ${user.fullName}`);
+            doc.moveDown();
+            doc.fontSize(10).text(`Email: ${user.email} \n Enrollment No: ${user.enrollmentNumber} \n  Semester: ${finalResult.semester}`);
+            doc.moveDown();
+            doc.fontSize(10).text(`Department: ${finalResult.student.department.name}`);
+            doc.moveDown();
+            doc.fontSize(10).text(`Achieved Marks: ${finalResult.achievedMarks}`);
+            doc.moveDown();
+            doc.fontSize(10).text(`Total Marks: ${finalResult.totalMarks}`);
+            doc.moveDown();
+            doc.fontSize(10).text(`Percentage: ${finalResult.percentage.toFixed(2)}%`);
+            doc.moveDown();
+            doc.fontSize(10).text(`Grade: ${finalResult.grade}`);
+            doc.moveDown();
+            doc.fontSize(10).text(`SPI: ${finalResult.spi.toFixed(2)}`);
+            doc.moveDown();
+
+            // Add exam results table
+            const tableData = finalResult.examResults.map(result => [
+                result.exam.name,
+                result.exam.subject.name,
+                result.marks,
+                result.exam.totalMarks,
+                result.percentage.toFixed(2) + "%",
+                result.grade
+            ]);
+
+            doc.fontSize(10).text('Exam Results', { align: 'center' }); // Add a title to the PDF
+            doc.moveDown();
+
+            const table = {
+                headers: ["Exam Name", "Subject Name", "Marks", "Total Marks", "Percentage", "Grade"],
+                rows: tableData,
+                font: 'Helvetica-Bold',
+                fontSize: 10,
+            };
+
+            const columnWidths = [150, 150, 50, 50, 50, 50];
+
+            await doc.table(table, {
+                prepareHeader: () => doc.font('Helvetica-Bold').fontSize(8),
+                prepareRow: (row, i) => doc.font('Helvetica').fontSize(8),
+                columnWidths,
+                layout: 'lightHorizontalLines' // 'noBorders', 'headerLineOnly', 'lightHorizontalLines'
+            }, {
+                width: 500,
+                align: 'center'
+            });
+
+            doc.end();
+
+            const buffer = doc.read();
+
+            fs.writeFileSync(PATH_TO_FILE, buffer);
+
+            resolve(PATH_TO_FILE);
+        } catch (err) {
+            reject(err);
         }
     })
 };

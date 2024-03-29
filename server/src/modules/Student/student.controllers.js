@@ -2,7 +2,7 @@
 import httpStatus from "http-status";
 import CustomError from "../../errors/CustomError.js";
 import { csvToJson, validateStudents } from "../../utils/csvToJson.utils.js";
-import { generateTimetablePdf } from "../../utils/generatePdf.utils.js";
+import { generateFinalResultPdf, generateTimetablePdf } from "../../utils/generatePdf.utils.js";
 import Assignment from "../Assignment/Assignment.js";
 import SubmittedAssignment from "../Assignment/SubmittedAssignment.js";
 import Exam from "../Exam/Exam.js";
@@ -14,6 +14,7 @@ import fs from "fs";
 import ExamResult from "../Result/ExamResult.js";
 import FinalResult from "../Result/FinalResult.js";
 import { populate } from "dotenv";
+import Admin from "../Admin/Admin.js";
 
 export const studentRegister = async (req, res) => {
     const {
@@ -341,23 +342,59 @@ export const studentGetFinalResult = async (req, res) => {
 
     examType = getExamType(examType);
 
-    // //check if the student already made the final result
+    //check if the student already made the final result
     const finalResultExists = await FinalResult.findOne({
         student: req.user._id,
         semester,
         examType,
-    }).populate("examResults").populate({
-        path: "examResults",
-        populate: {
-            path: "exam",
+    })
+        .populate({
+            path: "examResults",
             populate: {
-                path: "subject",
+                path: "exam",
                 populate: {
-                    path: "department"
+                    path: "subject",
+                    select: {
+                        _id: 1,
+                        name: 1,
+                        subjectCode: 1,
+                        credits: 1,
+                    }
                 },
+                select: {
+                    _id: 1,
+                    totalMarks: 1,
+                    name: 1,
+                    description: 1,
+                    examType: 1,
+                    date: 1,
+                }
+            },
+        }).populate({
+            path: "student",
+            populate: {
+                path: "department",
+                select: {
+                    _id: 1,
+                    name: 1,
+                }
+            },
+            select: {
+                _id: 1,
+                enrollmentNumber: 1,
+                firstName: 1,
+                lastName: 1,
+                email: 1,
+                dob: 1,
+                doa: 1,
+                gender: 1,
+                semester: 1,
+                department: 1,
+                passOutYear: 1,
+                profilePicture: 1,
+                bloodGroup: 1,
             }
-        }
-    }).populate("student");
+        });
 
     if (finalResultExists) {
         return res.status(httpStatus.OK).send({
@@ -375,7 +412,7 @@ export const studentGetFinalResult = async (req, res) => {
             $in: subjects.map(subject => subject._id)
         },
         examType,
-    })
+    });
 
     //TODO: all the exams should be taken by the student - 
     //isCompleted should be true for all exams - currently the discrepancy is there as exam is not completed
@@ -407,22 +444,131 @@ export const studentGetFinalResult = async (req, res) => {
 
     await finalResult.save();
 
-    const finalResultPopulated = await FinalResult.findById(finalResult._id).populate("examResults").populate({
-        path: "examResults",
-        populate: {
-            path: "exam",
+    const finalResultPopulated = await FinalResult.findById(finalResult._id)
+        .populate({
+            path: "examResults",
             populate: {
-                path: "subject",
+                path: "exam",
                 populate: {
-                    path: "department"
+                    path: "subject",
+                    select: {
+                        _id: 1,
+                        name: 1,
+                        subjectCode: 1,
+                        credits: 1,
+                    }
                 },
+                select: {
+                    _id: 1,
+                    totalMarks: 1,
+                    name: 1,
+                    description: 1,
+                    examType: 1,
+                    date: 1,
+                }
+            },
+        }).populate({
+            path: "student",
+            populate: {
+                path: "department",
+                _id: 1,
+                select: {
+                    name: 1,
+                }
+            },
+            select: {
+                _id: 1,
+                enrollmentNumber: 1,
+                firstName: 1,
+                lastName: 1,
+                email: 1,
+                dob: 1,
+                doa: 1,
+                gender: 1,
+                semester: 1,
+                department: 1,
+                passOutYear: 1,
+                profilePicture: 1,
+                bloodGroup: 1,
             }
-        }
-    }).populate("student");
+        });
 
     return res.status(httpStatus.OK).send({
         message: "Final result created successfully",
         finalResultPopulated
+    });
+};
+
+export const studentGetFinalResultDownload = async (req, res) => {
+    const { semester } = req.user;
+    let { examType } = req.params;
+
+    examType = getExamType(examType);
+
+    //check if the student already made the final result
+    const finalResultExists = await FinalResult.findOne({
+        student: req.user._id,
+        semester,
+        examType,
+    })
+        .populate({
+            path: "examResults",
+            populate: {
+                path: "exam",
+                populate: {
+                    path: "subject",
+                    select: {
+                        _id: 1,
+                        name: 1,
+                        subjectCode: 1,
+                        credits: 1,
+                    }
+                },
+                select: {
+                    _id: 1,
+                    totalMarks: 1,
+                    name: 1,
+                    description: 1,
+                    examType: 1,
+                    date: 1,
+                }
+            },
+        }).populate({
+            path: "student",
+            populate: {
+                path: "department",
+                select: {
+                    _id: 1,
+                    name: 1,
+                }
+            },
+            select: {
+                _id: 1,
+                enrollmentNumber: 1,
+                firstName: 1,
+                lastName: 1,
+                email: 1,
+                dob: 1,
+                doa: 1,
+                gender: 1,
+                semester: 1,
+                department: 1,
+                passOutYear: 1,
+                profilePicture: 1,
+                bloodGroup: 1,
+            }
+        });
+
+
+    const filePath = await generateFinalResultPdf({ finalResult: finalResultExists, user: req.user, filename: `${req.user.fullName}_${req.user.id}_finalResult.pdf` })
+
+    return res.download(filePath, `${req.user.fullName}_${req.user.id}_finalResult.pdf`, async (err) => {
+        if (err) {
+            throw new CustomError(httpStatus.INTERNAL_SERVER_ERROR, "Error downloading file");
+        }
+
+        // fs.unlinkSync(filePath);
+        console.log("File returned successfully");
     });
 };
 

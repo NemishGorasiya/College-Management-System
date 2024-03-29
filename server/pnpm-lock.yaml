@@ -68,6 +68,9 @@ dependencies:
   mongoose:
     specifier: ^8.2.1
     version: 8.2.1
+  mongoose-validation-error-transform:
+    specifier: ^0.0.6
+    version: 0.0.6
   morgan:
     specifier: ^1.10.0
     version: 1.10.0
@@ -429,6 +432,10 @@ packages:
       set-function-length: 1.2.1
     dev: false
 
+  /capitalize@2.0.4:
+    resolution: {integrity: sha512-wcSyiFqXRYyCoqu0o0ekXzJAKCLMkqWS5QWGlgTJFJKwRmI6pzcN2hBl5VPq9RzLW5Uf4FF/V/lcFfjCtVak2w==}
+    dev: false
+
   /clone@2.1.2:
     resolution: {integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==}
     engines: {node: '>=0.8'}
@@ -598,6 +605,13 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: false
+
+  /decamelize@2.0.0:
+    resolution: {integrity: sha512-Ikpp5scV3MSYxY39ymh45ZLEecsTdv/Xj2CaQfI8RLMuwi7XvjX9H/fhraiSuU+C5w5NTDu4ZU72xNiZnurBPg==}
+    engines: {node: '>=4'}
+    dependencies:
+      xregexp: 4.0.0
     dev: false
 
   /deep-equal@2.2.3:
@@ -974,6 +988,13 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: false
 
+  /humanize-string@2.1.0:
+    resolution: {integrity: sha512-sQ+hqmxyXW8Cj7iqxcQxD7oSy3+AXnIZXdUF9lQMkzaG8dtbKAB8U7lCtViMnwQ+MpdCKsO2Kiij3G6UUXq/Xg==}
+    engines: {node: '>=6'}
+    dependencies:
+      decamelize: 2.0.0
+    dev: false
+
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -1323,6 +1344,15 @@ packages:
       '@mongodb-js/saslprep': 1.1.5
       bson: 6.4.0
       mongodb-connection-string-url: 3.0.0
+    dev: false
+
+  /mongoose-validation-error-transform@0.0.6:
+    resolution: {integrity: sha512-qhfezZmS0AIM9K3mGJXpcLtUjYDnCV0zuBc4Sr6CfMqUzddtJzDaooNONLrGShNNQ6oVfyZ8ZqWUR1P5z/gyGQ==}
+    engines: {node: '>= 6.x'}
+    dependencies:
+      capitalize: 2.0.4
+      humanize-string: 2.1.0
+      lodash: 4.17.21
     dev: false
 
   /mongoose@8.2.1:
@@ -1955,6 +1985,10 @@ packages:
       stack-trace: 0.0.10
       triple-beam: 1.4.1
       winston-transport: 4.7.0
+    dev: false
+
+  /xregexp@4.0.0:
+    resolution: {integrity: sha512-PHyM+sQouu7xspQQwELlGwwd05mXUFqwFYfqPO0cC7x4fxyHnnuetmQr6CjJiafIDoH4MogHb9dOoJzR/Y4rFg==}
     dev: false
 
   /xtend@4.0.2:
