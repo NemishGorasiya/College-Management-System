@@ -3,9 +3,10 @@ import { validate } from 'express-validation';
 import passport from 'passport';
 import { checkPermissions, isAuthenticated } from '../../middlewares/middlewares.js';
 import Admin from '../Admin/Admin.js';
-import { studentDelete, studentGetAssignments, studentGetExams, studentGetFinalResult, studentGetFinalResultDownload, studentGetResults, studentGetSubjects, studentGetTimetable, studentLogin, studentRegister, studentRegisterCSV, studentSubmitAssignment, studentUpdate } from './student.controllers.js';
+import { changePassword } from '../General/general.controller.js';
 import Student from './Student.js';
-import { studentDeleteSchema, studentLoginSchema, studentRegisterCSVSchema, studentRegisterSchema, studentSubmitAssignmentSchema, studentUpdateSchema } from './student.schema.js';
+import { studentDelete, studentGetAssignments, studentGetExams, studentGetFinalResult, studentGetFinalResultDownload, studentGetResults, studentGetSubjects, studentGetTimetable, studentLogin, studentRegister, studentRegisterCSV, studentSubmitAssignment, studentUpdate } from './student.controllers.js';
+import { studentDeleteSchema, studentLoginSchema, studentRegisterCSVSchema, studentRegisterSchema, studentResetPasswordSchema, studentSubmitAssignmentSchema, studentUpdateSchema } from './student.schema.js';
 
 
 const router = Router({ mergeParams: true });
@@ -14,8 +15,9 @@ const router = Router({ mergeParams: true });
 
 router
     .post("/register", isAuthenticated, checkPermissions(Admin), validate(studentRegisterSchema, { keyByField: true }), studentRegister)
-    .post("/register/csv", isAuthenticated, checkPermissions(Admin), validate(studentRegisterCSVSchema), studentRegisterCSV)
+    .post("/register/csv", isAuthenticated, checkPermissions(Admin), validate(studentRegisterCSVSchema, { keyByField: true }), studentRegisterCSV)
     .post("/login", validate(studentLoginSchema, { keyByField: true }), passport.authenticate('student', { failureRedirect: '/api/error' }), studentLogin)
+    .post("/reset-password", validate(studentResetPasswordSchema, { keyByField: true }), passport.authenticate('student', { failureRedirect: '/api/error' }), changePassword)
     .patch("/update/request", isAuthenticated, checkPermissions(Student, Admin), validate(studentUpdateSchema, { keyByField: true }), studentUpdate)
     .delete("/delete/:studentId", isAuthenticated, checkPermissions(Admin), validate(studentDeleteSchema, { keyByField: true }), studentDelete)
     .get("/assignments", isAuthenticated, checkPermissions(Student), studentGetAssignments)
