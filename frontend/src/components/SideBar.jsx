@@ -10,9 +10,13 @@ export default function SideBar() {
             <img className='sideBarIcon' src={dashBoardIcon} alt="" />
             <span>DashBoard</span>
         </li>
-        <li>
-            <img src="" alt="" />
-            <span>Profile</span>
+        <li className='sideBarNavLink'>
+            <img className='sideBarIcon' src={dashBoardIcon} alt="" />
+            <span>DashBoard</span>
+        </li>
+        <li className='sideBarNavLink'>
+            <img className='sideBarIcon' src={dashBoardIcon} alt="" />
+            <span>DashBoard</span>
         </li>
         <li></li>
       </ul>
