@@ -2,17 +2,8 @@ import httpStatus from "http-status";
 import Faculty from "./Faculty.js";
 import Department from "../Department/Department.js";
 import FacultyUpdateRequest from "./FacultyUpdateRequest.js";
+import CustomError from "../../errors/CustomError.js";
 
-/**
- * registerFaculty - register a new faculty
- * access: admin
- * @date 3/18/2024 - 9:46:17 AM
- *
- * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {void}
- */
 export const registerFaculty = async (req, res) => {
     const {
         firstName,
@@ -35,11 +26,7 @@ export const registerFaculty = async (req, res) => {
     const departmentExists = await Department.findById(department).populate("subjects");
 
     if (!departmentExists) {
-        return res.status(httpStatus.NOT_FOUND).json({ message: "Department not found" });
-    }
-
-    if (departmentExists.subjects.length === 0) {
-        return res.status(httpStatus.BAD_REQUEST).json({ message: "Department has no subjects" });
+        throw new CustomError(httpStatus.NOT_FOUND, "Department not found");
     }
 
     //check if the subjects exists in the department
@@ -47,7 +34,7 @@ export const registerFaculty = async (req, res) => {
 
     for (let subject of subjects) {
         if (!subjectIds.includes(subject)) {
-            return res.status(httpStatus.BAD_REQUEST).json({ message: "Subject not found in the department" });
+            throw new CustomError(httpStatus.BAD_REQUEST, "Subject not found in the department");
         }
     }
 
@@ -75,9 +62,19 @@ export const registerFaculty = async (req, res) => {
 };
 
 export const loginFaculty = async (req, res) => {
+    const { _id, firstName, lastName, phoneNumber, email } = req.user;
+
+    const user = {
+        _id,
+        firstName,
+        lastName,
+        phoneNumber,
+        email,
+    };
+
     return res.status(httpStatus.OK).send({
         message: "Faculty logged in successfully",
-        user: req.user,
+        user,
     })
 };
 

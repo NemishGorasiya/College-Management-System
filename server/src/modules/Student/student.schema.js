@@ -171,4 +171,12 @@ export const studentRegisterCSVSchema = {
     body: Joi.object({
         csv_link: Joi.string().uri().required(),
     })
+};
+
+export const studentResetPasswordSchema = {
+    body: Joi.object({
+        username: Joi.string().required(),
+        password: Joi.string().required(),
+        newPassword: Joi.string().required(),
+    })
 }
