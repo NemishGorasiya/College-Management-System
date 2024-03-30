@@ -1,17 +1,17 @@
 .sideBar {
     background: #EBF1FF;
     display: inline-block;
-    width: 240px;
-}
-.sideBarLinksWrapper {
-    list-style: none;
+    width: 240px;    
+
+    .sideBarLinksWrapper {
+        list-style: none;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: calc(100vh - 80px);
-}
-.sideBar .sideBarNavLink {
-    width: 200px;
+    padding: 0 20px 20px;
+
+    .sideBarNavLink {
     height: 50px;
     margin: auto;
     display: flex;
@@ -20,17 +20,20 @@
 font-size: 15px;
 font-weight: 500;
 color: #0F0F0F;
-}
-.sideBar .sideBarNavLink.activeLink {
-    background: #FFFFFF;
-    border-radius: 13px;
-    color: #387ADF;
-}
-.sideBar .sideBarNavLink img.sideBarIcon {
+.sideBarIcon {
     height: 24px;
     width: 24px;
     margin-left: 36px;
 }
-.sideBar .sideBarNavLink.activeLink img.sideBarIcon {
-    filter: sepia(1) saturate(10000%) hue-rotate(216deg);
+    }
+    .sideBarNavLink.activeLink {
+        background: #FFFFFF;
+        border-radius: 13px;
+        color: #387ADF;
+
+        .sideBarIcon {
+            filter: sepia(1) saturate(10000%) hue-rotate(216deg);
+        }
+    }
+    }
 }

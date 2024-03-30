@@ -1,5 +1,4 @@
-import React from 'react'
-import "./TopBar.css"
+import "./TopBar.scss"
 import Button from '../UI/Button'
 import ldceLogo from "../assets/ldce_logo.png"
 
@@ -7,8 +6,8 @@ export default function TopBar() {
   return (
     <div className='topBar'>
       <div className="topBarLeft">
-        <img className='logo' src={ldceLogo} alt="" />
-        <h2 className='collegeName'>L.D. College of Engineering</h2>
+        <img className='logo' src={ldceLogo} alt="ldceLogo" />
+        <span className='collegeName'>L.D. College of Engineering</span>
       </div>
       <div className="topBarRight">
         <Button>Notification</Button>

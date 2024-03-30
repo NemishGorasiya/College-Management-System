@@ -1,5 +1,4 @@
-import React from 'react'
-import "./Button.css"
+import "./Button.scss"
 
 export default function Button({children , textonly = false}) {
     let className = "btn";
