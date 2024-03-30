@@ -1,7 +1,8 @@
-import httpStatus from 'http-status';
-import logger from "../config/winston.config.js";
 import { ValidationError } from 'express-validation';
+import httpStatus from 'http-status';
 import multer from 'multer';
+import logger from "../config/winston.config.js";
+import mongoose from "mongoose";
 
 export const notFoundHandler = (req, res) => {
     res.statusMessage = "Not Found";
@@ -27,14 +28,20 @@ export const errorHandler = (err, req, res, next) => {
         errObj.cause = err?.cause;
     }
 
-    if (process.env.NODE_ENV !== "prod" && err instanceof ValidationError) {
+    if (err instanceof ValidationError) {
         errObj.message = "Validation Error";
         errObj.details = err.details;
-
         err.statusMessage = "Validation Error";
     }
 
-    if (process.env.NODE_ENV !== "prod" && err instanceof multer.MulterError) {
+    if (err instanceof mongoose.mongo.MongoError) {
+        console.log(err);
+        errObj.message = "Mongoose Error";
+        errObj.name = err.name;
+        errObj.code = err.code;
+    }
+
+    if (err instanceof multer.MulterError) {
         errObj.message = err.message;
         errObj.name = err?.name;
         errObj.code = err?.code;

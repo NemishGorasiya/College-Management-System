@@ -1,4 +1,159 @@
-module.exports = [
+module.exports = {
+    "_id": "6604faaaf826b3aaad847a77",
+    "student": {
+        "_id": "65f9342aa799f2fce4c02d40",
+        "enrollmentNumber": 1230984567,
+        "firstName": "Naineel",
+        "lastName": "Soyantar",
+        "dob": "1999-05-15T00:00:00.000Z",
+        "doa": "2021-09-01T00:00:00.000Z",
+        "email": "john.doe4@example.com",
+        "gender": "MALE",
+        "bloodGroup": "A+",
+        "semester": 1,
+        "passOutYear": 2023,
+        "department": {
+            "_id": "65f83397a59c175085c9103b",
+            "name": "Computer Science Department",
+            "id": "65f83397a59c175085c9103b"
+        },
+        "profilePicture": "http://example.com/john_doe.jpg",
+        "fullName": "Naineel Soyantar",
+        "id": "65f9342aa799f2fce4c02d40"
+    },
+    "semester": 1,
+    "examResults": [
+        {
+            "_id": "66040f69e22ec7eeeaf4c535",
+            "student": "65f9342aa799f2fce4c02d40",
+            "exam": {
+                "_id": "66040f0ae22ec7eeeaf4c4ff",
+                "name": "Mid Semester 1",
+                "description": "This is the mid semster exam for semester 1",
+                "totalMarks": 30,
+                "subject": {
+                    "_id": "660264c7cc0b965b6a88c264",
+                    "name": "Data Structures",
+                    "subjectCode": 310704,
+                    "credits": 3,
+                    "id": "660264c7cc0b965b6a88c264"
+                },
+                "examType": "Mid-Semester",
+                "date": "2024-03-28T00:00:00.000Z",
+                "isCompleted": true,
+                "id": "66040f0ae22ec7eeeaf4c4ff"
+            },
+            "marks": 25,
+            "createdAt": "2024-03-27T12:22:01.972Z",
+            "updatedAt": "2024-03-27T12:22:01.972Z",
+            "examType": "Mid-Semester",
+            "percentage": 83.33333333333334,
+            "__v": 0,
+            "grade": "A",
+            "id": "66040f69e22ec7eeeaf4c535"
+        },
+        {
+            "_id": "66040f83e22ec7eeeaf4c54a",
+            "student": "65f9342aa799f2fce4c02d40",
+            "exam": {
+                "_id": "66040f0ae22ec7eeeaf4c503",
+                "name": "Mid Semester 1",
+                "description": "This is the mid semster exam for semester 1",
+                "totalMarks": 30,
+                "subject": {
+                    "_id": "660264bbcc0b965b6a88c25f",
+                    "name": "Database Management Systems",
+                    "subjectCode": 310703,
+                    "credits": 3,
+                    "id": "660264bbcc0b965b6a88c25f"
+                },
+                "examType": "Mid-Semester",
+                "date": "2024-03-29T00:00:00.000Z",
+                "isCompleted": true,
+                "id": "66040f0ae22ec7eeeaf4c503"
+            },
+            "marks": 25,
+            "createdAt": "2024-03-27T12:22:27.295Z",
+            "updatedAt": "2024-03-27T12:22:27.295Z",
+            "examType": "Mid-Semester",
+            "percentage": 83.33333333333334,
+            "__v": 0,
+            "grade": "A",
+            "id": "66040f83e22ec7eeeaf4c54a"
+        },
+        {
+            "_id": "66040f8fe22ec7eeeaf4c554",
+            "student": "65f9342aa799f2fce4c02d40",
+            "exam": {
+                "_id": "66040f0ae22ec7eeeaf4c507",
+                "name": "Mid Semester 1",
+                "description": "This is the mid semster exam for semester 1",
+                "totalMarks": 30,
+                "subject": {
+                    "_id": "6602649ecc0b965b6a88c250",
+                    "name": "Introduction to Computer Fundamentals",
+                    "subjectCode": 310701,
+                    "credits": 3,
+                    "id": "6602649ecc0b965b6a88c250"
+                },
+                "examType": "Mid-Semester",
+                "date": "2024-04-01T00:00:00.000Z",
+                "isCompleted": false,
+                "id": "66040f0ae22ec7eeeaf4c507"
+            },
+            "marks": 25,
+            "createdAt": "2024-03-27T12:22:39.968Z",
+            "updatedAt": "2024-03-27T12:22:39.968Z",
+            "examType": "Mid-Semester",
+            "percentage": 83.33333333333334,
+            "__v": 0,
+            "grade": "A",
+            "id": "66040f8fe22ec7eeeaf4c554"
+        },
+        {
+            "_id": "66040f9de22ec7eeeaf4c55e",
+            "student": "65f9342aa799f2fce4c02d40",
+            "exam": {
+                "_id": "66040f0ae22ec7eeeaf4c50b",
+                "name": "Mid Semester 1",
+                "description": "This is the mid semster exam for semester 1",
+                "totalMarks": 30,
+                "subject": {
+                    "_id": "66026486cc0b965b6a88c24b",
+                    "name": "Digital Fundamentals",
+                    "subjectCode": 310702,
+                    "credits": 3,
+                    "id": "66026486cc0b965b6a88c24b"
+                },
+                "examType": "Mid-Semester",
+                "date": "2024-04-02T00:00:00.000Z",
+                "isCompleted": false,
+                "id": "66040f0ae22ec7eeeaf4c50b"
+            },
+            "marks": 25,
+            "createdAt": "2024-03-27T12:22:53.075Z",
+            "updatedAt": "2024-03-27T12:22:53.075Z",
+            "examType": "Mid-Semester",
+            "percentage": 83.33333333333334,
+            "__v": 0,
+            "grade": "A",
+            "id": "66040f9de22ec7eeeaf4c55e"
+        }
+    ],
+    "examType": "Mid-Semester",
+    "createdAt": "2024-03-28T05:05:47.585Z",
+    "updatedAt": "2024-03-28T05:05:47.585Z",
+    "achievedMarks": 100,
+    "totalMarks": 120,
+    "percentage": 83.33333333333334,
+    "__v": 0,
+    "grade": "A",
+    "spi": 8.833333333333334,
+    "id": "6604faaaf826b3aaad847a77"
+}
+
+
+const data = [
     {
         "_id": "66026b3631576e8f74c33660",
         "name": "Mid Semester 1",

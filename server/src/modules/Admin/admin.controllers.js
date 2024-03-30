@@ -4,17 +4,8 @@ import FacultyUpdateRequest from "../Faculty/FacultyUpdateRequest.js";
 import Student from "../Student/Student.js";
 import StudentUpdateRequest from "../Student/StudentUpdateRequest.js";
 import Admin from "./Admin.js";
+import CustomError from "../../errors/CustomError.js";
 
-/**
- * registerAdmin - register a new admin
- * No access to any user
- * @date 3/18/2024 - 9:47:20 AM
- *
- * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {}
- */
 export const registerAdmin = async (req, res) => {
   const { email, phoneNumber, address, dob, doj, firstName, lastName, profilePicture } = req.body;
 
@@ -31,40 +22,38 @@ export const registerAdmin = async (req, res) => {
 
   await Admin.register(newAdmin, req.body.password);
 
-
   return res.status(httpStatus.CREATED).json({ message: "Admin created successfully" });
 };
 
-/**
- * loginAdmin - login an admin
- * @date 3/18/2024 - 9:47:20 AM
- *
- * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {unknown}
- */
 export const loginAdmin = async (req, res) => {
+  const { _id, email, phoneNumber, dob, doj, firstName, lastName, profilePicture, isActive } = req.user;
 
-  delete req.user.hash;
-  delete req.user.salt;
+  const user = {
+    _id,
+    email,
+    phoneNumber,
+    dob,
+    doj,
+    firstName,
+    lastName,
+    profilePicture,
+    isActive,
+  };
 
   return res.status(httpStatus.OK).send({
     message: "Admin logged in successfully",
-    user: req.user,
+    user
   })
 };
 
-/**
- * Update an admin  - access - only admin
- * @param {Express.Request} req 
- * @param {Express.Response} res 
- * @returns 
- */
 export const updateAdmin = async (req, res) => {
   const { adminId } = req.params;
 
   const admin = await Admin.findById({ _id: adminId });
+
+  if (!admin) {
+    throw new CustomError(httpStatus.NOT_FOUND, "Admin not found");
+  }
 
   for (let item in req.body) {
     admin[item] = req.body[item];
@@ -75,27 +64,48 @@ export const updateAdmin = async (req, res) => {
   return res.status(httpStatus.OK).json({ message: "Admin updated successfully" });
 };
 
-/**
- * Delete an admin - access - only admin
- * @param {Express.Request} req 
- * @param {Express.Response} res 
- * @returns 
- */
 export const deleteAdmin = async (req, res) => {
   const { adminId } = req.params;
 
-  await Admin.deleteOne({ _id: adminId });
+  await Admin.findByIdAndDelete(adminId);
 
   return res.status(httpStatus.OK).json({ message: "Admin deleted successfully" });
 };
 
-
 export const updateRequestsAdmin = async (req, res) => {
-  const studentRequests = await StudentUpdateRequest.find({ status: "PENDING" }).populate("student");
+  const studentRequests = await StudentUpdateRequest.find({ status: "PENDING" }).populate("student").select({
+    student: {
+      password: 0,
+      isActive: 0,
+      isVerified: 0,
+      isSuspended: 0,
+      isDeleted: 0,
+      role: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      __v: 0,
+      department: 0,
+      semester: 0,
+    }
+  });
 
-  const facultyRequests = await FacultyUpdateRequest.find({ status: "PENDING" }).populate("faculty");
+  const facultyRequests = await FacultyUpdateRequest.find({ status: "PENDING" }).populate("faculty").select({
+    faculty: {
+      password: 0,
+      isActive: 0,
+      isVerified: 0,
+      isSuspended: 0,
+      isDeleted: 0,
+      role: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      __v: 0,
+      department: 0,
+    }
+  });
 
   return res.status(httpStatus.OK).json({
+    message: "Requests fetched successfully",
     studentRequests,
     facultyRequests,
   })
@@ -110,6 +120,12 @@ export const approveRequest = async (req, res) => {
 
   if (!studentRequest && !facultyRequest) {
     return res.status(httpStatus.NOT_FOUND).json({ message: "Request not found" });
+  }
+
+  if (studentRequest && studentRequest.status === "APPROVED") {
+    return res.status(httpStatus.BAD_REQUEST).json({ message: "Request already approved" });
+  } else if (facultyRequest && facultyRequest.status === "APPROVED") {
+    return res.status(httpStatus.BAD_REQUEST).json({ message: "Request already approved" });
   }
 
   let changed;
@@ -128,7 +144,7 @@ export const approveRequest = async (req, res) => {
 
     await student.save();
 
-    changed = student;
+    changed = studentRequest.changes;
   } else {
     facultyRequest.status = "APPROVED";
     facultyRequest.actionBy = req.user._id; //admin id
@@ -143,12 +159,12 @@ export const approveRequest = async (req, res) => {
 
     await faculty.save();
 
-    changed = faculty;
+    changed = facultyRequest.changes;
   }
 
 
   return res.status(httpStatus.OK).json({
     message: "Request approved successfully",
-    changed,
+    updated: changed,
   })
 }

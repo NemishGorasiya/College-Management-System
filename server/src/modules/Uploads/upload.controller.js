@@ -1,14 +1,8 @@
-import { v2 as cloudinary } from "cloudinary";
 import httpStatus from "http-status";
 import streamifier from "streamifier";
 import CustomError from "../../errors/CustomError.js";
 import Upload from "./Upload.js";
-
-cloudinary.config({
-    cloud_name: 'dhjo1bmn7',
-    api_key: '791439462714441',
-    api_secret: 'wvDK2HBaTYa_PTc7Tm9N-IS_7qY',
-})
+import cloudinary from "../../config/cloudinary.config.js";
 
 export const uploadHandler = async (req, res) => {
     const { originalname } = req.file;
@@ -46,4 +40,4 @@ export const uploadHandler = async (req, res) => {
     })
 
     streamifier.createReadStream(req.file.buffer).pipe(uploadStream, { end: true });
-}
+};
