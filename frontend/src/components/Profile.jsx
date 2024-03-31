@@ -10,8 +10,8 @@ export default function Profile() {
       <div className="profileContentWrapper">
         <img className="profileImage" src={profileImage} alt="" />
         <div className="profileContent">
-          <ProfileSection />
-          <ProfileSection />
+          <ProfileSection serviceSubTitle="Personal Information" />
+          <ProfileSection serviceSubTitle="Academic Information" />
         </div>
       </div>
     </div>

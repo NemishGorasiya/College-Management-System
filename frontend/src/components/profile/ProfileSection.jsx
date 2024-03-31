@@ -1,9 +1,9 @@
 import ServiceSubTitle from "../ServiceSubTitle";
 import "./ProfileSection.scss";
-export default function ProfileSection() {
+export default function ProfileSection({serviceSubTitle}) {
   return (
     <div className="profileSection">
-            <ServiceSubTitle serviceSubTitle="Personal Information" />
+            <ServiceSubTitle serviceSubTitle={serviceSubTitle} />
                 <table className="profileDetailsWrapper">
                   <tr>
                     <td className="profileDetailTitle">Name</td>

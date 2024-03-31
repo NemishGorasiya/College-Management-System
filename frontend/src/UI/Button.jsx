@@ -1,11 +1,11 @@
 import "./Button.scss"
 
-export default function Button({children , textonly = false}) {
+export default function Button({children , textonly = false , style}) {
     let className = "btn";
     if (textonly) {
         className += " textOnly"; 
     }
   return (
-    <button className={className}>{children}</button>
+    <button style={style} className={className}>{children}</button>
   )
 }
