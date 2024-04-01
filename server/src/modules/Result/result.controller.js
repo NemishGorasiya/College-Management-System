@@ -91,8 +91,6 @@ export const getResult = async (req, res) => {
     const { resultId } = req.params;
 
     const result = await ExamResult.findById(resultId);
-    let percentage = await result.percentage;
-    result.percentage = percentage;
 
     if (!result) {
         throw new CustomError(httpStatus.NOT_FOUND, "Result not found");

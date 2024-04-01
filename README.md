@@ -182,16 +182,13 @@ Additional features:
 
 ### Result Module
 
-  - the result will be added for each and every exam
-  - 
+- the result will be added for each and every exam
 
 ### Features to be added - Feature Request, Bug Report, Book Store, Forum
 
 ## Frontend
 
-- Landing Page  
-- Youtube Video Gallery integration of the college.
-- Syllabus section of the college
-- Fee Payment frontend
+- Landing Page with College Introduction, Departments list, click on view details for the department, department details from GET /departments route
+- When logged in show the students section with the data from the API:
 
 We'll use `pnpm` for package management. checkout at [PNPM](https://pnpm.io/)

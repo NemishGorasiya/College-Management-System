@@ -22,7 +22,7 @@ import departmentRoutes from "./modules/Department/department.routes.js";
 import examRoutes from "./modules/Exam/exam.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
-import { userLogout } from "./modules/General/general.controller.js";
+import { getProfile, userLogout } from "./modules/General/general.controller.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
 import subjectRoutes from "./modules/Subject/subject.routes.js";
@@ -116,6 +116,7 @@ app.get('/api/', (_, res) => {
 app.use('/api/admin', adminRoutes);
 app.use('/api/faculty', facultyRoutes);
 app.use('/api/student', studentRoutes);
+app.use('/api/my-profile', isAuthenticated, getProfile)
 app.use('/api/user/logout', isAuthenticated, userLogout);
 
 app.use('/api/department', departmentRoutes);

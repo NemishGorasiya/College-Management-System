@@ -3,18 +3,16 @@ import httpStatus from "http-status";
 import CustomError from "../../errors/CustomError.js";
 import { csvToJson, validateStudents } from "../../utils/csvToJson.utils.js";
 import { generateFinalResultPdf, generateTimetablePdf } from "../../utils/generatePdf.utils.js";
+import Admin from "../Admin/Admin.js";
 import Assignment from "../Assignment/Assignment.js";
 import SubmittedAssignment from "../Assignment/SubmittedAssignment.js";
 import Exam from "../Exam/Exam.js";
+import ExamResult from "../Result/ExamResult.js";
+import FinalResult from "../Result/FinalResult.js";
 import Subject from "../Subject/Subject.js";
 import Student from "./Student.js";
 import StudentUpdateRequest from "./StudentUpdateRequest.js";
 import { studentRegisterInterSchema } from "./student.schema.js";
-import fs from "fs";
-import ExamResult from "../Result/ExamResult.js";
-import FinalResult from "../Result/FinalResult.js";
-import { populate } from "dotenv";
-import Admin from "../Admin/Admin.js";
 
 export const studentRegister = async (req, res) => {
     const {
@@ -63,9 +61,16 @@ export const studentRegister = async (req, res) => {
 };
 
 export const studentLogin = async (req, res) => {
+
+    const { enrollmentNumber, _id, firstName, lastName, email } = req.user;
+
+    const user = {
+        enrollmentNumber, _id, firstName, lastName, email
+    }
+
     return res.status(httpStatus.OK).send({
         message: "Student logged in successfully",
-        user: req.user,
+        user,
     });
 };
 

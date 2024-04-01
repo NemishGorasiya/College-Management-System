@@ -29,3 +29,13 @@ export const changePassword = async (req, res) => {
         })
     })
 };
+
+export const getProfile = async (req, res) => {
+    delete req["user"]["hash"]
+    delete req["user"]["salt"]
+
+    return res.status(httpStatus.OK).send({
+        message: "Profile fetched successfully",
+        user: req.user,
+    })
+}
