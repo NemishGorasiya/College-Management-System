@@ -1,7 +1,7 @@
 .sideBar {
     background: #EBF1FF;
     display: inline-block;
-    width: 240px;    
+    min-width: 240px;    
 
     .sideBarLinksWrapper {
         list-style: none;
@@ -13,6 +13,7 @@
 
     .sideBarNavLink {
     height: 50px;
+    width: 200px;
     margin: auto;
     display: flex;
     align-items: center;
@@ -20,10 +21,17 @@
 font-size: 15px;
 font-weight: 500;
 color: #0F0F0F;
+
 .sideBarIcon {
     height: 24px;
     width: 24px;
     margin-left: 36px;
+}
+.sideBarLinkName {
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: nowrap;
+text-transform: capitalize;
 }
     }
     .sideBarNavLink.activeLink {

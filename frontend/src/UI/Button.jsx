@@ -1,11 +1,12 @@
 import "./Button.scss"
 
-export default function Button({children , textonly = false , style}) {
-    let className = "btn";
+export default function Button({children ,className, textonly = false , style}) {
+    let computedClassName = "btn";
+    computedClassName += ` ${className}`;
     if (textonly) {
-        className += " textOnly"; 
+        computedClassName += " textOnly"; 
     }
   return (
-    <button style={style} className={className}>{children}</button>
+    <button style={style} className={computedClassName}>{children}</button>
   )
 }

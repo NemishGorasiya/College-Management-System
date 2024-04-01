@@ -62,6 +62,7 @@ export default function Result() {
           </tr>
           
         </table>
+        
         <div className="resultImage">
           <img src="https://placehold.co/600x400" alt="" />
         </div>

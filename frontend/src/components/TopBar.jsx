@@ -1,6 +1,7 @@
 import "./TopBar.scss"
 import Button from '../UI/Button'
 import ldceLogo from "../assets/ldce_logo.png"
+import notificationBell from "../assets/notificationBell.png"
 
 export default function TopBar() {
   return (
@@ -10,8 +11,8 @@ export default function TopBar() {
         <span className='collegeName'>L.D. College of Engineering</span>
       </div>
       <div className="topBarRight">
-        <Button>Notification</Button>
-        <Button textonly>LogOut</Button>
+        <Button className="notificationBell"><img src={notificationBell} alt="" /></Button>
+        <Button textonly>Log Out</Button>
       </div>
     </div>
   )

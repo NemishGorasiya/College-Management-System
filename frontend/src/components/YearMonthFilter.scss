@@ -1,0 +1,10 @@
+.yearMonthFilterWrapper {
+            display: flex;
+            gap: 10px;
+
+            select {
+                height: 25px;
+                width: 80px;
+                padding-left: 15px;
+            }
+        }

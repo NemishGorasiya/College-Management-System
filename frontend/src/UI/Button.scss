@@ -1,5 +1,5 @@
 button.btn {
-    background: grey;
+    background: #E8F1FF;
     color: #fff;
     border: none;
     padding: 8px;
@@ -8,4 +8,20 @@ button.btn {
 button.textOnly {
     background: none;
     color: #000;
+    font-size: 20px;
+    font-weight: 400;
+    height: 40px;
+    padding: 0;
+}
+button.notificationBell {
+    height: 40px;
+    width: 40px;
+    background: #FFFFFF;
+    border-radius: 50%;
+
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
 }

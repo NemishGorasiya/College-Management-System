@@ -14,7 +14,7 @@ export default function SideBar() {
             isActive ? "sideBarNavLink activeLink" : "sideBarNavLink"
           }>
             <img className='sideBarIcon' src={dashBoardIcon} alt="" />
-            <span>{link}</span>
+            <span className="sideBarLinkName">{link}</span>
         </NavLink>)
           }
         </div>
@@ -23,13 +23,13 @@ export default function SideBar() {
             isActive ? "sideBarNavLink activeLink" : "sideBarNavLink"
           }>
             <img className='sideBarIcon' src={dashBoardIcon} alt="" />
-            <span>Help</span>
+            <span className="sideBarLinkName">Help</span>
         </NavLink>
         <NavLink to="setting"  className={({ isActive }) =>
             isActive ? "sideBarNavLink activeLink" : "sideBarNavLink"
           }>
             <img className='sideBarIcon' src={dashBoardIcon} alt="" />
-            <span>Setting</span>
+            <span className="sideBarLinkName">Setting</span>
         </NavLink>
         </div>
       </ul>

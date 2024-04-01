@@ -4,21 +4,28 @@
     align-items: center;
     background: #EBF1FF;
     height: 80px;
+    padding: 0 40px;
 
     .topBarLeft {
         display: flex;
         align-items: center;
+        gap: 20px;
 
         img.logo{
             height: 50px;
             width: 50px;
-            margin-left: 40px;
+            object-fit: cover;
         }
             
         .collegeName{
             font-size: 28px;
             font-weight: 500;
-            margin-left: 20px;
         }
+    }
+
+    .topBarRight {
+        display: flex;
+        align-items: center;
+        gap: 20px;
     }
 }
