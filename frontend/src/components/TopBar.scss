@@ -1,0 +1,24 @@
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #EBF1FF;
+    height: 80px;
+
+    .topBarLeft {
+        display: flex;
+        align-items: center;
+
+        img.logo{
+            height: 50px;
+            width: 50px;
+            margin-left: 40px;
+        }
+            
+        .collegeName{
+            font-size: 28px;
+            font-weight: 500;
+            margin-left: 20px;
+        }
+    }
+}

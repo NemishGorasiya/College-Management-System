@@ -1,0 +1,13 @@
+.homePage {
+    .contentWrapper {
+        display: flex;
+
+        .mainContent {
+            flex: auto;
+            border-top-left-radius: 13px;
+            background: #FFFFFF;
+            padding: 20px;
+            
+        }
+    }
+}

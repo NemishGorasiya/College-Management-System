@@ -1,0 +1,15 @@
+.profileContainer {
+    .profileContentWrapper {
+     padding: 20px 0;
+     display: flex;
+     gap: 20px;
+    .profileImage {
+        height: 150px;
+        width: 150px;
+        border-radius: 13px;
+    }
+    .profileContent {
+        flex: auto;
+    }
+ }   
+}
