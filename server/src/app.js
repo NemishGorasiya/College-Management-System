@@ -28,7 +28,8 @@ import studentRoutes from "./modules/Student/student.routes.js";
 import subjectRoutes from "./modules/Subject/subject.routes.js";
 import uploadRoutes from "./modules/Uploads/upload.routes.js";
 import resultRoutes from "./modules/Result/result.routes.js";
-
+import eventRoutes from "./modules/Events/events.routes.js";
+import circularRoutes from "./modules/Circulars/circular.routes.js";
 config();
 
 const app = express();
@@ -125,6 +126,8 @@ app.use('/api/assignment', assignmentRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/exam', examRoutes);
 app.use('/api/result', resultRoutes);
+app.use('/api/circular', circularRoutes);
+app.use('/api/events', eventRoutes);
 
 //auth error, normal error handlers and not found handlers
 app.use('/api/error', authErrorHandler);
