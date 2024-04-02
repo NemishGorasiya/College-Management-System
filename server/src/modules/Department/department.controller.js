@@ -1,6 +1,7 @@
 import httpStatus from "http-status";
 import Department from "./Department.js";
 import Faculty from "../Faculty/Faculty.js";
+import CustomError from "../../errors/CustomError.js";
 
 export const createDepartment = async (req, res) => {
     const {
@@ -38,7 +39,7 @@ export const createDepartment = async (req, res) => {
 };
 
 export const getDepartments = async (req, res) => {
-    let { page, limit, search, sortBy, orderBy } = req.query;
+    let { page, limit, search, sortBy, orderBy } = req.query; //sortBy has options - name, budget, doe, accreditation
     const filterObj = {};
 
     if (search) {
@@ -57,6 +58,20 @@ export const getDepartments = async (req, res) => {
         departments
     })
 };
+
+export const getDepartment = async (req, res) => {
+    const { id } = req.params;
+    const department = await Department.findById(id).populate("subjects").populate("faculties").populate("students"); //this uses dynamic keying
+
+    if (!department) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Department not found");
+    }
+
+    return res.status(httpStatus.OK).json({
+        message: "Department fetched successfully",
+        department
+    });
+}
 
 export const updateDepartment = async (req, res) => {
     const { id } = req.params;

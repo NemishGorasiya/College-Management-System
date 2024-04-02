@@ -11,8 +11,8 @@ const router = Router({ mergeParams: true });
 //!PATH - /api/result   
 
 router
-    .get("/own", isAuthenticated, checkPermissions(Faculty, Admin), getOwnResults)
-    .get("/all", isAuthenticated, checkPermissions(Admin), getAllResults)
+    .get("/own", isAuthenticated, checkPermissions(Faculty, Admin), getOwnResults) //results created by own faculty
+    .get("/all", isAuthenticated, checkPermissions(Admin), getAllResults) //get all the results created by the faculty
     .post("/create", isAuthenticated, checkPermissions(Faculty, Admin), validate(createResultSchema, { keyByField: true }), createResult)
     .get("/:resultId", isAuthenticated, checkPermissions(Faculty, Admin), getResult)
     .patch("/:resultId", isAuthenticated, checkPermissions(Faculty, Admin), validate(updateResultSchema, { keyByField: true }), updateResult)

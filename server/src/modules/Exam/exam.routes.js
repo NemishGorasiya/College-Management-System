@@ -9,8 +9,8 @@ import { createExam, createExamSemester, deleteExam, getAllExams, getExam, getOw
 const router = Router({ mergeParams: true });
 
 router
-    .post("/create", isAuthenticated, checkPermissions(Faculty, Admin), validate(createExamSchema, { keyByField: true }), createExam)
-    .post("/create/:semester", isAuthenticated, checkPermissions(Faculty, Admin), validate(createExamSemesterSchema, { keyByField: true }), createExamSemester)
+    .post("/create", isAuthenticated, checkPermissions(Faculty, Admin), validate(createExamSchema, { keyByField: true }), createExam) //create
+    .post("/create/:semester", isAuthenticated, checkPermissions(Faculty, Admin), validate(createExamSemesterSchema, { keyByField: true }), createExamSemester) //HOD exam create main examinations like - Midsems, Internal,
     .get("/get/:examId", isAuthenticated, checkPermissions(Faculty, Admin), getExam)
     .patch("/update/:examId", isAuthenticated, checkPermissions(Faculty, Admin), validate(updateExamSchema, { keyByField: true }), updateExam)
     .delete("/delete/:examId", isAuthenticated, checkPermissions(Faculty, Admin), deleteExam)

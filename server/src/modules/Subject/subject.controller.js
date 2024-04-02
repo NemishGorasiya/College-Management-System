@@ -28,7 +28,7 @@ export const createSubject = async (req, res) => {
 
     return res.status(httpStatus.CREATED).json({
         message: "Subject created successfully",
-        subject: newSubject
+        subject: newSubject.id
     });
 };
 
@@ -101,4 +101,4 @@ export const deleteSubject = async (req, res) => {
     return res.status(httpStatus.OK).json({
         message: "Subject deleted successfully",
     })
-}
+};

@@ -4,6 +4,7 @@ import CustomError from "../../errors/CustomError.js";
 import SubmittedAssignment from "./SubmittedAssignment.js";
 import Student from "../Student/Student.js";
 
+
 export const createAssignment = async (req, res) => {
   const {
     name,
@@ -133,7 +134,13 @@ export const getAssignmentSubmissions = async (req, res) => {
 export const getAssignment = async (req, res) => {
   const { assignmentId } = req.params;
 
-  const assignment = await Assignment.findById(assignmentId).populate("subject").populate("students.student").populate("students.submission");
+  const assignment = await Assignment.findById(assignmentId).populate("subject").populate({
+    path: "students",
+    populate: [
+      { path: "student", select: "_id name email" },
+      { path: "submission" }
+    ]
+  });
 
   if (!assignment) {
     throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
