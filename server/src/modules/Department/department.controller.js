@@ -84,21 +84,18 @@ export const updateDepartment = async (req, res) => {
         })
     }
 
-    const keys = Object(req.body).keys;
+    const keys = Object.keys(req.body);
 
     if (keys.includes("hod")) {
+        //update HOD logic - add new HOD logic
         const faculty = await Faculty.findById(req.body.hod);
 
         if (!faculty) {
-            return res.status(httpStatus.NOT_FOUND).json({
-                message: "Faculty not found"
-            });
+            throw new CustomError(httpStatus.NOT_FOUND, "Faculty not found")
         }
 
-        if (faculty.department !== id) {
-            return res.status(httpStatus.BAD_REQUEST).json({
-                message: "Faculty does not belong to this department"
-            });
+        if (faculty.department.toString() !== id) {
+            throw new CustomError(httpStatus.BAD_REQUEST, "Faculty doesn't belong to the department")
         }
 
         faculty.isHOD = true;
@@ -113,7 +110,6 @@ export const updateDepartment = async (req, res) => {
 
     return res.status(httpStatus.OK).json({
         message: "Department updated successfully",
-        department,
     });
 };
 

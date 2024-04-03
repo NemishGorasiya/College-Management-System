@@ -24,16 +24,17 @@ export const createResult = async (req, res) => {
     };
 
     //check if the student is allowed to take the exam
-    const studentSubjects = await getSubjects(studentExists.department, studentExists.semester);
+    let studentSubjects = await getSubjects(studentExists.department, studentExists.semester);
+    studentSubjects = studentSubjects.map(subject => subject._id.toString());
 
     //check if the student has the exam in their subjects
-    if (!studentSubjects.includes(studentExam.subject)) {
+    if (!studentSubjects.includes(studentExam.subject.toString())) {
         throw new CustomError(httpStatus.FORBIDDEN, "Student cannot take this exam");
     }
 
     //check if the current faculty is the one who created the exam
-    if (exam.faculty.toString() !== req.user._id.toString() && !(req.user instanceof Admin)) {
-        throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only create results for their exams");
+    if (studentExam.faculty.toString() !== req.user._id.toString() && !(req.user instanceof Admin)) {
+        throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only create results for the exams they created");
     };
 
     //check if the marks are less than total marks

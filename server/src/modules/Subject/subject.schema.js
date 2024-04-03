@@ -15,6 +15,12 @@ export const createSubjectSchema = {
             description: Joi.string().required().messages({ "any.required": "Resource description is required" }),
         })).required().messages({ "any.required": "Resources are required" }),
     })
+};
+
+export const getSubjectSchema = {
+    params: Joi.object({
+        id: Joi.string().required().min(2),
+    })
 }
 
 export const updateSubjectSchema = {

@@ -17,7 +17,7 @@ router
   .get("/all", isAuthenticated, checkPermissions(Admin), getAllAssignments) //all assignments
   .patch("/update/:id", isAuthenticated, checkPermissions(Faculty), validate(updateAssignmentSchema), updateAssignment) //update assignment
   .delete("/delete/:id", isAuthenticated, checkPermissions(Faculty), validate(deleteAssignmentSchema), deleteAssignment) //delete assignment
-  .get("/:assignmentId", isAuthenticated, checkPermissions(Faculty), getAssignment) //get assignment's all of the data by id 
+  .get("/:assignmentId", isAuthenticated, checkPermissions(Faculty, Admin), getAssignment) //get assignment's all of the data by id 
   .get("/:assignmentId/submissions", isAuthenticated, checkPermissions(Faculty), getAssignmentSubmissions)
   .patch("/:submissionId/update", isAuthenticated, checkPermissions(Faculty), validate(updateSubmittedAssignmentSchema), updateSubmittedAssignment) //update assignment
   ; //get assignment submissions
