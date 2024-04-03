@@ -1,31 +1,58 @@
 .topBar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #EBF1FF;
-    height: 80px;
-    padding: 0 40px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #ebf1ff;
+	height: 80px;
+	padding: 0 20px;
 
-    .topBarLeft {
-        display: flex;
-        align-items: center;
-        gap: 20px;
+	.topBarLeft {
+		display: flex;
+		align-items: center;
+		gap: 20px;
 
-        img.logo{
-            height: 50px;
-            width: 50px;
-            object-fit: cover;
-        }
-            
-        .collegeName{
-            font-size: 28px;
-            font-weight: 500;
-        }
-    }
+		.burgerMenuIcon {
+			height: 24px;
+			width: 24px;
+			display: none;
+		}
 
-    .topBarRight {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
+		img.logo {
+			height: 50px;
+			width: 50px;
+			object-fit: cover;
+		}
+
+		.collegeName {
+			font-size: 28px;
+			font-weight: 500;
+		}
+	}
+
+	.topBarRight {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+	}
+}
+
+@media only screen and (max-width: 980px) {
+	.topBar {
+		.topBarLeft {
+			.burgerMenuIcon {
+				display: inline-block;
+			}
+		}
+	}
+}
+@media only screen and (max-width: 768px) {
+	.topBar {
+		.topBarLeft {
+			.collegeName {
+				display: none;
+			}
+		}
+	}
+}
+@media only screen and (max-width: 425px) {
 }
