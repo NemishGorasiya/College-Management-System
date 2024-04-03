@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import Subject from "./Subject.js";
+import CustomError from "../../errors/CustomError.js";
 
 export const createSubject = async (req, res) => {
     const {
@@ -62,6 +63,21 @@ export const getSubjects = async (req, res) => {
     })
 };
 
+export const getSubject = async (req, res) => {
+    const { id } = req.params;
+
+    const subject = await Subject.findById(id).populate("department");
+
+    if (!subject) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Subject not found");
+    }
+
+    return res.status(httpStatus.OK).send({
+        "message": "Subjects fetched successfully",
+        subject,
+    })
+};
+
 export const updateSubject = async (req, res) => {
     const { id } = req.params;
 
@@ -81,7 +97,7 @@ export const updateSubject = async (req, res) => {
 
     return res.status(httpStatus.OK).json({
         message: "Subject updated successfully",
-        subject,
+        subject: subject.id,
     });
 };
 

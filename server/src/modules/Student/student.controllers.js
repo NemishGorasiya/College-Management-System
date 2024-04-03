@@ -151,7 +151,7 @@ export const studentGetAssignments = async (req, res) => {
     let assignments = await Assignment.find({
         subject: {
             $in: subjects.map(subject => subject._id)
-        }
+        },
     }).populate("subject").sort({
         dueDate: 1,
         createdAt: -1,
@@ -160,6 +160,7 @@ export const studentGetAssignments = async (req, res) => {
     let submittedAssignments = [];
     let nonSubmittedAssignments = [];
 
+    //this goes O(n^2)
     for (let assignment of assignments) {
         if (assignment.students.find(student => student.student.toString() === req.user._id.toString())) {
             submittedAssignments.push(assignment);
@@ -176,7 +177,7 @@ export const studentGetAssignments = async (req, res) => {
 };
 
 export const studentSubmitAssignment = async (req, res) => {
-    const { subjectId, file } = req.body;
+    const { file } = req.body;
     const { _id } = req.user;
     const { assignmentId } = req.params;
 
@@ -186,20 +187,16 @@ export const studentSubmitAssignment = async (req, res) => {
         throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
     }
 
-    if (assignment.subject.toString() !== subjectId) {
-        throw new CustomError(httpStatus.BAD_REQUEST, "Assignment does not belong to the subject");
-    }
-
     const studentSubjects = await getSubjects(req.user.department, req.user.semester);
 
-    if (!studentSubjects.find(subject => subject._id.toString() === subjectId)) {
+    if (!studentSubjects.find(subject => subject._id.toString() === assignment.subject.toString())) {
         throw new CustomError(httpStatus.FORBIDDEN, "You are not allowed to submit assignment for this subject");
     }
 
     const submittedAssignment = await SubmittedAssignment.create({
         student: _id,
         assignment: assignmentId,
-        subject: subjectId,
+        subject: assignment.subject,
         file
     });
 
@@ -211,7 +208,7 @@ export const studentSubmitAssignment = async (req, res) => {
 };
 
 export const studentRegisterCSV = async (req, res) => {
-    const { csv_link } = req.body;
+    const { csv_link, department } = req.body;
 
     const students = await csvToJson(csv_link);
 
@@ -220,11 +217,11 @@ export const studentRegisterCSV = async (req, res) => {
     //validation successful otherwise error is thrown
     let registeredStudents = [];
     for (let student of validated) {
-        const newStudent = new Student(student);
+        const newStudent = new Student({ ...student, department });
 
-        const registeredStudent = await Student.register(newStudent, student.password);
+        const { enrollmentNumber, _id, firstName, lastName, email } = await Student.register(newStudent, student.password);
 
-        registeredStudents.push(registeredStudent);
+        registeredStudents.push({ enrollmentNumber, _id, firstName, lastName, email });
     }
 
     return res.status(httpStatus.OK).send({
