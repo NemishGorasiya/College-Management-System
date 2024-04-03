@@ -246,12 +246,21 @@ export const studentGetExams = async (req, res) => {
         createdAt: -1,
     });
 
+    let completedExams = [], remainingExams = [];
+
     //filter the isCompleted exams here
-    exams = exams.filter(exam => exam.isCompleted === false);
+    exams.forEach((exam) => {
+        if (exam.isCompleted) {
+            completedExams.push(exam);
+        } else {
+            remainingExams.push(exam);
+        }
+    })
 
     return res.status(httpStatus.OK).send({
         message: "Student's exams fetched successfully",
-        exams
+        completedExams,
+        exams: remainingExams
     });
 };
 
@@ -416,6 +425,8 @@ export const studentGetFinalResult = async (req, res) => {
         examType,
     });
 
+    exams = exams.filter(exam => exam.isCompleted === true); // all the exams should be completed
+
     //TODO: all the exams should be taken by the student - 
     //isCompleted should be true for all exams - currently the discrepancy is there as exam is not completed
 
@@ -429,7 +440,6 @@ export const studentGetFinalResult = async (req, res) => {
         exam: {
             $in: exams.map(exam => exam._id)
         },
-        examType,
     });
 
 
@@ -562,9 +572,13 @@ export const studentGetFinalResultDownload = async (req, res) => {
         });
 
 
+    if (!finalResultExists) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Final result not found");
+    }
+
     const filePath = await generateFinalResultPdf({ finalResult: finalResultExists, user: req.user, filename: `${req.user.fullName}_${req.user.id}_finalResult.pdf` })
 
-    return res.download(filePath, `${req.user.fullName}_${req.user.id}_finalResult.pdf`, async (err) => {
+    return res.download(filePath, `${req.user.fullName}_${req.user.id}_${examType}_finalResult.pdf`, async (err) => {
         if (err) {
             throw new CustomError(httpStatus.INTERNAL_SERVER_ERROR, "Error downloading file");
         }

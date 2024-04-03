@@ -27,6 +27,8 @@ router
     .get("/final-results/:examType", isAuthenticated, checkPermissions(Student), studentGetFinalResult)
     .get("/final-results/:examType/download", isAuthenticated, checkPermissions(Student), studentGetFinalResultDownload)
     .get("/subjects", isAuthenticated, checkPermissions(Student), studentGetSubjects)
-    .post("/submit-assignment/:assignmentId", isAuthenticated, checkPermissions(Student), validate(studentSubmitAssignmentSchema, { keyByField: true }), studentSubmitAssignment);
+    .post("/submit-assignment/:assignmentId", isAuthenticated, checkPermissions(Student), validate(studentSubmitAssignmentSchema, { keyByField: true }), studentSubmitAssignment)
+    //TODO: get student route for faculty and admins to get the student details based on department and semester
+    ;
 
 export default router;
