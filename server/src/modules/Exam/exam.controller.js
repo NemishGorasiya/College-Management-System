@@ -41,6 +41,7 @@ export const createExamSemester = async (req, res) => {
     let department;
     const semester = req.params.semester;
 
+    //resolved the department
     if (req.user instanceof Admin) {
         if (!req.body.department) {
             throw new CustomError(httpStatus.BAD_REQUEST, "Department is required for admins");
@@ -254,5 +255,22 @@ export const getAllExams = async (req, res) => {
 
     return res.status(httpStatus.OK).send({
         exams,
+    });
+};
+
+export const getExamResults = async (req, res) => {
+    const { examId } = req.params;
+
+    const exam = await Exam.findById(examId);
+
+    if (!exam) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
+    }
+
+    //find the results of the exam
+    const examResults = await exam.getResults();
+
+    return res.status(httpStatus.OK).send({
+        examResults,
     });
 };

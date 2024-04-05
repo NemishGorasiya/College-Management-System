@@ -1,6 +1,7 @@
 import httpStatus from "http-status";
 import Department from "./Department.js";
 import Faculty from "../Faculty/Faculty.js";
+import CustomError from "../../errors/CustomError.js";
 
 export const createDepartment = async (req, res) => {
     const {
@@ -38,7 +39,7 @@ export const createDepartment = async (req, res) => {
 };
 
 export const getDepartments = async (req, res) => {
-    let { page, limit, search, sortBy, orderBy } = req.query;
+    let { page, limit, search, sortBy, orderBy } = req.query; //sortBy has options - name, budget, doe, accreditation
     const filterObj = {};
 
     if (search) {
@@ -58,6 +59,20 @@ export const getDepartments = async (req, res) => {
     })
 };
 
+export const getDepartment = async (req, res) => {
+    const { id } = req.params;
+    const department = await Department.findById(id).populate("subjects").populate("faculties").populate("students"); //this uses dynamic keying
+
+    if (!department) {
+        throw new CustomError(httpStatus.NOT_FOUND, "Department not found");
+    }
+
+    return res.status(httpStatus.OK).json({
+        message: "Department fetched successfully",
+        department
+    });
+}
+
 export const updateDepartment = async (req, res) => {
     const { id } = req.params;
 
@@ -69,21 +84,18 @@ export const updateDepartment = async (req, res) => {
         })
     }
 
-    const keys = Object(req.body).keys;
+    const keys = Object.keys(req.body);
 
     if (keys.includes("hod")) {
+        //update HOD logic - add new HOD logic
         const faculty = await Faculty.findById(req.body.hod);
 
         if (!faculty) {
-            return res.status(httpStatus.NOT_FOUND).json({
-                message: "Faculty not found"
-            });
+            throw new CustomError(httpStatus.NOT_FOUND, "Faculty not found")
         }
 
-        if (faculty.department !== id) {
-            return res.status(httpStatus.BAD_REQUEST).json({
-                message: "Faculty does not belong to this department"
-            });
+        if (faculty.department.toString() !== id) {
+            throw new CustomError(httpStatus.BAD_REQUEST, "Faculty doesn't belong to the department")
         }
 
         faculty.isHOD = true;
@@ -98,7 +110,6 @@ export const updateDepartment = async (req, res) => {
 
     return res.status(httpStatus.OK).json({
         message: "Department updated successfully",
-        department,
     });
 };
 

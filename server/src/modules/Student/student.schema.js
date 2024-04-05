@@ -54,11 +54,8 @@ const studentBodySchema = Joi.object({
         "number.base": "Semester must be a number",
         "valid.number": "Semester must be 1, 2, 3, 4, 5, 6, 7 or 8",
     }),
-    passOutYear: Joi.number().less(new Date().getFullYear()).required().messages({
+    passOutYear: Joi.number().greater(new Date().getFullYear()).required().messages({
         "number.base": "Pass out year must be a number",
-    }),
-    department: Joi.string().required().messages({
-        "string.base": "Department must be a string",
     }),
     password: Joi.string().required().min(3).messages({
         "string.base": "Password must be a string",
@@ -66,7 +63,10 @@ const studentBodySchema = Joi.object({
 })
 
 export const studentRegisterSchema = {
-    body: studentBodySchema
+    body: studentBodySchema.keys({
+        department: Joi.string().required(),
+    })
+
 };
 
 export const studentRegisterInterSchema = Joi.array().items(studentBodySchema);
@@ -159,7 +159,6 @@ export const studentDeleteSchema = {
 
 export const studentSubmitAssignmentSchema = {
     body: Joi.object({
-        subjectId: Joi.string().required(),
         file: Joi.string().uri().required(),
     }),
     params: Joi.object({
@@ -170,6 +169,7 @@ export const studentSubmitAssignmentSchema = {
 export const studentRegisterCSVSchema = {
     body: Joi.object({
         csv_link: Joi.string().uri().required(),
+        department: Joi.string().required(),
     })
 };
 

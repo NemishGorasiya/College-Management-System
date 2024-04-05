@@ -23,14 +23,14 @@ export const registerFaculty = async (req, res) => {
         profilePicture
     } = req.body;
 
-    const departmentExists = await Department.findById(department).populate("subjects");
+    const departmentExists = await Department.findById(department).populate("subjects"); //foreign field virtual necessary for population
 
     if (!departmentExists) {
         throw new CustomError(httpStatus.NOT_FOUND, "Department not found");
     }
 
     //check if the subjects exists in the department
-    const subjectIds = departmentExists?.subjects.map(subject => subject.id);
+    const subjectIds = departmentExists?.subjects.map(sub => sub._id.toString());
 
     for (let subject of subjects) {
         if (!subjectIds.includes(subject)) {
@@ -56,9 +56,12 @@ export const registerFaculty = async (req, res) => {
         profilePicture: profilePicture || "",
     });
 
-    await Faculty.register(newFaculty, req.body.password);
+    const registeredFaculty = await Faculty.register(newFaculty, req.body.password);
 
-    return res.status(httpStatus.CREATED).json({ message: "Faculty created successfully", });
+    return res.status(httpStatus.CREATED).json({
+        message: "Faculty created successfully",
+        faculty: registeredFaculty._id
+    });
 };
 
 export const loginFaculty = async (req, res) => {

@@ -122,22 +122,54 @@ const handleNormalExams = async (exam, next) => {
 }
 
 examSchema.pre("save", function (next) {
-    //handle HOD exams - Viva, Mid-Semester and Internal Exams
-    //handlle normal exams - Quiz, Project, Lab - created by faculty
-    switch (this.examType) {
-        case "Viva":
-        case "Mid-Semester":
-        case "Internal Submissions":
-            handleHODexams(this, next);
-            break;
-        case "Quiz":
-        case "Project":
-        case "Lab":
-            handleNormalExams(this, next);
-            break;
-        default:
-            next(new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type"));
+    if (this.isModified("examType")) {
+        //handle HOD exams - Viva, Mid-Semester and Internal Exams
+        //handlle normal exams - Quiz, Project, Lab - created by faculty
+        switch (this.examType) {
+            case "Viva":
+            case "Mid-Semester":
+            case "Internal Submissions":
+                handleHODexams(this, next);
+                break;
+            case "Quiz":
+            case "Project":
+            case "Lab":
+                handleNormalExams(this, next);
+                break;
+            default:
+                next(new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type"));
+        }
     }
-})
+});
+
+examSchema.pre("updateOne", function (next) {
+    if (this.isModified("examType")) {
+        //handle HOD exams - Viva, Mid-Semester and Internal Exams
+        //handlle normal exams - Quiz, Project, Lab - created by faculty
+        switch (this.examType) {
+            case "Viva":
+            case "Mid-Semester":
+            case "Internal Submissions":
+                handleHODexams(this, next);
+                break;
+            case "Quiz":
+            case "Project":
+            case "Lab":
+                handleNormalExams(this, next);
+                break;
+            default:
+                next(new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type"));
+        }
+    }
+});
+
+examSchema.methods.getResults = async function () {
+    const results = await this.model("ExamResult").find({ exam: this._id }).populate({
+        path: "student",
+        select: "name email"
+    });
+    return results;
+}
+
 
 export default model("Exam", examSchema, "exams");

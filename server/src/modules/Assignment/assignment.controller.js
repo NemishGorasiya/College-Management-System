@@ -3,6 +3,8 @@ import Assignment from "./Assignment.js";
 import CustomError from "../../errors/CustomError.js";
 import SubmittedAssignment from "./SubmittedAssignment.js";
 import Student from "../Student/Student.js";
+import { populate } from "dotenv";
+
 
 export const createAssignment = async (req, res) => {
   const {
@@ -36,7 +38,13 @@ export const createAssignment = async (req, res) => {
 export const getOwnAssignments = async (req, res) => {
   const assignment = await Assignment.find({
     faculty: req.user._id
-  }).populate("subject").sort({
+  }).populate("subject").populate({
+    path: "students",
+    populate: [
+      { path: "student", select: "_id firstName lastName email" },
+      { path: "submission", select: "_id marks grade percentage isLate" }
+    ]
+  }).sort({
     createdAt: -1, //recently created first
     dueDate: 1 //due date in ascending order (earliest due date first)
   });
@@ -99,7 +107,13 @@ export const getAllAssignments = async (req, res) => {
 
   page = parseInt(page);
 
-  const assignments = await Assignment.find(filterObj).limit(limit).skip((page - 1) * limit).sort({ createdAt: -1, dueDate: 1 }).populate("subject").populate("faculty");
+  const assignments = await Assignment.find(filterObj).limit(limit).skip((page - 1) * limit).sort({ createdAt: -1, dueDate: 1 }).populate("subject").populate("faculty").populate({
+    path: "students",
+    populate: [
+      { path: "student", select: "_id firstName lastName email" },
+      { path: "submission", select: "_id marks grade percentage isLate" }
+    ]
+  });
 
 
   return res.status(httpStatus.OK).json({
@@ -133,7 +147,13 @@ export const getAssignmentSubmissions = async (req, res) => {
 export const getAssignment = async (req, res) => {
   const { assignmentId } = req.params;
 
-  const assignment = await Assignment.findById(assignmentId).populate("subject").populate("students.student").populate("students.submission");
+  const assignment = await Assignment.findById(assignmentId).populate("subject").populate({
+    path: "students",
+    populate: [
+      { path: "student", select: "_id name email" },
+      { path: "submission" }
+    ]
+  });
 
   if (!assignment) {
     throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");

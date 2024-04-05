@@ -34,29 +34,25 @@ examResultSchema.pre("save", async function (next) {
     const exam = await this.model("Exam").findById(this.exam);
 
     //Check if the student has already taken the exam
-    this.model("ExamResult").findOne({ student: this.student, exam: this.exam })
-        .then(result => {
-            if (result) {
-                next(new CustomError(httpStatus.BAD_REQUEST, "Student has already taken the exam"));
-            } else {
-                next();
-            }
-        })
-        .catch(next);
+    const result = await this.model("ExamResult").findOne({ student: this.student, exam: this.exam })
+
+    if (result) {
+        throw new CustomError(httpStatus.BAD_REQUEST, "Student has already taken the exam");
+    }
 
     // add the exam type to the result
     this.examType = exam.examType;
 
     //save the result in the exam
-    if (exam.results === undefined) {
+    if (!exam.results) {
         exam.results = [];
     }
 
-    exam.results.push({ student: this.student, marks: this.marks });
+    exam.results = [...exam.results, { student: this.student, marks: this.marks }]
 
     this.percentage = (this.marks / exam.totalMarks) * 100;
 
-    await exam.save();
+    await this.model("Exam").findByIdAndUpdate(this.exam, exam);
 
     next();
 });

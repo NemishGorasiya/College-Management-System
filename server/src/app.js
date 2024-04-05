@@ -22,13 +22,14 @@ import departmentRoutes from "./modules/Department/department.routes.js";
 import examRoutes from "./modules/Exam/exam.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
-import { userLogout } from "./modules/General/general.controller.js";
+import { getProfile, userLogout } from "./modules/General/general.controller.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
 import subjectRoutes from "./modules/Subject/subject.routes.js";
 import uploadRoutes from "./modules/Uploads/upload.routes.js";
 import resultRoutes from "./modules/Result/result.routes.js";
-
+import eventRoutes from "./modules/Events/events.routes.js";
+import circularRoutes from "./modules/Circulars/circular.routes.js";
 config();
 
 const app = express();
@@ -116,6 +117,7 @@ app.get('/api/', (_, res) => {
 app.use('/api/admin', adminRoutes);
 app.use('/api/faculty', facultyRoutes);
 app.use('/api/student', studentRoutes);
+app.use('/api/my-profile', isAuthenticated, getProfile)
 app.use('/api/user/logout', isAuthenticated, userLogout);
 
 app.use('/api/department', departmentRoutes);
@@ -124,6 +126,8 @@ app.use('/api/assignment', assignmentRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/exam', examRoutes);
 app.use('/api/result', resultRoutes);
+app.use('/api/circular', circularRoutes);
+app.use('/api/events', eventRoutes);
 
 //auth error, normal error handlers and not found handlers
 app.use('/api/error', authErrorHandler);
