@@ -9,54 +9,59 @@ import Exam from "./components/Exam.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import Help from "./components/Help.jsx";
 import Setting from "./components/Setting.jsx";
+import Assignments from "./components/Assignments.jsx";
 
 function App() {
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <HomePage />,
-      children: [
-        {
-          path: "/profile",
-          element: <Profile />,
-        },
-        {
-          path: "/result",
-          element: <Result />,
-        },
-        {
-          path: "/placement",
-          element: <Placement />,
-        },
-        {
-          path: "/events",
-          element: <Events />,
-        },
-        {
-          path: "/circulars",
-          element: <Circulars />,
-        },
-        {
-          path: "/exam",
-          element: <Exam />,
-        },
-        {
-          path: "/help",
-          element: <Help />,
-        },
-        {
-          path: "/setting",
-          element: <Setting />,
-        },
-      ],
-    },
-  ]);
+	const router = createBrowserRouter([
+		{
+			path: "/",
+			element: <HomePage />,
+			children: [
+				{
+					path: "/profile",
+					element: <Profile />,
+				},
+				{
+					path: "/result",
+					element: <Result />,
+				},
+				{
+					path: "/assignments",
+					element: <Assignments />,
+				},
+				{
+					path: "/placement",
+					element: <Placement />,
+				},
+				{
+					path: "/events",
+					element: <Events />,
+				},
+				{
+					path: "/circulars",
+					element: <Circulars />,
+				},
+				{
+					path: "/exam",
+					element: <Exam />,
+				},
+				{
+					path: "/help",
+					element: <Help />,
+				},
+				{
+					path: "/setting",
+					element: <Setting />,
+				},
+			],
+		},
+	]);
 
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  );
+	return (
+		<>
+			<RouterProvider router={router} />
+		</>
+	);
 }
 
 export default App;

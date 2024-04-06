@@ -19,6 +19,11 @@ export const sideBarNavLinks = [
 		svgIcon: ResultIcon,
 	},
 	{
+		link: "assignments",
+		label: "Assignments",
+		svgIcon: ExamIcon,
+	},
+	{
 		link: "placement",
 		label: "Placement",
 		svgIcon: PlacementIcon,
