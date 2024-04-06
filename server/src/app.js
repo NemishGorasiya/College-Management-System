@@ -30,6 +30,7 @@ import uploadRoutes from "./modules/Uploads/upload.routes.js";
 import resultRoutes from "./modules/Result/result.routes.js";
 import eventRoutes from "./modules/Events/events.routes.js";
 import circularRoutes from "./modules/Circulars/circular.routes.js";
+import cors from "cors";
 config();
 
 const app = express();
@@ -68,6 +69,10 @@ app.use(session({
     },
     store: RedisSessionStore     //store the session in memory
 }));
+app.use(cors({
+    origin: [...process.env.CLIENT_URL.split(",")] || "http://localhost:5173",
+    credentials: true,
+}))
 app.use(actuator(actuatorConfig));
 
 //passport middleware for the server - to authenticate the user
