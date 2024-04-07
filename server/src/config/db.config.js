@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { config } from "dotenv";
 import mongooseValidationErrorTransform from 'mongoose-validation-error-transform';
+import logger from "./winston.config.js";
 config();
 
 export default async function connectDB() {
@@ -11,9 +12,9 @@ export default async function connectDB() {
             transform: (messages) => messages.join(", "),
         });
         await mongoose.connect(process.env.MONGO_URI);
-        console.log(`Database connected successfully`);
+        logger.info("Database connected successfully")
     } catch (err) {
-        console.error("Database connection failed");
-        console.error(err);
+        logger.error(`Error connecting to database: ${err}`);
+        process.exit(1);
     }
 }

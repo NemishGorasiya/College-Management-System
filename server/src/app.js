@@ -1,4 +1,5 @@
 import RedisStore from 'connect-redis';
+import cors from "cors";
 import { config } from "dotenv";
 import express from 'express';
 import actuator from "express-actuator";
@@ -6,11 +7,12 @@ import "express-async-errors";
 import session from "express-session";
 import { createServer } from 'http';
 import httpStatus from "http-status";
+import mongoose from 'mongoose';
 import morgan from 'morgan';
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { createClient } from 'redis';
 import connectDB from './config/db.config.js';
+import redisClient from "./config/redis.config.js";
 import logger from './config/winston.config.js';
 import CustomError from "./errors/CustomError.js";
 import { authErrorHandler, errorHandler, notFoundHandler } from "./errors/errorHandlers.js";
@@ -18,19 +20,18 @@ import { isAuthenticated } from "./middlewares/middlewares.js";
 import Admin from "./modules/Admin/Admin.js";
 import adminRoutes from "./modules/Admin/admin.routes.js";
 import assignmentRoutes from "./modules/Assignment/assignment.routes.js";
+import circularRoutes from "./modules/Circulars/circular.routes.js";
 import departmentRoutes from "./modules/Department/department.routes.js";
+import eventRoutes from "./modules/Events/events.routes.js";
 import examRoutes from "./modules/Exam/exam.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
 import facultyRoutes from "./modules/Faculty/faculty.routes.js";
 import { getProfile, userLogout } from "./modules/General/general.controller.js";
+import resultRoutes from "./modules/Result/result.routes.js";
 import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
 import subjectRoutes from "./modules/Subject/subject.routes.js";
 import uploadRoutes from "./modules/Uploads/upload.routes.js";
-import resultRoutes from "./modules/Result/result.routes.js";
-import eventRoutes from "./modules/Events/events.routes.js";
-import circularRoutes from "./modules/Circulars/circular.routes.js";
-import cors from "cors";
 config();
 
 const app = express();
@@ -45,11 +46,6 @@ const actuatorConfig = {
 };
 
 //! Redis Store
-const redisClient = createClient(); // automatically uses port 6379 on localhost to connect to the Redis server
-redisClient.connect().catch(err => {
-    logger.error(`Error connecting to Redis server: ${err}`);
-    process.exit(1);
-})
 const RedisSessionStore = new RedisStore({
     client: redisClient,
     prefix: 'session:',
@@ -146,11 +142,20 @@ async function start() {
 
     //start listening to the server
     server.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+        logger.info(`Server is running on port ${PORT}`);
     });
 
-    const shutdownHandler = () => {
+    const shutdownHandler = async () => {
         logger.info(`shutting down the server`);
+        //close the mongoose connection
+        mongoose.disconnect(() => {
+            logger.info("Database disconnected successfully")
+        })
+
+        //close the redis client
+        await redisClient.quit();
+
+        //close the server
         server.close(() => {
             logger.info("Server is shut down");
             process.exit(0);
