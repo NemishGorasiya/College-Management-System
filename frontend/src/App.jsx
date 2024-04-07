@@ -10,8 +10,10 @@ import HomePage from "./pages/HomePage.jsx";
 import Help from "./components/Help.jsx";
 import Setting from "./components/Setting.jsx";
 import Assignments from "./components/Assignments.jsx";
+// import { handleStudentLogin } from "./services/Services.jsx";
 
 function App() {
+	// handleStudentLogin();
 	const router = createBrowserRouter([
 		{
 			path: "/",

@@ -1,26 +1,22 @@
 .profileSection {
-
-    .profileDetailsWrapper {
-        padding: 10px 0 10px 20px;
-        width: 100%;
-            tr {
-                td {
-                    padding: 5px 0;    
-                }
-                .profileDetailTitle {
-                    width: 20%;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    padding-right: 20px;
-                }
-                .profileDetailDescription {
-                    width: 80%;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
-                }
-            }
-        
-    }
+	.profileDetailsWrapper {
+		padding: 10px 0 10px 20px;
+		width: 100%;
+		.profileDetail {
+			display: grid;
+			grid-template-columns: 1fr 4fr;
+			gap: 10px;
+			padding: 5px 0;
+			.profileDetailTitle {
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+			.profileDetailDescription {
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+		}
+	}
 }
