@@ -1,0 +1,55 @@
+.resultService {
+    .resultWapper {
+        padding: 20px 0 0;
+        .resultInputForm {
+            td {
+                padding: 5px 0;
+            }
+            td.resultInputLabel {
+                padding-right: 20px;
+            }
+            td.resultFormInput {
+                input {
+                    height: 25px;
+                    padding-left: 5px;
+                    width: 175px;
+                }
+                .semInput {
+                    width: 80px;
+                    height: 25px;
+                }
+                .captchaInput {
+                    width: 80px;
+                }
+                img {
+                    height: 30px;
+                    width: 80px;
+                }
+            }
+            td.captchaInput {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                img.captchaImage {
+                    height: 25px;
+                    width: 80px;
+                }
+                img.updateCaptchImage {
+                    height: 15px;
+                    width: 15px;
+                }
+            }
+        }
+
+        .resultImage {
+            margin-top: 10px;
+            img {
+                width: 100%;
+            }
+        }
+        .printBtnWrapper {
+            text-align: center;
+            margin-top: 10px;
+        }
+    }
+}
