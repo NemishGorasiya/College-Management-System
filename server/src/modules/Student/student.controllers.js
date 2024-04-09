@@ -604,3 +604,12 @@ export function getExamType(examType) {
     }
     return examType;
 };
+
+
+export const getStudents = async (req, res) => {
+    const { semester, departmentID, page, limit, sortBy, orderBy } = req.query //sortBy has options - firstname, enrollment, doe, dob
+
+    const students = await Student.find({ semester, department: departmentID }).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy })
+
+    res.status(httpStatus.OK).json({ Students: students })
+}
