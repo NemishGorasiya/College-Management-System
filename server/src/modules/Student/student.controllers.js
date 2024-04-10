@@ -358,61 +358,7 @@ export const studentGetFinalResult = async (req, res) => {
         student: req.user._id,
         semester,
         examType,
-    })
-        .populate({
-            path: "examResults",
-            populate: {
-                path: "exam",
-                populate: {
-                    path: "subject",
-                    select: {
-                        _id: 1,
-                        name: 1,
-                        subjectCode: 1,
-                        credits: 1,
-                    }
-                },
-                select: {
-                    _id: 1,
-                    totalMarks: 1,
-                    name: 1,
-                    description: 1,
-                    examType: 1,
-                    date: 1,
-                }
-            },
-        }).populate({
-            path: "student",
-            populate: {
-                path: "department",
-                select: {
-                    _id: 1,
-                    name: 1,
-                }
-            },
-            select: {
-                _id: 1,
-                enrollmentNumber: 1,
-                firstName: 1,
-                lastName: 1,
-                email: 1,
-                dob: 1,
-                doa: 1,
-                gender: 1,
-                semester: 1,
-                department: 1,
-                passOutYear: 1,
-                profilePicture: 1,
-                bloodGroup: 1,
-            }
-        });
-
-    if (finalResultExists) {
-        return res.status(httpStatus.OK).send({
-            message: "Student's final result fetched successfully",
-            finalResult: finalResultExists
-        });
-    };
+    }) // final results for the student for the semester and exam type
 
     //get the subjects of the students
     const subjects = await getSubjects(department, semester);
@@ -425,17 +371,14 @@ export const studentGetFinalResult = async (req, res) => {
         examType,
     });
 
-    exams = exams.filter(exam => exam.isCompleted === true); // all the exams should be completed
+    let remainingExams = exams.filter(exam => exam.isCompleted !== true); // remaining exams for the student
 
-    //TODO: all the exams should be taken by the student - 
-    //isCompleted should be true for all exams - currently the discrepancy is there as exam is not completed
-
-    if (exams.length < 1) {
+    if (remainingExams.length > 0) {
         throw new CustomError(httpStatus.BAD_REQUEST, "Student has exams left to take");
     }
 
     //get the results of the student
-    const results = await ExamResult.find({
+    let results = await ExamResult.find({
         student: req.user._id,
         exam: {
             $in: exams.map(exam => exam._id)
@@ -447,15 +390,25 @@ export const studentGetFinalResult = async (req, res) => {
         throw new CustomError(httpStatus.BAD_REQUEST, "Student has not taken all exams");
     };
 
-    const finalResult = new FinalResult({
-        student: req.user._id,
-        semester,
-        examResults: results.map(result => result._id),
-        examType
-    });
+    let finalResult;
+    if (finalResultExists) {
+        //update the final result
+        finalResultExists.examResults = results.map(result => result._id);  //update the exam results
+        finalResult = finalResultExists;
+        await finalResultExists.save();
+    } else {
+        //create the final result
+        finalResult = new FinalResult({
+            student: req.user._id,
+            semester,
+            examResults: results.map(result => result._id),
+            examType
+        });
 
-    await finalResult.save();
+        await finalResult.save();
+    }
 
+    //get the final result for the student
     const finalResultPopulated = await FinalResult.findById(finalResult._id)
         .populate({
             path: "examResults",
