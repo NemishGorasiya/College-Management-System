@@ -234,6 +234,7 @@ export const studentGetExams = async (req, res) => {
     const { department, semester } = req.user;
 
     let subjects = await getSubjects(department, semester);
+    console.log(subjects);
 
     //TODO: add pagination, filter by date, exam type, faculty and isCompleted or not
 

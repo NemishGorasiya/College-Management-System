@@ -73,13 +73,7 @@ submittedAssignmentSchema.pre("save", async function (next) {
 
         if (this.marks < 0) {
             throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be negative");
-        }
-
-        if (this.isLate) {
-            this.marks -= (this.marks * 0.1); //10% deduction for late submission
-        }
-
-        this.grade = this.marks >= 90 ? "A" : this.marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
+        }      marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
 
         this.percentage = (this.marks / assignment.totalMarks) * 100;
 

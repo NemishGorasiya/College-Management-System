@@ -128,7 +128,7 @@ export const deleteFaculty = async (req, res) => {
 }
 
 export const getFaculty = async (req, res) => {
-    let { page, limit, search, sortBy, orderBy } = req.query; //sortBy has options - name, budget, doe, accreditation
+    let { page, limit, search, sortBy, orderBy } = req.query; //sortBy has options - name, designation, department
     const filterObj = {};
 
     if (search) {
