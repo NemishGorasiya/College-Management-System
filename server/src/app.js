@@ -32,6 +32,7 @@ import Student from "./modules/Student/Student.js";
 import studentRoutes from "./modules/Student/student.routes.js";
 import subjectRoutes from "./modules/Subject/subject.routes.js";
 import uploadRoutes from "./modules/Uploads/upload.routes.js";
+import status from "express-status-monitor";
 config();
 
 const app = express();
@@ -70,6 +71,7 @@ app.use(cors({
     credentials: true,
 }))
 app.use(actuator(actuatorConfig));
+app.use(status());
 
 //passport middleware for the server - to authenticate the user
 app.use(passport.initialize());
