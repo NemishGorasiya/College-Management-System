@@ -114,7 +114,8 @@ export const getExam = async (req, res) => {
     const examId = req.params.examId;
 
 
-    //TODO: add pagination, sorting and filtering to this
+
+
     const exam = await Exam.findById(examId);
 
     if (!exam) {
@@ -236,7 +237,7 @@ export const getAllExams = async (req, res) => {
         filterObj.department = department;
     }
 
-    if (examType) {
+    if (examType) { 
         filterObj.examType = {
             $regex: new RegExp(examType),
             $options: "i",
@@ -247,14 +248,14 @@ export const getAllExams = async (req, res) => {
         filterObj.date = date;
     }
 
-    let exams = await Exam.find(filterObj).sort({ date: 1 });
+    let exams = await Exam.find(filterObj).sort({ date: 1});
 
     if (isCompleted) {
         exams = exams.filter(exam => exam.isCompleted === true);
     }
 
     return res.status(httpStatus.OK).send({
-        exams,
+        exams, 
     });
 };
 
