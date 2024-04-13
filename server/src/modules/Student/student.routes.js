@@ -30,7 +30,7 @@ router
     .get("/subjects", isAuthenticated, checkPermissions(Student), studentGetSubjects)
     .post("/submit-assignment/:assignmentId", isAuthenticated, checkPermissions(Student), validate(studentSubmitAssignmentSchema, { keyByField: true }), studentSubmitAssignment)
 
-    //TODO: get student route for faculty and admins to get the student details based on department and semester
+    // ! TODO: get student route for faculty and admins to get the student details based on department and semester
     .get("/", isAuthenticated, checkPermissions(Faculty, Admin), getStudents);
 
 
