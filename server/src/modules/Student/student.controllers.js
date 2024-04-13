@@ -14,6 +14,7 @@ import Student from "./Student.js";
 import StudentUpdateRequest from "./StudentUpdateRequest.js";
 import { studentRegisterInterSchema } from "./student.schema.js";
 
+
 export const studentRegister = async (req, res) => {
     const {
         enrollmentNumber,
@@ -24,7 +25,7 @@ export const studentRegister = async (req, res) => {
         email,
         gender,
         bloodGroup,
-        phoneNumber,
+        phoneNumber, 
         fatherName,
         motherName,
         parentPhoneNumber,
@@ -231,21 +232,45 @@ export const studentRegisterCSV = async (req, res) => {
 };
 
 export const studentGetExams = async (req, res) => {
+    const { page, limit, faculty, examType, date } = req.query
     const { department, semester } = req.user;
 
     let subjects = await getSubjects(department, semester);
-    console.log(subjects);
+    // console.log(subjects);
 
-    //TODO: add pagination, filter by date, exam type, faculty and isCompleted or not
+    //!TODO: add pagination, filter by date, exam type, faculty and isCompleted or not
 
-    let exams = await Exam.find({
-        subject: {
+    let filterObj = {};
+
+
+        filterObj.subject = {
             $in: subjects.map(subject => subject._id)
-        },
-    }).populate("subject").populate("faculty").sort({
+        }
+    
+ 
+  //TODO: faculty id is not working
+    if (faculty) {
+        filterObj.faculty = faculty._id;
+    }
+
+    if (examType) {
+        filterObj.examType = {
+            $regex: new RegExp(examType),
+            $options: "i",
+        };
+    }
+
+    if (date) {
+        filterObj.date = date;
+    }
+
+
+
+
+    let exams = await Exam.find(filterObj).populate("subject").populate("faculty").skip((page - 1) * limit).limit(limit).sort({
         date: 1,
         createdAt: -1,
-    });
+    })
 
     let completedExams = [], remainingExams = [];
 
@@ -561,9 +586,9 @@ export function getExamType(examType) {
 
 
 export const getStudents = async (req, res) => {
-    const { semester, departmentID, page, limit, sortBy, orderBy } = req.query //sortBy has options - firstname, enrollment, doe, dob
+    const { semester, departmentID, page, limit, sortBy, sortType } = req.query //sortBy has options - firstname, enrollment, doe, dob
 
-    const students = await Student.find({ semester, department: departmentID }).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy })
+    const students = await Student.find({ semester, department: departmentID }).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: sortType })
 
     res.status(httpStatus.OK).json({ Students: students })
 }

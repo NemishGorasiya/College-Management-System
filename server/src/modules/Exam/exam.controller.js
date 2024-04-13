@@ -95,7 +95,7 @@ export const createExamSemester = async (req, res) => {
                 });
 
                 await exam.save();
-                exams.push(exam);
+                exams.push(exam);   
                 date = addDays(date, 1);
                 i++;
             };
@@ -113,8 +113,6 @@ export const createExamSemester = async (req, res) => {
 export const getExam = async (req, res) => {
     const examId = req.params.examId;
 
-
-    //TODO: add pagination, sorting and filtering to this
     const exam = await Exam.findById(examId);
 
     if (!exam) {
@@ -135,7 +133,7 @@ export const updateExam = async (req, res) => {
     }
 
     const exam = await Exam.findById(examId);
-
+    console.log(exam);
     //if no exam found
     if (!exam) {
         throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
@@ -150,7 +148,8 @@ export const updateExam = async (req, res) => {
     if (exam.isCompleted) {
         throw new CustomError(httpStatus.FORBIDDEN, "Exam is already completed");
     }
-
+ 
+   
     //if the date is a weekend, move it to the next day until it is not a weekend
     while (req.body.date && isWeekend(req.body.date)) {
         req.body.date = addDays(req.body.date, 1);
@@ -158,6 +157,7 @@ export const updateExam = async (req, res) => {
 
     for (let key in req.body) {
         if (key === "subject") {
+         
             //check if the faculty has subjects in it and admin has the department in it
             if (req.user instanceof Admin) {
                 const subjects = await getSubjects(req.body.department, req.body.semester);
@@ -165,6 +165,7 @@ export const updateExam = async (req, res) => {
                     throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only update exams for subjects they teach");
                 }
             } else {
+               
                 if (!req.user.subjects.includes(req.body.subject)) {
                     throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only update exams for subjects they teach");
                 }
@@ -173,10 +174,11 @@ export const updateExam = async (req, res) => {
 
         //update the exam
         exam[key] = req.body[key];
+        
     }
 
     await exam.save();
-
+  
     return res.status(httpStatus.OK).send({
         "message": "Exam Updated Successfully",
         exam,
@@ -187,7 +189,7 @@ export const deleteExam = async (req, res) => {
     const examId = req.params.examId;
 
     const exam = await Exam.findById(examId);
-
+   
     if (!exam) {
         throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
     };
@@ -205,35 +207,18 @@ export const deleteExam = async (req, res) => {
 
 export const getOwnExams = async (req, res) => {
     const faculty = req.user;
-
-    const exams = await Exam.find({ faculty: faculty._id });
-
-    return res.status(httpStatus.OK).send({
-        exams,
-    });
-};
-
-export const getAllExams = async (req, res) => {
-    const { semester, subject, faculty, department, examType, date, isCompleted } = req.query;
-
+    const { subject, examType, date, isCompleted, sortType, page, limit } = req.query;
     let filterObj = {};
 
-    if (semester) {
-        filterObj.semester = semester;
-    }
 
     if (subject) {
         filterObj.subject = {
-            $in: subject.split(","),
+            $in: subject,
         };
     }
 
     if (faculty) {
-        filterObj.faculty = faculty;
-    }
-
-    if (department) {
-        filterObj.department = department;
+        filterObj.faculty = faculty._id;
     }
 
     if (examType) {
@@ -247,10 +232,53 @@ export const getAllExams = async (req, res) => {
         filterObj.date = date;
     }
 
-    let exams = await Exam.find(filterObj).sort({ date: 1 });
 
-    if (isCompleted) {
+    let exams = await Exam.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ date: `${sortType}` });
+
+    if (isCompleted == "true") {
         exams = exams.filter(exam => exam.isCompleted === true);
+    } else if (isCompleted == "false") {
+        exams = exams.filter(exam => exam.isCompleted === false);
+    }
+    return res.status(httpStatus.OK).send({
+        exams,
+    });
+};
+
+export const getAllExams = async (req, res) => {
+    const { subject, faculty, examType, date, isCompleted, sortType, page, limit } = req.query;
+
+
+    let filterObj = {};
+
+
+    if (subject) {
+        filterObj.subject = {
+            $in: subject,
+        };
+    }
+
+    if (faculty) {
+        filterObj.faculty = faculty;
+    }
+
+    if (examType) {
+        filterObj.examType = {
+            $regex: new RegExp(examType),
+            $options: "i",
+        };
+    }
+
+    if (date) {
+        filterObj.date = date;
+    }
+
+    let exams = await Exam.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ date: `${sortType}` });
+
+    if (isCompleted == "true") {
+        exams = exams.filter(exam => exam.isCompleted === true);
+    } else if (isCompleted == "false") {
+        exams = exams.filter(exam => exam.isCompleted === false);
     }
 
     return res.status(httpStatus.OK).send({
@@ -259,16 +287,16 @@ export const getAllExams = async (req, res) => {
 };
 
 export const getExamResults = async (req, res) => {
-    const { examId } = req.params;
-
+    const examId = req.params.examId;
+    
     const exam = await Exam.findById(examId);
 
     if (!exam) {
         throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
     }
-
+   
     //find the results of the exam
-    const examResults = await exam.getResults();
+    const examResults = exam.results ;
 
     return res.status(httpStatus.OK).send({
         examResults,
