@@ -28,7 +28,6 @@ router
 
 router
     .patch("/update/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminUpdateSchema, { keyByField: true, }), updateAdmin)
-    .delete("/delete/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminDeleteSchema, { keyByField: true, }), deleteAdmin);
-
+    .delete("/delete/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminDeleteSchema, { keyByField: true, }), deleteAdmin)    
 
 export default router;

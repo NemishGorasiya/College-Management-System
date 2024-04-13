@@ -126,3 +126,22 @@ export const deleteFaculty = async (req, res) => {
 
     return res.status(httpStatus.OK).json({ message: "Faculty deleted successfully" });
 }
+
+export const getFaculty = async (req, res) => {
+    let { page, limit, search, sortBy, orderBy } = req.query; //sortBy has options - name, designation, department
+    const filterObj = {};
+
+    if (search) {
+        filterObj.firstName = {
+            $regex: search,
+            $options: "i"
+        }
+    }
+
+
+    const faculty = await Faculty.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy });
+
+    res.status(httpStatus.OK).json({ Faculty: faculty })
+
+
+} 

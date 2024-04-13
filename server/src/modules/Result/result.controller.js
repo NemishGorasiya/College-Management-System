@@ -4,6 +4,7 @@ import Exam from "../Exam/Exam.js";
 import Student from "../Student/Student.js";
 import ExamResult from "./ExamResult.js";
 import { getSubjects } from "../Student/student.controllers.js";
+import Admin from "../Admin/Admin.js";
 
 export const createResult = async (req, res) => {
     const { student, exam, marks } = req.body;

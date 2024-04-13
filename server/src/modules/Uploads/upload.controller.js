@@ -5,11 +5,12 @@ import Upload from "./Upload.js";
 import cloudinary from "../../config/cloudinary.config.js";
 
 export const uploadHandler = async (req, res) => {
-    const { originalname } = req.file;
-
     if (!req.file) {
         throw new CustomError(httpStatus.INTERNAL_SERVER_ERROR, "Image was not uploaded");
     }
+
+    const { originalname } = req.file;
+
 
     const uploadStream = cloudinary.uploader.upload_stream({
         resource_type: "auto",

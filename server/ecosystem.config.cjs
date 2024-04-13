@@ -20,7 +20,7 @@ module.exports = {
 
         {
             name: 'node-app',
-            script: 'node src/app.js', // Path to your Node.js application entry file
+            script: "npm run dev", // Path to your Node.js application entry file
             autorestart: true,
             "watch": true,
             "ignore_watch": ["node_modules"],

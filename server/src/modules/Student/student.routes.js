@@ -5,8 +5,9 @@ import { checkPermissions, isAuthenticated } from '../../middlewares/middlewares
 import Admin from '../Admin/Admin.js';
 import { changePassword } from '../General/general.controller.js';
 import Student from './Student.js';
-import { studentDelete, studentGetAssignments, studentGetExams, studentGetFinalResult, studentGetFinalResultDownload, studentGetResults, studentGetSubjects, studentGetTimetable, studentLogin, studentRegister, studentRegisterCSV, studentSubmitAssignment, studentUpdate } from './student.controllers.js';
+import { getStudents, studentDelete, studentGetAssignments, studentGetExams, studentGetFinalResult, studentGetFinalResultDownload, studentGetResults, studentGetSubjects, studentGetTimetable, studentLogin, studentRegister, studentRegisterCSV, studentSubmitAssignment, studentUpdate } from './student.controllers.js';
 import { studentDeleteSchema, studentLoginSchema, studentRegisterCSVSchema, studentRegisterSchema, studentResetPasswordSchema, studentSubmitAssignmentSchema, studentUpdateSchema } from './student.schema.js';
+import Faculty from '../Faculty/Faculty.js';
 
 
 const router = Router({ mergeParams: true });
@@ -28,7 +29,9 @@ router
     .get("/final-results/:examType/download", isAuthenticated, checkPermissions(Student), studentGetFinalResultDownload)
     .get("/subjects", isAuthenticated, checkPermissions(Student), studentGetSubjects)
     .post("/submit-assignment/:assignmentId", isAuthenticated, checkPermissions(Student), validate(studentSubmitAssignmentSchema, { keyByField: true }), studentSubmitAssignment)
-    //TODO: get student route for faculty and admins to get the student details based on department and semester
-    ;
+
+    // ! TODO: get student route for faculty and admins to get the student details based on department and semester
+    .get("/", isAuthenticated, checkPermissions(Faculty, Admin), getStudents);
+
 
 export default router;
