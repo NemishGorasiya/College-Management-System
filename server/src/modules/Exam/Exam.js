@@ -139,6 +139,8 @@ examSchema.pre("save", function (next) {
             default:
                 next(new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type"));
         }
+    } else {
+        next();
     }
 });
 

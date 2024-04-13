@@ -120,8 +120,7 @@ app.get('/api/', (_, res) => {
 app.use('/api/admin', adminRoutes);
 app.use('/api/faculty', facultyRoutes);
 app.use('/api/student', studentRoutes);
-app.use('/api/my-profile', isAuthenticated, getProfile)
-app.use('/api/user/logout', isAuthenticated, userLogout);
+// app.use('/api/user', isAuthenticated, generalUserRoutes);
 
 app.use('/api/department', departmentRoutes);
 app.use('/api/subject', subjectRoutes);

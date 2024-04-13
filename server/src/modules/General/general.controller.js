@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import CustomError from "../../errors/CustomError.js";
+import otpGen from "otp-generator";
 
 export const userLogout = async (req, res) => {
     req.logout({
@@ -38,4 +39,17 @@ export const getProfile = async (req, res) => {
         message: "Profile fetched successfully",
         user: req.user,
     })
+};
+
+export const otpGeneration = async (req, res) => {
+    //the user will be sent an email with the otp
+
+
+    //the otp will be stored in the database with the email
+    //the otp will be sent to the user
+    //the otp will be validated
+    //the password will be changed
+    //the otp will be deleted
+    //the user will be logged in
+    //the user will be redirected to the profile page
 }
