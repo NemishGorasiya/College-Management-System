@@ -1,0 +1,35 @@
+.registrationPage {
+	.contentWrapper {
+		background: #ffffff;
+		padding: 20px;
+		overflow-y: auto;
+		height: calc(100vh - 80px);
+		.formContainer {
+			max-width: 800px;
+			margin: auto;
+			background: #ebf1ff;
+			border-radius: 13px;
+			padding: 20px;
+
+			h2 {
+				margin-bottom: 12px;
+			}
+			.form {
+				.formControls {
+					display: flex;
+					flex-wrap: wrap;
+					width: 100%;
+					gap: 20px;
+					display: grid;
+					grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				}
+				.submitBtnWrapper {
+					margin-top: 20px;
+				}
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 980px) {
+}

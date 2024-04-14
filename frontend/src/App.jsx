@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage.jsx";
 import Help from "./components/Help.jsx";
 import Setting from "./components/Setting.jsx";
 import Assignments from "./components/Assignments.jsx";
+import RegistrationPage from "./pages/RegistrationPage.jsx";
 // import { handleStudentLogin } from "./services/Services.jsx";
 
 function App() {
@@ -17,7 +18,8 @@ function App() {
 	const router = createBrowserRouter([
 		{
 			path: "/",
-			element: <HomePage />,
+			element: <RegistrationPage />,
+			// element: <HomePage />,
 			children: [
 				{
 					path: "/profile",
