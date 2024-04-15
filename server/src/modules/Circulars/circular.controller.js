@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import Circular from "./Circular.js";
+import { addMonths, format, getMonth, getYear } from "date-fns";
 
 export const getCirculars = async (req, res) => {
     //query params - based on months and year
@@ -7,7 +8,7 @@ export const getCirculars = async (req, res) => {
     const filterObj = {};
 
     if (!date) {
-        date = format(new Date.now(), 'yyyy-mm-dd')
+        date = format(Date.now(), 'yyyy-mm-dd')
     }
 
     //fetches latest dated circulars only

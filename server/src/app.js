@@ -33,6 +33,7 @@ import studentRoutes from "./modules/Student/student.routes.js";
 import subjectRoutes from "./modules/Subject/subject.routes.js";
 import uploadRoutes from "./modules/Uploads/upload.routes.js";
 import status from "express-status-monitor";
+import generalUserRoutes from "./modules/General/general.routes.js";
 config();
 
 const app = express();
@@ -113,6 +114,14 @@ passport.deserializeUser(function (user, done) {
 app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) } }));
 
 //routes for the server
+//!NOTE: these are just for testing purposes - will remove later
+app.get('/user/change-password', (req, res) => {
+    return res.send({
+        message: "Change password page",
+        description: "This is the page where the user will change the password",
+    });
+})
+
 app.get('/api/', (_, res) => {
     return res.send("Welcome to the college management system");
 });
@@ -120,8 +129,7 @@ app.get('/api/', (_, res) => {
 app.use('/api/admin', adminRoutes);
 app.use('/api/faculty', facultyRoutes);
 app.use('/api/student', studentRoutes);
-app.use('/api/my-profile', isAuthenticated, getProfile)
-app.use('/api/user/logout', isAuthenticated, userLogout);
+app.use('/api/user', isAuthenticated, generalUserRoutes);
 
 app.use('/api/department', departmentRoutes);
 app.use('/api/subject', subjectRoutes);
