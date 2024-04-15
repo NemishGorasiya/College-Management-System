@@ -3,6 +3,7 @@ import Button from "../UI/Button";
 import ldceLogo from "../assets/ldce_logo.png";
 import notificationBell from "../assets/notificationBell.png";
 import BurgerMenuIcon from "../assets/BurgerMenuIcon.svg";
+import toast from "react-hot-toast";
 
 export default function TopBar({ handleHamBurgerClick }) {
 	return (
@@ -21,7 +22,15 @@ export default function TopBar({ handleHamBurgerClick }) {
 				<Button className="notificationBell">
 					<img src={notificationBell} alt="" />
 				</Button>
-				<Button textonly>Log Out</Button>
+				<Button
+					onClick={() => {
+						console.log("first");
+						toast.success("Here is your toast.");
+					}}
+					textonly
+				>
+					Log Out
+				</Button>
 			</div>
 		</div>
 	);
