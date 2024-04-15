@@ -4,6 +4,8 @@ import OTP from "../modules/OTP/OTP.js";
 import Admin from "../modules/Admin/Admin.js";
 import Faculty from "../modules/Faculty/Faculty.js";
 import Student from "../modules/Student/Student.js";
+import { config } from "dotenv";
+config();
 
 const getUserType = (user) => {
   if (user instanceof Student) {
@@ -16,31 +18,39 @@ const getUserType = (user) => {
 }
 
 export const otpEmailGeneration = async (user) => {
-  const otp = otpGenerator.generate(6, {
-    upperCaseAlphabets: false,
-    specialChars: false,
-  });
+  return new Promise(async (resolve, reject) => {
+    const otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
 
-  const SENDER_EMAIL = "cmsldce@gmail.com";
+    const SENDER_EMAIL = process.env.EMAIL;
+    let otpDoc;
 
-  // const otpDoc = new OTP({
-  //   otp,
-  //  externalType: getUserType(user),
-  //   email: user.email,
-  //   userId: user._id,
-  // });
-  // await otpDoc.save();
-  //create a new OTP document in the database
+    try {
 
-  const mailOptions = {
-    from: {
-      name: "CMS-LDCE",
-      address: SENDER_EMAIL
-    },
-    to: user.email,
-    subject: "OTP for password reset",
-    title: "Password Reset OTP",
-    html: `
+      // create a new OTP document in the database
+      otpDoc = new OTP({
+        otp,
+        externalType: getUserType(user),
+        email: user.email,
+        userId: user._id,
+      });
+
+      await otpDoc.save();
+
+    } catch (err) {
+      reject(err);
+    }
+    const mailOptions = {
+      from: {
+        name: "CMS-LDCE",
+        address: SENDER_EMAIL
+      },
+      to: user.email,
+      subject: "OTP for password reset",
+      title: "Password Reset OTP",
+      html: `
     <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,6 +103,7 @@ export const otpEmailGeneration = async (user) => {
   <h1 style="text-align: center;">CMS-LDCE</h1>
     <h2 style="text-align: center;">Password Reset OTP</h2>
     <p>Your OTP for password reset is: <strong>${otp}</strong></p>
+    <p> This otp is valid for 5 minutes.</p>
     <p>Please use this OTP to reset your password. Do not share it with anyone.</p>
     <p>If you didn't request a password reset, please ignore this email.</p>
     <p class="footer">Thank you!</p>
@@ -101,17 +112,18 @@ export const otpEmailGeneration = async (user) => {
 </body>
 </html>
     `,
-  }
-
-  emailTransport.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(info);
     }
+
+    emailTransport.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve({
+          message: "OTP sent successfully",
+          otpId: otpDoc._id,
+        })
+      }
+    })
+
   })
 };
-
-otpEmailGeneration({
-  email: "naineelsoyantar@gmail.com"
-})

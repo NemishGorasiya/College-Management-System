@@ -1,12 +1,21 @@
 import { config } from "dotenv";
-import { MailtrapTransport } from "mailtrap";
 import nodemailer from "nodemailer";
 config();
 
-const TOKEN = process.env.MAILTRAP_TOKEN;
+if (!process.env.EMAIL || !process.env.APP_PASSWORD) {
+  console.error("Please provide email and APP_PASSWORD in .env file");
+  process.exit(1);
+}
 
-const emailTransport = nodemailer.createTransport(MailtrapTransport({
-  token: TOKEN,
-}));
+const transport = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587, //default port for secure SMTP 
+  secure: false,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.APP_PASSWORD,
+  },
+})
 
-export default emailTransport;
+export default transport; 

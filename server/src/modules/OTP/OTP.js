@@ -18,17 +18,17 @@ const OTPSchema = new Schema({
     required: true,
     ref: 'externalType'
   },
-  validated: { // if the otp is validated or not can be used to check if the otp is used or not
+  validated: {
     type: Boolean,
     default: false,
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 600, //this will delete the document after 10 minutes of creation 
+    expires: 300, //this document will be deleted after 5 minutes
   },
 });
 
-
+OTPSchema.index({ email: 1, userId: 1 }, { unique: true });
 
 export default model("OTP", OTPSchema, "otp");
