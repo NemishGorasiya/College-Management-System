@@ -1,12 +1,20 @@
-import "./Button.scss"
+import "./Button.scss";
 
-export default function Button({children ,className, textonly = false , style}) {
-    let computedClassName = "btn";
-    computedClassName += ` ${className}`;
-    if (textonly) {
-        computedClassName += " textOnly"; 
-    }
-  return (
-    <button style={style} className={computedClassName}>{children}</button>
-  )
+export default function Button({
+	children,
+	className,
+	textonly = false,
+	style,
+	onClick,
+}) {
+	let computedClassName = "btn";
+	computedClassName += ` ${className}`;
+	if (textonly) {
+		computedClassName += " textOnly";
+	}
+	return (
+		<button style={style} onClick={onClick} className={computedClassName}>
+			{children}
+		</button>
+	);
 }
