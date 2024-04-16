@@ -18,12 +18,15 @@ import { useState } from "react";
 const CreateDepartment = () => {
 	const [researchAreas, setResearchAreas] = useState([]);
 	const [facilities, setFacilities] = useState([]);
+	const [accreditation, setAccreditation] = useState([]);
+
 	const handleFormSubmit = (event) => {
 		event.preventDefault();
 		const fd = new FormData(event.target);
 		console.log(typeof researchAreas);
 		fd.append("researchAreas", researchAreas);
 		fd.append("facilities", facilities);
+		fd.append("accreditation", accreditation);
 		const acquisitionChannel = fd.getAll("acquisition");
 		const data = Object.fromEntries(fd.entries());
 		data.acquisition = acquisitionChannel;
@@ -127,6 +130,36 @@ const CreateDepartment = () => {
 											variant="outlined"
 											label="Facilities"
 											placeholder="Facilities"
+										/>
+									)}
+								/>
+							</FormControl>
+							<FormControl variant="outlined" className="formControl">
+								<Autocomplete
+									multiple
+									// id="tags-filled"
+									id="accreditation"
+									name="accreditation"
+									options={[].map((option) => option.title)}
+									freeSolo
+									onChange={(event, value) => {
+										setAccreditation(value);
+									}}
+									renderTags={(value, getTagProps) =>
+										value.map((option, index) => (
+											<Chip
+												variant="outlined"
+												label={option}
+												{...getTagProps({ index })}
+											/>
+										))
+									}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											variant="outlined"
+											label="Accreditation"
+											placeholder="Accreditation"
 										/>
 									)}
 								/>
