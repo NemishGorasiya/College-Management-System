@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { bloodGroups, semesters } from "../constant/constatnt";
+import { allowedUsers, bloodGroups, semesters } from "../constant/constatnt";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -31,12 +31,13 @@ const RegistrationPage = () => {
     console.log(data);
     registerStudent({ data });
   };
+
   return (
     <div className="registrationPage">
       <TopBar />
       <div className="contentWrapper">
         <div className="formContainer">
-          <h2>Student Registration</h2>
+          <h2>{userType} Registration</h2>
           <form className="form" onSubmit={handleRegistration}>
             <div className="formControls">
               <FormControl variant="outlined" className="formControl">

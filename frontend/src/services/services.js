@@ -42,6 +42,25 @@ export const handleStudentLogin = async () => {
   }
 };
 
+export const uploadFile = async (formData) => {
+  try {
+    const res = await axios({
+      method: "post",
+      url: BASE_URL + "/uploads/files",
+      headers: { "Content-Type": "multipart/form-data" },
+      data: formData,
+      credentials: "include",
+      withCredentials: true,
+      redirect: "follow",
+    });
+    console.log("res", res.data);
+    const resData = res.data;
+    return resData;
+  } catch (error) {
+    console.error(error.response.data);
+  }
+};
+
 export const downloadResult = async () => {
   try {
     const res = await axios({
