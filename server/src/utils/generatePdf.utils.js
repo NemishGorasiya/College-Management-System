@@ -97,6 +97,7 @@ export const generateTimetablePdf = async (data) => {
 
             if (fs.existsSync(PATH_TO_FILE)) {
                 resolve(PATH_TO_FILE);
+                return
             }
 
             const writeStream = fs.createWriteStream(PATH_TO_FILE);

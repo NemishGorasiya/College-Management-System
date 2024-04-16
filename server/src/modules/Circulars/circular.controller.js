@@ -8,7 +8,8 @@ export const getCirculars = async (req, res) => {
     const filterObj = {};
 
     if (!date) {
-        date = format(Date.now(), 'yyyy-mm-dd')
+    
+        date = format(new Date(), 'yyyy-MM-dd')
     }
 
     //fetches latest dated circulars only
