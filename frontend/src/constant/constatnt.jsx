@@ -56,3 +56,6 @@ export const sideBarExtraNavLinks = [
 		svgIcon: SettingIcon,
 	},
 ];
+
+export const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+export const semesters = [1, 2, 3, 4, 5, 6, 7, 8];

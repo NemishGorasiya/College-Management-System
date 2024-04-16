@@ -1,0 +1,34 @@
+.loginPage {
+	.contentWrapper {
+		background: #ffffff;
+		padding: 20px;
+		overflow-y: auto;
+		height: calc(100vh - 80px);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		.formContainer {
+			background: #ebf1ff;
+			border-radius: 13px;
+			padding: 20px;
+			width: 100%;
+			max-width: 450px;
+
+			h2 {
+				margin-bottom: 20px;
+			}
+			.form {
+				.formControls {
+					display: flex;
+					flex-direction: column;
+					gap: 20px;
+					width: 100%;
+				}
+				.submitBtnWrapper button {
+					height: 56px;
+				}
+			}
+		}
+	}
+}

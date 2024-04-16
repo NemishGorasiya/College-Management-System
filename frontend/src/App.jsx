@@ -10,6 +10,9 @@ import HomePage from "./pages/HomePage.jsx";
 import Help from "./components/Help.jsx";
 import Setting from "./components/Setting.jsx";
 import Assignments from "./components/Assignments.jsx";
+import RegistrationPage from "./pages/RegistrationPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import toast, { Toaster } from "react-hot-toast";
 // import { handleStudentLogin } from "./services/Services.jsx";
 
 function App() {
@@ -17,7 +20,9 @@ function App() {
 	const router = createBrowserRouter([
 		{
 			path: "/",
-			element: <HomePage />,
+			element: <LoginPage />,
+			// element: <RegistrationPage />,
+			// element: <HomePage />,
 			children: [
 				{
 					path: "/profile",
@@ -61,6 +66,7 @@ function App() {
 
 	return (
 		<>
+			<Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
 			<RouterProvider router={router} />
 		</>
 	);
