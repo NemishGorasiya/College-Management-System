@@ -8,28 +8,31 @@ import { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { Box, Typography } from "@mui/material";
 
-const UploadCircularButton = () => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+const UploadCircularButton = ({ getCirculars }) => {
+	const [open, setOpen] = useState(false);
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
 
-  return (
-    <>
-      <Button
-        component="label"
-        role={undefined}
-        variant="contained"
-        tabIndex={-1}
-        startIcon={<CloudUploadIcon />}
-        sx={{ marginBottom: "20px" }}
-        onClick={handleOpen}
-      >
-        Upload New Circular
-        {/* <VisuallyHiddenInput type="file" onChange={handleCircularChange} /> */}
-      </Button>
-      <UploadCircularModal open={open} handleClose={handleClose} />
-    </>
-  );
+	return (
+		<>
+			<Button
+				component="label"
+				role={undefined}
+				variant="contained"
+				tabIndex={-1}
+				startIcon={<CloudUploadIcon />}
+				sx={{ marginBottom: "20px" }}
+				onClick={handleOpen}
+			>
+				Upload New Circular
+			</Button>
+			<UploadCircularModal
+				getCirculars={getCirculars}
+				open={open}
+				handleClose={handleClose}
+			/>
+		</>
+	);
 };
 
 export default UploadCircularButton;

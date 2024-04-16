@@ -1,1 +1,14 @@
+.uploadCircularModal {
+	.dialogBox {
+		form {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
 
+			.formControl {
+				width: 100%;
+				height: 56px;
+			}
+		}
+	}
+}
