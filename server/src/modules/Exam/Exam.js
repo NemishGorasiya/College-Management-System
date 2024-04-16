@@ -140,6 +140,9 @@ examSchema.pre("save", function (next) {
                 next(new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type"));
         }
     }
+    else{
+        next()
+    }
 });
 
 examSchema.pre("updateOne", function (next) {
@@ -161,6 +164,7 @@ examSchema.pre("updateOne", function (next) {
                 next(new CustomError(httpStatus.BAD_REQUEST, "Invalid exam type"));
         }
     }
+
 });
 
 examSchema.methods.getResults = async function () {
@@ -171,5 +175,5 @@ examSchema.methods.getResults = async function () {
     return results;
 }
 
-
+ 
 export default model("Exam", examSchema, "exams");
