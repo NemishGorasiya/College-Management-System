@@ -20,7 +20,6 @@ import {
   facultyUpdateSchema,
   registerFacultySchema,
 } from "./faculty.schema.js";
-import { changePassword } from "../General/general.controller.js";
 
 const router = Router({ mergeParams: true });
 

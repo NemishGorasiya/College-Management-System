@@ -6,7 +6,7 @@ import {
   isAuthenticated,
 } from "../../middlewares/middlewares.js";
 import Admin from "../Admin/Admin.js";
-import { changePassword } from "../General/general.controller.js";
+import Faculty from "../Faculty/Faculty.js";
 import Student from "./Student.js";
 import {
   getStudents,
@@ -32,7 +32,6 @@ import {
   studentSubmitAssignmentSchema,
   studentUpdateSchema,
 } from "./student.schema.js";
-import Faculty from "../Faculty/Faculty.js";
 
 const router = Router({ mergeParams: true });
 

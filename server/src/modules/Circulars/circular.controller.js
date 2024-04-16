@@ -40,7 +40,9 @@ export const createCircular = async (req, res) => {
 
     await circular.save();
 
-    return res.status(httpStatus.CREATED)
+    return res.status(httpStatus.CREATED).send({
+        "message": "Circular created successfully!"
+    })
 };
 
 export const updateCircular = async (req, res) => {
