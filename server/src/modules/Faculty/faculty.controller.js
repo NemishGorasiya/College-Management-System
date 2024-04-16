@@ -83,9 +83,9 @@ export const loginFaculty = async (req, res) => {
 
 export const updateFaculty = async (req, res) => {
     let _id;
-    if (req.user instanceof Admin) {
-        _id = req.query.studentId;
-
+    if (req.user instanceof Faculty) {
+        _id = req.query.facultyId;
+        console.log(_id);
         if (!_id) {
             return res.status(httpStatus.BAD_REQUEST).json({ message: "Faculty id is required in the query params" });
         }
@@ -139,9 +139,23 @@ export const getFaculty = async (req, res) => {
     }
 
 
-    const faculty = await Faculty.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy });
+    const data = await Faculty.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy });
+    
+    let faculties = []
+    for (let faculty of data) {
+        const obj = {
+            _id: faculty._id,
+            firstName: faculty.firstName,
+            lastName: faculty.lastName,
+            department: faculty.department,
+            designation: faculty.designation,
+            email: faculty.email
+        }
 
-    res.status(httpStatus.OK).json({ Faculty: faculty })
+        faculties.push(obj)
+    }
+
+    res.status(httpStatus.OK).json({ Faculty: faculties })
 
 
 } 
