@@ -6,8 +6,6 @@ import Admin from '../Admin/Admin.js';
 import { deleteFaculty, getFaculty, loginFaculty, registerFaculty, updateFaculty } from './faculty.controller.js';
 import Faculty from './Faculty.js';
 import { facultyDeleteSchema, facultyLoginSchema, facultyUpdateSchema, registerFacultySchema } from './faculty.schema.js';
-import { studentResetPasswordSchema } from '../Student/student.schema.js';
-import { changePassword } from '../General/general.controller.js';
 
 
 const router = Router({ mergeParams: true });
