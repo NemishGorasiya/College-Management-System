@@ -247,8 +247,6 @@ export const studentGetExams = async (req, res) => {
             $in: subjects.map(subject => subject._id)
         }
     
- 
-  //TODO: faculty id is not working
     if (faculty) {
         filterObj.faculty = {
             _id: faculty

@@ -3,10 +3,9 @@ import { validate } from 'express-validation';
 import passport from 'passport';
 import { checkPermissions, isAuthenticated } from '../../middlewares/middlewares.js';
 import Admin from '../Admin/Admin.js';
-import { changePassword } from '../General/general.controller.js';
 import Student from './Student.js';
 import { getStudents, studentDelete, studentGetAssignments, studentGetExams, studentGetFinalResult, studentGetFinalResultDownload, studentGetResults, studentGetSubjects, studentGetTimetable, studentLogin, studentRegister, studentRegisterCSV, studentSubmitAssignment, studentUpdate } from './student.controllers.js';
-import { studentDeleteSchema, studentLoginSchema, studentRegisterCSVSchema, studentRegisterSchema, studentResetPasswordSchema, studentSubmitAssignmentSchema, studentUpdateSchema } from './student.schema.js';
+import { studentDeleteSchema, studentLoginSchema, studentRegisterCSVSchema, studentRegisterSchema,  studentSubmitAssignmentSchema, studentUpdateSchema } from './student.schema.js';
 import Faculty from '../Faculty/Faculty.js';
 
 

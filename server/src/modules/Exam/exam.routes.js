@@ -14,7 +14,6 @@ router
     .post("/create", isAuthenticated, checkPermissions(Faculty, Admin), validate(createExamSchema, { keyByField: true }), createExam) //create
     .post("/create/:semester", isAuthenticated, checkPermissions(Faculty, Admin), validate(createExamSemesterSchema, { keyByField: true }), createExamSemester) //HOD exam create main examinations like - Midsems, Internal,
     .get("/get/:examId", isAuthenticated, checkPermissions(Faculty, Admin), getExam)
-    // TODO: faculty
     .get("/result/:examId", isAuthenticated, checkPermissions(Faculty, Admin), getExamResults)
     .patch("/update/:examId", isAuthenticated, checkPermissions(Faculty, Admin), validate(updateExamSchema, { keyByField: true }), updateExam)
     .delete("/delete/:examId", isAuthenticated, checkPermissions(Faculty, Admin), deleteExam)
