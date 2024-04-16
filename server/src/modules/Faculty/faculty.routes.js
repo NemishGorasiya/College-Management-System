@@ -18,9 +18,7 @@ router
     .post("/register", isAuthenticated, checkPermissions(Admin), validate(registerFacultySchema, { keyByField: true }), registerFaculty);
 
 router
-    .post("/login", passport.authenticate("faculty", { failureRedirect: "/api/error" }), validate(facultyLoginSchema), loginFaculty)
-    .post("/reset-password", validate(studentResetPasswordSchema, { keyByField: true }), passport.authenticate('faculty', { failureRedirect: '/api/error' }), changePassword)
-    ;
+    .post("/login", passport.authenticate("faculty", { failureRedirect: "/api/error" }), validate(facultyLoginSchema), loginFaculty);
 
 router
     .patch("/update/request", isAuthenticated, checkPermissions(Faculty, Admin), validate(facultyUpdateSchema, { keyByField: true }), updateFaculty)

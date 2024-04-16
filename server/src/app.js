@@ -115,7 +115,7 @@ app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) 
 
 //routes for the server
 //!NOTE: these are just for testing purposes - will remove later
-app.get('/user/change-password', (req, res) => {
+app.get('/user/validate-otp', (req, res) => {
     return res.send({
         message: "Change password page",
         description: "This is the page where the user will change the password",
@@ -147,36 +147,40 @@ app.use(errorHandler);
 
 //starting the server
 async function start() {
-    //connect to the database
-    await connectDB();
+    try {
+        //connect to the database
+        await connectDB();
 
-    //start listening to the server
-    server.listen(PORT, () => {
-        logger.info(`Server is running on port ${PORT}`);
-    });
-
-    const shutdownHandler = async () => {
-        logger.info(`shutting down the server`);
-        //close the mongoose connection
-        mongoose.disconnect(() => {
-            logger.info("Database disconnected successfully")
-        })
-
-        //close the redis client
-        await redisClient.quit();
-
-        //close the server
-        server.close(() => {
-            logger.info("Server is shut down");
-            process.exit(0);
+        //start listening to the server
+        server.listen(PORT, () => {
+            logger.info(`Server is running on port ${PORT}`);
         });
-    }
 
-    //graceful shutdown
-    process.on('SIGINT', shutdownHandler);
-    process.on('SIGTERM', shutdownHandler);
-    process.on('uncaughtException', shutdownHandler);
-    process.on('unhandledRejection', shutdownHandler);
+        const shutdownHandler = async () => {
+            logger.info(`shutting down the server`);
+            //close the mongoose connection
+            mongoose.disconnect(() => {
+                logger.info("Database disconnected successfully")
+            })
+
+            //close the redis client
+            await redisClient.quit();
+
+            //close the server
+            server.close(() => {
+                logger.info("Server is shut down");
+                process.exit(0);
+            });
+        }
+
+        //graceful shutdown
+        process.on('SIGINT', shutdownHandler);
+        process.on('SIGTERM', shutdownHandler);
+    } catch (err) {
+        logger.error(`Error starting the server: ${err}`);
+        process.exit(1);
+
+    }
 };
 
 start();

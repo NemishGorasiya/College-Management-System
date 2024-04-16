@@ -172,11 +172,3 @@ export const studentRegisterCSVSchema = {
         department: Joi.string().required(),
     })
 };
-
-export const studentResetPasswordSchema = {
-    body: Joi.object({
-        username: Joi.string().required(),
-        password: Joi.string().required(),
-        newPassword: Joi.string().required(),
-    })
-}

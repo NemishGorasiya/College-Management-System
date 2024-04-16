@@ -250,7 +250,9 @@ export const studentGetExams = async (req, res) => {
  
   //TODO: faculty id is not working
     if (faculty) {
-        filterObj.faculty = faculty._id;
+        filterObj.faculty = {
+            _id: faculty
+        };
     }
 
     if (examType) {

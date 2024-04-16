@@ -113,6 +113,7 @@ export const createExamSemester = async (req, res) => {
 export const getExam = async (req, res) => {
     const examId = req.params.examId;
 
+
     const exam = await Exam.findById(examId);
 
     if (!exam) {
@@ -133,7 +134,7 @@ export const updateExam = async (req, res) => {
     }
 
     const exam = await Exam.findById(examId);
-    console.log(exam);
+   
     //if no exam found
     if (!exam) {
         throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
@@ -152,7 +153,7 @@ export const updateExam = async (req, res) => {
    
     //if the date is a weekend, move it to the next day until it is not a weekend
     while (req.body.date && isWeekend(req.body.date)) {
-        req.body.date = addDays(req.body.date, 1);
+        req.body.date = addDays(req.body.date, 1); 
     }
 
     for (let key in req.body) {
@@ -221,7 +222,7 @@ export const getOwnExams = async (req, res) => {
         filterObj.faculty = faculty._id;
     }
 
-    if (examType) {
+    if (examType) { 
         filterObj.examType = {
             $regex: new RegExp(examType),
             $options: "i",
@@ -231,6 +232,7 @@ export const getOwnExams = async (req, res) => {
     if (date) {
         filterObj.date = date;
     }
+
 
 
     let exams = await Exam.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ date: `${sortType}` });
@@ -282,7 +284,7 @@ export const getAllExams = async (req, res) => {
     }
 
     return res.status(httpStatus.OK).send({
-        exams,
+        exams, 
     });
 };
 
