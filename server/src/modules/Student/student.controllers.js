@@ -232,11 +232,11 @@ export const studentRegisterCSV = async (req, res) => {
 };
 
 export const studentGetExams = async (req, res) => {
-    let { page, limit, faculty, examType, date } = req.query
+    const { page, limit, faculty, examType, date } = req.query
     const { department, semester } = req.user;
 
     let subjects = await getSubjects(department, semester);
-  
+    // console.log(subjects);
 
     //!TODO: add pagination, filter by date, exam type, faculty and isCompleted or not
 
@@ -248,10 +248,11 @@ export const studentGetExams = async (req, res) => {
         }
     
  
+  //TODO: faculty id is not working
     if (faculty) {
-        filterObj.faculty= {
-            _id:faculty
-        }
+        filterObj.faculty = {
+            _id: faculty
+        };
     }
 
     if (examType) {
@@ -265,7 +266,7 @@ export const studentGetExams = async (req, res) => {
         filterObj.date = date;
     }
 
-   
+
 
 
     let exams = await Exam.find(filterObj).populate("subject").populate("faculty").skip((page - 1) * limit).limit(limit).sort({

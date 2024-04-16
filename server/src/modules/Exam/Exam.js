@@ -142,9 +142,7 @@ examSchema.pre("save", function (next) {
     } else {
         next();
     }
-    else{
-        next()
-    }
+   
 });
 
 examSchema.pre("updateOne", function (next) {
