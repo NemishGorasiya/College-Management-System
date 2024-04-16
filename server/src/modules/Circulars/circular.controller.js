@@ -8,15 +8,13 @@ export const getCirculars = async (req, res) => {
     const filterObj = {};
 
     if (!date) {
-        const currDate = new Date(Date.now())
-        date = format(currDate, 'yyyy-MM-dd')
+    
+        date = format(new Date(), 'yyyy-MM-dd')
     }
 
     //fetches latest dated circulars only
-    const month = getMonth(date) + 1;
-    const year = getYear(date);
 
-    const startDate = new Date(`${year}-${month}-01`);
+    const startDate = new Date(`${getYear(date)}-${getMonth(date)}-01`);
     const endDate = addMonths(startDate, 1);
 
     filterObj.createdAt = {
@@ -43,9 +41,7 @@ export const createCircular = async (req, res) => {
 
     await circular.save();
 
-    return res.status(httpStatus.CREATED).send({
-        "message": "Circular created successfully!"
-    })
+    return res.status(httpStatus.CREATED)
 };
 
 export const updateCircular = async (req, res) => {
