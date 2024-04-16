@@ -8,13 +8,14 @@ export const getCirculars = async (req, res) => {
     const filterObj = {};
 
     if (!date) {
-    
+
         date = format(new Date(), 'yyyy-MM-dd')
     }
 
     //fetches latest dated circulars only
-
-    const startDate = new Date(`${getYear(date)}-${getMonth(date)}-01`);
+    const month = getMonth(date) + 1;
+    const year = getYear(date);
+    const startDate = new Date(`${year}-${month}-01`);
     const endDate = addMonths(startDate, 1);
 
     filterObj.createdAt = {
