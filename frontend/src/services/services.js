@@ -53,8 +53,65 @@ export const uploadFile = async (formData) => {
       withCredentials: true,
       redirect: "follow",
     });
+    const resData = res.data;
+    return resData;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const uploadCircular = async (circularData) => {
+  console.log("data", circularData);
+  try {
+    const res = await axios({
+      method: "post",
+      url: BASE_URL + "/circular",
+      headers: { "Content-Type": "application/json" },
+      data: circularData,
+      credentials: "include",
+      withCredentials: true,
+      redirect: "follow",
+    });
+    const resData = res.data;
+    return resData;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchCirculars = async () => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: BASE_URL + "/circular",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      withCredentials: true,
+      redirect: "follow",
+    });
     console.log(res);
-    return res;
+    const resData = res.data;
+    return resData;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const downloadCircular = async ({ url: circularLink, fileName }) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: circularLink,
+      responseType: "blob",
+    });
+    console.log(res);
+    const downloadUrl = window.URL.createObjectURL(res.data);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = fileName || "circular";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+    return true;
   } catch (error) {
     console.error(error);
   }
