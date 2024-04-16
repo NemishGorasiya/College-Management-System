@@ -18,7 +18,6 @@ router
     .post("/register", isAuthenticated, checkPermissions(Admin), validate(studentRegisterSchema, { keyByField: true }), studentRegister)
     .post("/register/csv", isAuthenticated, checkPermissions(Admin), validate(studentRegisterCSVSchema, { keyByField: true }), studentRegisterCSV)
     .post("/login", validate(studentLoginSchema, { keyByField: true }), passport.authenticate('student', { failureRedirect: '/api/error' }), studentLogin)
-    .post("/reset-password", validate(studentResetPasswordSchema, { keyByField: true }), passport.authenticate('student', { failureRedirect: '/api/error' }), changePassword)
     .patch("/update/request", isAuthenticated, checkPermissions(Student, Admin), validate(studentUpdateSchema, { keyByField: true }), studentUpdate)
     .delete("/delete/:studentId", isAuthenticated, checkPermissions(Admin), validate(studentDeleteSchema, { keyByField: true }), studentDelete)
     .get("/assignments", isAuthenticated, checkPermissions(Student), studentGetAssignments)
