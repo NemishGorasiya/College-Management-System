@@ -14,7 +14,12 @@ import {
   updateRequestsAdmin,
 } from "./admin.controllers.js";
 import Admin from "./Admin.js";
-import { adminDeleteSchema, adminLoginSchema, adminRegisterSchema, adminUpdateSchema } from "./admin.schema.js";
+import {
+  adminDeleteSchema,
+  adminLoginSchema,
+  adminRegisterSchema,
+  adminUpdateSchema,
+} from "./admin.schema.js";
 
 const router = Router({ mergeParams: true });
 
@@ -28,9 +33,12 @@ router.post(
   registerAdmin
 );
 
-router
-    .post("/login", validate(adminLoginSchema, { keyByField: true, }), passport.authenticate("admin", { failureRedirect: "/api/error" }), loginAdmin)
-
+router.post(
+  "/login",
+  validate(adminLoginSchema, { keyByField: true }),
+  passport.authenticate("admin", { failureRedirect: "/api/error" }),
+  loginAdmin
+);
 
 router
   .get(
@@ -61,7 +69,5 @@ router
     validate(adminDeleteSchema, { keyByField: true }),
     deleteAdmin
   );
-    .patch("/update/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminUpdateSchema, { keyByField: true, }), updateAdmin)
-    .delete("/delete/:adminId", isAuthenticated, checkPermissions(Admin), validate(adminDeleteSchema, { keyByField: true, }), deleteAdmin)
 
 export default router;

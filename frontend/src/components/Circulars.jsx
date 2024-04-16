@@ -37,6 +37,7 @@ export default function Circulars() {
     const formData = new FormData();
     formData.append("file", event.target.files[0]);
     const response = await uploadFile(formData);
+    console.log("response in circular", response);
   };
   return (
     <div className="circularsService">

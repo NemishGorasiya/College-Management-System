@@ -53,11 +53,10 @@ export const uploadFile = async (formData) => {
       withCredentials: true,
       redirect: "follow",
     });
-    console.log("res", res.data);
-    const resData = res.data;
-    return resData;
+    console.log(res);
+    return res;
   } catch (error) {
-    console.error(error.response.data);
+    console.error(error);
   }
 };
 
