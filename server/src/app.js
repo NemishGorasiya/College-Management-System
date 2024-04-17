@@ -5,6 +5,7 @@ import express from 'express';
 import actuator from "express-actuator";
 import "express-async-errors";
 import session from "express-session";
+import status from "express-status-monitor";
 import { createServer } from 'http';
 import httpStatus from "http-status";
 import mongoose from 'mongoose';
@@ -15,25 +16,10 @@ import connectDB from './config/db.config.js';
 import redisClient from "./config/redis.config.js";
 import logger from './config/winston.config.js';
 import CustomError from "./errors/CustomError.js";
-import { authErrorHandler, errorHandler, notFoundHandler } from "./errors/errorHandlers.js";
-import { isAuthenticated } from "./middlewares/middlewares.js";
+import indexRoutes from "./index.routes.js";
 import Admin from "./modules/Admin/Admin.js";
-import adminRoutes from "./modules/Admin/admin.routes.js";
-import assignmentRoutes from "./modules/Assignment/assignment.routes.js";
-import circularRoutes from "./modules/Circulars/circular.routes.js";
-import departmentRoutes from "./modules/Department/department.routes.js";
-import eventRoutes from "./modules/Events/events.routes.js";
-import examRoutes from "./modules/Exam/exam.routes.js";
 import Faculty from "./modules/Faculty/Faculty.js";
-import facultyRoutes from "./modules/Faculty/faculty.routes.js";
-import { getProfile, userLogout } from "./modules/General/general.controller.js";
-import resultRoutes from "./modules/Result/result.routes.js";
 import Student from "./modules/Student/Student.js";
-import studentRoutes from "./modules/Student/student.routes.js";
-import subjectRoutes from "./modules/Subject/subject.routes.js";
-import uploadRoutes from "./modules/Uploads/upload.routes.js";
-import status from "express-status-monitor";
-import generalUserRoutes from "./modules/General/general.routes.js";
 config();
 
 const app = express();
@@ -115,35 +101,7 @@ app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) 
 
 //routes for the server
 //!NOTE: these are just for testing purposes - will remove later
-app.get('/user/validate-otp', (req, res) => {
-    return res.send({
-        message: "Change password page",
-        description: "This is the page where the user will change the password",
-    });
-})
-
-app.get('/api/', (_, res) => {
-    return res.send("Welcome to the college management system");
-});
-
-app.use('/api/admin', adminRoutes);
-app.use('/api/faculty', facultyRoutes);
-app.use('/api/student', studentRoutes);
-app.use('/api/user', isAuthenticated, generalUserRoutes);
-
-app.use('/api/department', departmentRoutes);
-app.use('/api/subject', subjectRoutes);
-app.use('/api/assignment', assignmentRoutes);
-app.use('/api/uploads', uploadRoutes);
-app.use('/api/exam', examRoutes);
-app.use('/api/result', resultRoutes);
-app.use('/api/circular', circularRoutes);
-app.use('/api/events', eventRoutes);
-
-//auth error, normal error handlers and not found handlers
-app.use('/api/error', authErrorHandler);
-app.use("*", notFoundHandler);
-app.use(errorHandler);
+app.use("/", indexRoutes);
 
 //starting the server
 async function start() {

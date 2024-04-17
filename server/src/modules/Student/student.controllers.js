@@ -15,6 +15,7 @@ import StudentUpdateRequest from "./StudentUpdateRequest.js";
 import { studentRegisterInterSchema } from "./student.schema.js";
 
 
+
 export const studentRegister = async (req, res) => {
     const {
         enrollmentNumber,
@@ -25,7 +26,7 @@ export const studentRegister = async (req, res) => {
         email,
         gender,
         bloodGroup,
-        phoneNumber, 
+        phoneNumber,
         fatherName,
         motherName,
         parentPhoneNumber,
@@ -135,7 +136,19 @@ export const studentGetSubjects = async (req, res) => {
     //get the subjects of the students
     const { semester, department } = req.user;
 
-    const subjects = await getSubjects(department, semester);
+    const subjectList = await getSubjects(department, semester);
+    
+    const subjects = subjectList.map(subject => ({
+        _id: subject._id,
+        name: subject.name,
+        description: subject.description,
+        subjectCode: subject.subjectCode,
+        semester: subject.semester,
+        credits: subject.credits,
+        departmentID: subject.department._id,
+        department: subject.department.name,
+        resources: subject.resources
+    }));
 
     return res.status(httpStatus.OK).send({
         message: "Student's subjects fetched successfully",
@@ -158,23 +171,34 @@ export const studentGetAssignments = async (req, res) => {
         createdAt: -1,
     });
 
-    let submittedAssignments = [];
-    let nonSubmittedAssignments = [];
+    const userId = req.user._id.toString();
 
-    //this goes O(n^2)
-    for (let assignment of assignments) {
-        if (assignment.students.find(student => student.student.toString() === req.user._id.toString())) {
-            submittedAssignments.push(assignment);
-        } else {
-            nonSubmittedAssignments.push(assignment);
-        }
-    }
+    // Separate submitted and non-submitted assignments using array filtering
+    const submittedAssignments = assignments.filter(assignment =>
+        assignment.students.some(student => student.student.toString() === userId)
+    );
+
+    const nonSubmittedAssignments = assignments.filter(assignment =>
+        !assignment.students.some(student => student.student.toString() === userId)
+    );
+
+    // Map assignments to required response format
+    const mapAssignment = assignment => ({
+        _id: assignment._id,
+        name: assignment.name,
+        description: assignment.description,
+        totalMarks: assignment.totalMarks,
+        subject_id: assignment.subject._id,
+        subject: assignment.subject.name,
+        dueDate: assignment.dueDate,
+        faculty: assignment.faculty
+    });
 
     return res.status(httpStatus.OK).send({
-        message: "Student's assignment fetched successfully",
-        submittedAssignments,
-        assignments: nonSubmittedAssignments
-    })
+        message: "Student's assignments fetched successfully",
+        submittedAssignments: submittedAssignments.map(mapAssignment),
+        nonSubmittedAssignments: nonSubmittedAssignments.map(mapAssignment)
+    });
 };
 
 export const studentSubmitAssignment = async (req, res) => {
@@ -232,63 +256,59 @@ export const studentRegisterCSV = async (req, res) => {
 };
 
 export const studentGetExams = async (req, res) => {
-    const { page, limit, faculty, examType, date } = req.query
-    const { department, semester } = req.user;
+    try {
+        const { page, limit, faculty, examType, date } = req.query;
+        const { department, semester } = req.user;
 
-    let subjects = await getSubjects(department, semester);
-    // console.log(subjects);
+        // Get subjects for the student
+        const subjects = await getSubjects(department, semester);
 
-    //!TODO: add pagination, filter by date, exam type, faculty and isCompleted or not
-
-    let filterObj = {};
-
-
-        filterObj.subject = {
-            $in: subjects.map(subject => subject._id)
-        }
-    
-    if (faculty) {
-        filterObj.faculty = {
-            _id: faculty
+        // Construct filter object
+        const filterObj = {
+            subject: { $in: subjects.map(subject => subject._id) }
         };
+
+        if (faculty) filterObj['faculty._id'] = faculty;
+        if (examType) filterObj.examType = new RegExp(examType, 'i');
+        if (date) filterObj.date = date;
+
+        // Query exams
+        let exams = await Exam.find(filterObj)
+            .populate("subject")
+            .populate("faculty")
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .sort({ date: 1, createdAt: -1 });
+
+        // Separate completed and remaining exams
+        const completedExams = exams.filter(exam => exam.isCompleted);
+        const remainingExams = exams.filter(exam => !exam.isCompleted);
+
+        // Map exams to required format
+        const mapExam = exam => ({
+            _id: exam._id,
+            name: exam.name,
+            description: exam.description,
+            totalMarks: exam.totalMarks,
+            subject_id: exam.subject._id,
+            subject: exam.subject.name,
+            date: exam.date,
+            examType: exam.examType,
+            duration: exam.duration,
+            isCompleted: exam.isCompleted
+        });
+
+        return res.status(httpStatus.OK).send({
+            message: "Student's exams fetched successfully",
+            completedExams: completedExams.map(mapExam),
+            exams: remainingExams.map(mapExam)
+        });
+    } catch (error) {
+        console.error("Error fetching student exams:", error);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: "Internal server error" });
     }
-
-    if (examType) {
-        filterObj.examType = {
-            $regex: new RegExp(examType),
-            $options: "i",
-        };
-    }
-
-    if (date) {
-        filterObj.date = date;
-    }
-
-
-
-
-    let exams = await Exam.find(filterObj).populate("subject").populate("faculty").skip((page - 1) * limit).limit(limit).sort({
-        date: 1,
-        createdAt: -1,
-    })
-
-    let completedExams = [], remainingExams = [];
-
-    //filter the isCompleted exams here
-    exams.forEach((exam) => {
-        if (exam.isCompleted) {
-            completedExams.push(exam);
-        } else {
-            remainingExams.push(exam);
-        }
-    })
-
-    return res.status(httpStatus.OK).send({
-        message: "Student's exams fetched successfully",
-        completedExams,
-        exams: remainingExams
-    });
 };
+
 
 export const studentGetTimetable = async (req, res) => {
     const { department, semester } = req.user;
@@ -323,16 +343,7 @@ export const studentGetTimetable = async (req, res) => {
         });
     }
 
-    // const { secure_url: urlPath, original_filename, format } = await generatePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
     const filePath = await generateTimetablePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
-
-    // return res.status(httpStatus.OK).send({
-    //     message: "Student's timetable fetched successfully",
-    //     // urlPath,
-    //     // filename: original_filename + "." + format,
-
-    //     filePath
-    // });
 
     return res.download(filePath, `${req.user.fullName}_${req.user.id}_exams.pdf`, async (err) => {
         if (err) {
