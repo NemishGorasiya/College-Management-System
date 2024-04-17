@@ -112,6 +112,25 @@ export const fetchExams = async () => {
     console.error(error);
   }
 };
+
+export const fetchEvents = async () => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: BASE_URL + "/events",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      withCredentials: true,
+      redirect: "follow",
+    });
+    console.log(res);
+    const resData = res.data;
+    return resData;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const downloadCircular = async ({ url: circularLink, fileName }) => {
   try {
     const res = await axios({

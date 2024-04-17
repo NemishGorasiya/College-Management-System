@@ -60,26 +60,6 @@ export default function Exam() {
           )}
         </div>
       ))}
-      {/* <div className="examsWrapper">
-        <ServiceSubTitle serviceSubTitle={"Exams"} />
-        <div className="examsContainer">
-          {Array(10)
-            .fill()
-            .map((ele, idx) => (
-              <ExamCard key={idx} />
-            ))}
-        </div>
-      </div>
-      <div className="examsWrapper">
-        <ServiceSubTitle serviceSubTitle={"Completed Exams"} />
-        <div className="examsContainer">
-          {Array(10)
-            .fill()
-            .map((ele, idx) => (
-              <ExamCard key={idx} />
-            ))}
-        </div>
-      </div> */}
     </div>
   );
 }

@@ -3,6 +3,7 @@
   border-radius: 13px;
   display: flex;
   flex-direction: column;
+
   .eventImage {
     height: 175px;
     width: 100%;
@@ -30,6 +31,39 @@
       white-space: nowrap;
       overflow: hidden;
       width: 100%;
+    }
+  }
+}
+
+.eventDetailsModal {
+  .dialogBox {
+    padding: 0;
+
+    .eventImage {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+    }
+
+    .eventDetailsWrapper {
+      padding: 12px;
+
+      .eventTitle {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100%;
+      }
+      .eventTiming {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 5px;
+      }
     }
   }
 }
