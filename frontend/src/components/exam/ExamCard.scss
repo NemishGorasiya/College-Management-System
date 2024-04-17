@@ -1,60 +1,60 @@
 .examCardWrapper {
-  border: 1px solid #00000033;
-  border-radius: 13px;
-  display: flex;
-  flex-direction: column;
+	border: 1px solid #00000033;
+	border-radius: 13px;
+	display: flex;
+	flex-direction: column;
 
-  .examDetailsWrapper {
-    padding: 10px;
+	.examDetailsWrapper {
+		padding: 10px;
 
-    .examName {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 5px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      width: 100%;
-    }
-    .subjectName {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 5px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      width: 100%;
-    }
-  }
+		.examName {
+			font-size: 18px;
+			font-weight: 600;
+			margin-bottom: 5px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: 100%;
+		}
+		.subjectName {
+			font-size: 16px;
+			font-weight: 500;
+			margin-bottom: 5px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: 100%;
+		}
+	}
 
-  &:hover {
-    background: #ebf1ff;
-    cursor: pointer;
-  }
+	&:hover {
+		background: #ebf1ff;
+		cursor: pointer;
+	}
 }
 
 .examDetailsModal {
-  .examTitle {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 100%;
-  }
-  .examDetail {
-    margin-bottom: 10px;
-    text-transform: capitalize;
-    .examDetailLabel {
-      font-weight: 600;
-    }
+	.examTitle {
+		font-size: 24px;
+		font-weight: 700;
+		margin-bottom: 15px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		width: 100%;
+	}
+	.examDetail {
+		margin-bottom: 10px;
+		text-transform: capitalize;
+		.examDetailLabel {
+			font-weight: 600;
+		}
 
-    .examResult {
-      background: #ebf1ff;
-      padding: 5px;
-      border-radius: 5px;
-      font-weight: 500;
-    }
-  }
+		.examResult {
+			background: #ebf1ff;
+			padding: 5px;
+			border-radius: 5px;
+			font-weight: 500;
+		}
+	}
 }
