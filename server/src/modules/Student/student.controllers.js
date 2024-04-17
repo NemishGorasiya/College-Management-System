@@ -127,9 +127,9 @@ export const getSubjects = async (department, semester) => {
     return await Subject.find({
         department,
         semester
-    }).populate("department").sort({
+    }).populate("department", "_id name").sort({
         createdAt: -1,
-    });
+    }).select("_id name subjectCode department semester description credits resources"); 
 }
 
 export const studentGetSubjects = async (req, res) => {
@@ -138,21 +138,9 @@ export const studentGetSubjects = async (req, res) => {
 
     const subjectList = await getSubjects(department, semester);
 
-    const subjects = subjectList.map(subject => ({
-        _id: subject._id,
-        name: subject.name,
-        description: subject.description,
-        subjectCode: subject.subjectCode,
-        semester: subject.semester,
-        credits: subject.credits,
-        departmentID: subject.department._id,
-        department: subject.department.name,
-        resources: subject.resources
-    }));
-
     return res.status(httpStatus.OK).send({
         message: "Student's subjects fetched successfully",
-        subjects
+        subjectList 
     });
 };
 
@@ -223,7 +211,7 @@ export const studentSubmitAssignment = async (req, res) => {
         assignment: assignmentId,
         subject: assignment.subject,
         file
-    });
+    }).select("_id student assignment subject file isLate"); 
 
     return res.status(httpStatus.CREATED).send({
         message: "Assignment submitted successfully",
@@ -374,9 +362,9 @@ export const studentGetResults = async (req, res) => {
             $in: exams.map(exam => exam._id)
         },
         student: req.user._id
-    }).populate("exam").sort({
+    }).populate("exam","_id name totalMarks subject date").sort({
         createdAt: -1,
-    });
+    }).select("_id student exam marks examType percentage");
 
     return res.status(httpStatus.OK).send({
         message: "Student's results fetched successfully",
@@ -597,9 +585,24 @@ export function getExamType(examType) {
 
 
 export const getStudents = async (req, res) => {
-    const { semester, departmentID, page, limit, sortBy, sortType } = req.query //sortBy has options - firstname, enrollment, doe, dob
+    const { semester, department, page, limit, sortBy, sortType } = req.query //sortBy has options - firstname, enrollment, doe, dob
+    const filterObj = {};
 
-    const students = await Student.find({ semester, department: departmentID }).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: sortType })
+   if (department && semester) {
+        filterObj.department = department;
+        filterObj.semester = {
+            $in: semester.split(",")
+        };
+    }
+    else if (department) {
+        filterObj.department = department;
+    }
+    else if (semester) {
+        filterObj.semester = {
+            $in: semester.split(",")
+        };
+    }
+    const students = await Student.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: sortType })
 
     res.status(httpStatus.OK).json({ Students: students })
 }
