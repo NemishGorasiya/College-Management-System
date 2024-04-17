@@ -60,7 +60,6 @@ export const uploadFile = async (formData) => {
   }
 };
 export const uploadCircular = async (circularData) => {
-  console.log("data", circularData);
   try {
     const res = await axios({
       method: "post",
@@ -78,7 +77,6 @@ export const uploadCircular = async (circularData) => {
   }
 };
 export const createNewEvent = async (eventData) => {
-  console.log("data in service", eventData);
   try {
     const res = await axios({
       method: "post",

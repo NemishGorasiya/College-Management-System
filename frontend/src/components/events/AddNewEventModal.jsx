@@ -44,7 +44,6 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
     const {
       response: { secure_url },
     } = response;
-    console.log("secure_url", secure_url);
 
     formData.delete("file");
     const data = Object.fromEntries(formData.entries());
@@ -53,7 +52,6 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
     data.endDate = convertToISO(data.endDate);
 
     const res = await createNewEvent(data);
-    console.log("res in main fun", res);
     if (res) {
       toast.success("Event Added successfully");
       getEvents();
@@ -62,6 +60,7 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
       }, 1000);
     }
   };
+
   return (
     <Modal open={open} className="uploadCircularModal">
       <Box className="dialogBox" sx={modalStyle}>
@@ -118,6 +117,7 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
             Choose Event Poster
             <VisuallyHiddenInput
               type="file"
+              accept="image/*"
               onChange={(e) => setFile(e.target.files[0])}
             />
           </Button>

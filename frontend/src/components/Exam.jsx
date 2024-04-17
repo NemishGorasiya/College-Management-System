@@ -27,13 +27,13 @@ export default function Exam() {
       {
         title: "exams",
         label: "Exams",
-        list: res.exams,
+        list: res?.exams,
         isLoading: false,
       },
       {
         title: "completedExams",
         label: "Completed Exams",
-        list: res.completedExams,
+        list: res?.completedExams,
         isLoading: false,
       },
     ]);

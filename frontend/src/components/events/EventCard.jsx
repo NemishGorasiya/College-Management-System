@@ -14,10 +14,9 @@ export default function EventCard({ eventDetails }) {
   return (
     <>
       <div className="eventCardWrapper" onClick={handleOpen}>
-        <img className="eventImage" src={poster} alt="" />
+        <img className="eventImage" src={poster} alt="Event Poster" />
         <div className="eventDetailsWrapper">
           <p className="eventTitle">{name}</p>
-          {/* <p className="eventDate">Date: {startDate}</p> */}
           <p href="">Know More</p>
         </div>
       </div>
@@ -33,7 +32,7 @@ export default function EventCard({ eventDetails }) {
           >
             <CloseIcon />
           </IconButton>
-          <img className="eventImage" src={poster} alt="" />
+          <img className="eventImage" src={poster} alt="Event Poster" />
           <div className="eventDetailsWrapper">
             <p className="eventTitle">{name}</p>
             <p className="eventTiming">
