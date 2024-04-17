@@ -1,23 +1,39 @@
 .homePage {
-	.contentWrapper {
-		display: flex;
-		.mainContent {
-			flex: auto;
-			border-top-left-radius: 13px;
-			background: #ffffff;
-			padding: 20px;
-			overflow-y: auto;
-			height: calc(100vh - 80px);
-		}
-	}
+  .contentWrapper {
+    display: flex;
+    .mainContent {
+      flex: auto;
+      border-top-left-radius: 13px;
+      background: #ffffff;
+      padding: 20px;
+      overflow-y: auto;
+      height: calc(100vh - 80px);
+    }
+    .mainContent::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+
+    .mainContent::-webkit-scrollbar {
+      width: 12px;
+      background-color: #f5f5f5;
+    }
+
+    .mainContent::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      background-color: #7195e8;
+    }
+  }
 }
 
 @media only screen and (max-width: 980px) {
-	.homePage {
-		.contentWrapper {
-			.mainContent {
-				border-radius: 0;
-			}
-		}
-	}
+  .homePage {
+    .contentWrapper {
+      .mainContent {
+        border-radius: 0;
+      }
+    }
+  }
 }

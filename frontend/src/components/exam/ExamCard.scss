@@ -1,19 +1,13 @@
-.eventCardWrapper {
+.examCardWrapper {
   border: 1px solid #00000033;
   border-radius: 13px;
   display: flex;
   flex-direction: column;
-  .eventImage {
-    height: 175px;
-    width: 100%;
-    object-fit: cover;
-    border-top-left-radius: inherit;
-    border-top-right-radius: inherit;
-  }
-  .eventDetailsWrapper {
+
+  .examDetailsWrapper {
     padding: 10px;
 
-    .eventTitle {
+    .examTitle {
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 5px;
@@ -22,7 +16,7 @@
       overflow: hidden;
       width: 100%;
     }
-    .eventDate {
+    .examDate {
       font-size: 16px;
       font-weight: 500;
       margin-bottom: 5px;
@@ -31,5 +25,9 @@
       overflow: hidden;
       width: 100%;
     }
+  }
+  &:hover {
+    background: #ebf1ff;
+    cursor: pointer;
   }
 }
