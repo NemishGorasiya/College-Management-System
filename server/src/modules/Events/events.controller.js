@@ -1,4 +1,4 @@
-import { addMonths, format, getMonth, getYear, isBefore } from "date-fns";
+import { addMonths, format, getMonth, getYear, isAfter, isBefore } from "date-fns";
 import httpStatus from "http-status";
 import CustomError from "../../errors/CustomError.js";
 import Event from "./Event.js";
@@ -9,20 +9,38 @@ export const getEvents = async (req, res) => {
     const filterObj = {};
 
     if (!date) {
-        date = format(new Date.now(), 'yyyy-mm-dd')
+        date = format(new Date(), 'yyyy-MM-dd')
     }
 
     //fetches latest dated events only
-
-    const startDate = new Date(`${getYear(date)}-${getMonth(date)}-01`);
+    const month = getMonth(date) + 1;
+    const year = getYear(date);
+    const startDate = new Date(`${year}-${month}-01`);
     const endDate = addMonths(startDate, 1);
+
 
     filterObj.startDate = {
         $gte: startDate,
         $lt: endDate,
     }
 
-    const events = await Event.find(filterObj);
+    const eventList = await Event.find(filterObj);
+
+
+    let events = []
+    for (let event of eventList) {
+        const obj = {
+            _id: event._id,
+            name: event.name,
+            description: event.description,
+            poster: event.poster,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            createdBy: event.createdBy
+        }
+
+        events.push(obj)
+    }
 
     return res.status(httpStatus.OK).send({
         "message": "Events fetched successfully",
@@ -54,9 +72,10 @@ export const updateEvent = async (req, res) => {
     };
 
     for (let item in req.body) {
-
         if (item === "endDate" && isBefore(req.body[item], event.startDate)) {
             throw new CustomError(httpStatus.BAD_REQUEST, "End Date cannot be before the start date")
+        } else if (item === "startDate" && isAfter(req.body[item], event.endDate)) {
+            throw new CustomError(httpStatus.BAD_REQUEST, "Start Date cannot be after the end date")
         }
 
         event[item] = req.body[item];
@@ -75,12 +94,12 @@ export const deleteEvent = async (req, res) => {
 
     const event = await Event.findById(eventId);
 
+
     if (!event) {
         throw new CustomError(httpStatus.NOT_FOUND, "Event not found");
     };
 
-    await Event.deleteOne({ id: event.id });
-
+    await Event.deleteOne({ _id: event._id })
     return res.status(httpStatus.OK).send({
         "message": "Event deleted successfully",
     })

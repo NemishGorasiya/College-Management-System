@@ -22,8 +22,12 @@ export const updateEventSchema = {
         name: Joi.string().optional(),
         description: Joi.string().optional(),
         poster: Joi.string().uri().optional(),
-        startDate: Joi.date().optional(),
-        endDate: Joi.date().greater(Joi.ref('startDate')).optional().default(Joi.ref('startDate') || format(new Date.now(), "yyyy-mm-dd")),
+        startDate: Joi.date().when('endDate', {
+            is: Joi.exist(),
+            then: Joi.date().less(Joi.ref('endDate')),
+            otherwise: Joi.date().optional(),
+        }).optional(),
+        endDate: Joi.date().greater('now'),
     }).min(1),
     params: Joi.object({
         eventId: Joi.string().required(),
