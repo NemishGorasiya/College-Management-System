@@ -77,6 +77,24 @@ export const uploadCircular = async (circularData) => {
     console.error(error);
   }
 };
+export const createNewEvent = async (eventData) => {
+  console.log("data in service", eventData);
+  try {
+    const res = await axios({
+      method: "post",
+      url: BASE_URL + "/events",
+      headers: { "Content-Type": "application/json" },
+      data: eventData,
+      credentials: "include",
+      withCredentials: true,
+      redirect: "follow",
+    });
+    const resData = res.data;
+    return resData;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export const fetchCirculars = async () => {
   try {

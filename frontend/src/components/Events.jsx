@@ -4,6 +4,8 @@ import ServiceTitle from "./ServiceTitle";
 import YearMonthFilter from "./YearMonthFilter";
 import EventCard from "./events/EventCard";
 import { fetchEvents } from "../services/services";
+import UploadCircularButton from "./UploadCircularButton";
+import AddNewEventButton from "./events/AddNewEventButton";
 
 export default function Events() {
   const [events, setEvents] = useState({
@@ -26,6 +28,7 @@ export default function Events() {
     <div className="eventsService">
       <ServiceTitle serviceTitle="Events" />
       <div className="eventsWrapper">
+        <AddNewEventButton getEvents={getEvents} />
         <YearMonthFilter />
         <div className="eventsContainer">
           {isEventsLoading ? (
