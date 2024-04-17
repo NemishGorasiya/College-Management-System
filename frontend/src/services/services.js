@@ -95,6 +95,23 @@ export const fetchCirculars = async () => {
     console.error(error);
   }
 };
+export const fetchExams = async () => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: BASE_URL + "/student/exams/",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      withCredentials: true,
+      redirect: "follow",
+    });
+    console.log(res);
+    const resData = res.data;
+    return resData;
+  } catch (error) {
+    console.error(error);
+  }
+};
 export const downloadCircular = async ({ url: circularLink, fileName }) => {
   try {
     const res = await axios({
