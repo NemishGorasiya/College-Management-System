@@ -137,7 +137,7 @@ export const studentGetSubjects = async (req, res) => {
     const { semester, department } = req.user;
 
     const subjectList = await getSubjects(department, semester);
-    
+
     const subjects = subjectList.map(subject => ({
         _id: subject._id,
         name: subject.name,
