@@ -111,12 +111,12 @@ export const updateResult = async (req, res) => {
 
     const result = await ExamResult.findById(resultId).populate("exam");
 
-    if (result.exam.faculty.toString() !== req.user._id.toString() && !(req.user instanceof Admin)) {
-        throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only update their exam results");
-    }
-
     if (!result) {
         throw new CustomError(httpStatus.NOT_FOUND, "Result not found");
+    }
+    
+    if (result.exam.faculty.toString() !== req.user._id.toString() && !(req.user instanceof Admin)) {
+        throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only update their exam results");
     }
 
     if (marks > result.exam.totalMarks) {
