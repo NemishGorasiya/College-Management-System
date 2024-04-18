@@ -1,11 +1,11 @@
 .eventsService {
-    .eventsWrapper {
-        padding: 20px 0 0;
-        .eventsContainer {  
-            display: grid;
-            grid-gap: 20px;
-            margin-top: 20px;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        }
+  .eventsWrapper {
+    padding: 20px 0 0;
+    .eventsContainer {
+      display: grid;
+      grid-gap: 20px;
+      margin-top: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
+  }
 }

@@ -1,7 +1,5 @@
 import "./SideBar.scss";
-import dashBoardIcon from "../assets/my_result.svg";
 import { NavLink } from "react-router-dom";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import { sideBarNavLinks } from "../constant/constant.jsx";
 import { sideBarExtraNavLinks } from "../constant/constant.jsx";

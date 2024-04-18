@@ -166,7 +166,6 @@ export const fetchExams = async () => {
       withCredentials: true,
       redirect: "follow",
     });
-    console.log(res);
     const resData = res.data;
     return resData;
   } catch (error) {
