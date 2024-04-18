@@ -123,7 +123,7 @@ export const createExamSemester = async (req, res) => {
 export const getExam = async (req, res) => {
   const examId = req.params.examId;
 
-  const exam = await Exam.findById(examId);
+  const exam = await Exam.findById(examId).select("_id name description totalMarks subject examType date duration faculty results");
 
   if (!exam) {
     throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
@@ -265,7 +265,7 @@ export const getOwnExams = async (req, res) => {
   let exams = await Exam.find(filterObj)
     .skip((page - 1) * limit)
     .limit(limit)
-    .sort({ date: 1 });
+    .sort({ date: 1 }).select("_id name description totalMarks subject examType date duration faculty results");
 
   if (isCompleted == "true") {
     exams = exams.filter((exam) => exam.isCompleted === true);
@@ -315,7 +315,7 @@ export const getAllExams = async (req, res) => {
   let exams = await Exam.find(filterObj)
     .skip((page - 1) * limit)
     .limit(limit)
-    .sort({ date: `${sortType}` });
+    .sort({ date: `${sortType}` }).select("_id name description totalMarks subject examType date duration faculty results");
 
   if (isCompleted == "true") {
     exams = exams.filter((exam) => exam.isCompleted === true);

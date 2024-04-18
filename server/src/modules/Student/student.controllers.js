@@ -154,7 +154,7 @@ export const studentGetAssignments = async (req, res) => {
         subject: {
             $in: subjects.map(subject => subject._id)
         },
-    }).populate("subject","_id name subjectCode").sort({
+    }).populate("subject", "_id name subjectCode").sort({
         dueDate: 1,
         createdAt: -1,
     }).select("_id name descrtption totalMarks subject dueDate faculty students");
@@ -195,7 +195,7 @@ export const studentSubmitAssignment = async (req, res) => {
     const { assignmentId } = req.params;
 
     const assignment = await Assignment.findById(assignmentId).select("_id name description totalMarks subject dueDate faculty");
-    
+
     if (!assignment) {
         throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
     }
@@ -275,13 +275,13 @@ export const studentGetExams = async (req, res) => {
     }
 
 
-    let exams = await Exam.find(filterObj).populate("subject", "_id name subjectCode department" ).populate("faculty","_id firstName lastName phoneNumber email").skip((page - 1) * limit).limit(limit).sort({
+    let exams = await Exam.find(filterObj).populate("subject", "_id name subjectCode department").populate("faculty", "_id firstName lastName phoneNumber email").skip((page - 1) * limit).limit(limit).sort({
         date: 1,
         createdAt: -1,
     }).select("_id name descrtption totalMarks subject examType date duration faculty results isCompleted")
 
     let completedExams = [], remainingExams = [];
- 
+
 
     //filter the isCompleted exams here
     exams.forEach((exam) => {
@@ -300,7 +300,6 @@ export const studentGetExams = async (req, res) => {
         exams: remainingExams
     });
 };
-
 export const studentGetTimetable = async (req, res) => {
     const { department, semester } = req.user;
     let { examType } = req.params;
@@ -599,6 +598,7 @@ export function getExamType(examType) {
 export const getStudents = async (req, res) => {
     const { semester, department, page, limit, sortBy, sortType } = req.query //sortBy has options - firstname, enrollment, doe, dob
     const filterObj = {};
+
 
     if (department && semester) {
         filterObj.department = department;
