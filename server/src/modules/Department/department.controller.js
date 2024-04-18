@@ -51,7 +51,7 @@ export const getDepartments = async (req, res) => {
 
     //if limit is not there - search all pages
     // Added pagination
-    const departments = await Department.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy }).populate("subjects", "_id name subjectCode credits").populate("faculties","_id firstName lastName email").populate("students","_id enrollmentNumber firstName lastName email gender").select("_id name contactEmail contactPhoneNumber officeAddress accreditation departmentLogo hod faculties subjects students"); //this uses dynamic keying
+    const departments = await Department.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy }).populate("subjects", "_id name subjectCode credits").populate("faculties", "_id firstName lastName email").populate("students", "_id enrollmentNumber firstName lastName email gender").select("_id name contactEmail contactPhoneNumber officeAddress accreditation departmentLogo hod faculties subjects students"); //this uses dynamic keying
 
     return res.status(httpStatus.OK).json({
         message: "Departments fetched successfully",
@@ -61,7 +61,7 @@ export const getDepartments = async (req, res) => {
 
 export const getDepartment = async (req, res) => {
     const { id } = req.params;
-    const department = await Department.findById(id).populate("subjects", "_id name subjectCode credits").populate("faculties","_id firstName lastName email").populate("students","_id enrollmentNumber firstName lastName email gender").select("_id name contactEmail contactPhoneNumber officeAddress accreditation departmentLogo hod faculties subjects students"); //this uses dynamic keying
+    const department = await Department.findById(id).populate("subjects", "_id name subjectCode credits").populate("faculties", "_id firstName lastName email").populate("students", "_id enrollmentNumber firstName lastName email gender").select("_id name contactEmail contactPhoneNumber officeAddress accreditation departmentLogo hod faculties subjects students"); //this uses dynamic keying
 
     if (!department) {
         throw new CustomError(httpStatus.NOT_FOUND, "Department not found");
