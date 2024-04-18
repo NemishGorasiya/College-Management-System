@@ -33,9 +33,8 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="registrationPage">
-      <TopBar />
-      <div className="contentWrapper">
+    <div className="registrationPageWrapper">
+      <div className="registrationPage">
         <div className="formContainer">
           <h2>{userType} Registration</h2>
           <form className="form" onSubmit={handleRegistration}>

@@ -1,6 +1,8 @@
-.homePage {
+.Layout {
   .contentWrapper {
     display: flex;
+    background: #ebf1ff;
+
     .mainContent {
       flex: auto;
       border-top-left-radius: 13px;
@@ -29,7 +31,7 @@
 }
 
 @media only screen and (max-width: 980px) {
-  .homePage {
+  .Layout {
     .contentWrapper {
       .mainContent {
         border-radius: 0;

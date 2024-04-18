@@ -1,34 +1,29 @@
 .loginPage {
-  .contentWrapper {
-    background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 120px);
+
+  .formContainer {
+    background: #ebf1ff;
+    border-radius: 13px;
     padding: 20px;
-    overflow-y: auto;
-    height: calc(100vh - 80px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    max-width: 450px;
 
-    .formContainer {
-      background: #ebf1ff;
-      border-radius: 13px;
-      padding: 20px;
-      width: 100%;
-      max-width: 450px;
-
-      h2 {
-        margin-bottom: 20px;
-        text-transform: capitalize;
+    h2 {
+      margin-bottom: 20px;
+      text-transform: capitalize;
+    }
+    .form {
+      .formControls {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
       }
-      .form {
-        .formControls {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          width: 100%;
-        }
-        .submitBtnWrapper button {
-          height: 56px;
-        }
+      .submitBtnWrapper button {
+        height: 56px;
       }
     }
   }

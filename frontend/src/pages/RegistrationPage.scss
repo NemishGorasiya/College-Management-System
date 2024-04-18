@@ -1,10 +1,9 @@
-.registrationPage {
-  .contentWrapper {
-    background: #ffffff;
-    padding: 20px;
-    overflow-y: auto;
-    height: calc(100vh - 80px);
-
+.registrationPageWrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  .registrationPage {
     .formContainer {
       max-width: 800px;
       margin: auto;
@@ -32,7 +31,4 @@
       }
     }
   }
-}
-
-@media only screen and (max-width: 980px) {
 }

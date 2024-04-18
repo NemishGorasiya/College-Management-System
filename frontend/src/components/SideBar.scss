@@ -1,61 +1,62 @@
 .sideBar {
-	background: #ebf1ff;
-	display: inline-block;
-	min-width: 240px;
-	overflow: auto;
+  background: #ebf1ff;
+  display: inline-block;
+  min-width: 240px;
+  overflow: auto;
 
-	.sideBarLinksWrapper {
-		list-style: none;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		height: calc(100vh - 80px);
-		padding: 0 20px 20px;
+  .sideBarLinksWrapper {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100vh - 80px);
+    padding: 0 20px 20px;
 
-		.sideBarNavLink {
-			height: 50px;
-			width: 200px;
-			margin: auto;
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			font-size: 15px;
-			font-weight: 500;
-			color: #0f0f0f;
+    .sideBarNavLink {
+      height: 50px;
+      width: 200px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #0f0f0f;
 
-			.sideBarIcon {
-				height: 24px;
-				width: 24px;
-				margin-left: 36px;
-				fill: white;
-			}
-			.sideBarLinkName {
-				text-overflow: ellipsis;
-				overflow: hidden;
-				white-space: nowrap;
-				text-transform: capitalize;
-			}
-		}
-		.sideBarNavLink.activeLink {
-			background: #ffffff;
-			border-radius: 13px;
-			color: #387adf;
+      .sideBarIcon {
+        height: 24px;
+        width: 24px;
+        margin-left: 36px;
+        fill: white;
+      }
+      .sideBarLinkName {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        text-transform: capitalize;
+      }
+    }
+    .sideBarNavLink.activeLink {
+      background: #ffffff;
+      border-radius: 13px;
+      color: #387adf;
 
-			.sideBarIcon {
-				filter: sepia(1) saturate(10000%) hue-rotate(216deg);
-			}
-		}
-	}
+      .sideBarIcon {
+        filter: sepia(1) saturate(10000%) hue-rotate(216deg);
+      }
+    }
+  }
 }
 
 @media only screen and (max-width: 980px) {
-	.sideBar {
-		position: absolute;
-		transform: translateX(-100%);
-		transition: all 0.3s ease;
-		z-index: 99;
-	}
-	.sideBar.sideBarOpen {
-		transform: translateX(0);
-	}
+  .sideBar {
+    position: absolute;
+    left: 0;
+    transform: translateX(-100%);
+    transition: all 0.3s ease;
+    z-index: 99;
+  }
+  .sideBar.sideBarOpen {
+    transform: translateX(0);
+  }
 }

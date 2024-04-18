@@ -61,3 +61,21 @@ export const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 export const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export const allowedUsers = ["admin", "faculty", "student"];
+
+export const loginPageNavLinks = [
+  {
+    link: "login/admin",
+    label: "Admin Login",
+    svgIcon: ProfileIcon,
+  },
+  {
+    link: "login/faculty",
+    label: "Faculty Login",
+    svgIcon: ResultIcon,
+  },
+  {
+    link: "login/student",
+    label: "Student Login",
+    svgIcon: ResultIcon,
+  },
+];
