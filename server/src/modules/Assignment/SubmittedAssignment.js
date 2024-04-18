@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import CustomError from "../../errors/CustomError.js";
 import httpStatus from "http-status";
 
@@ -49,15 +49,19 @@ submittedAssignmentSchema.pre("save", async function (next) {
         this.isLate = true;
     }
 
+    if (assignment.students === undefined) assignment.students = [];
+
     assignment.students.push({
         student: this.student,
-        subimission: this._id
+        subimission: this.id
     });
 
     await assignment.save();
 
     next();
 });
+
+//save and update handler
 
 submittedAssignmentSchema.pre("save", async function (next) {
     if (this.isModified("marks")) {
@@ -73,12 +77,60 @@ submittedAssignmentSchema.pre("save", async function (next) {
 
         if (this.marks < 0) {
             throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be negative");
-        }      marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
+        }
+
+        this.grade = marks >= 90 ? "A" : marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
 
         this.percentage = (this.marks / assignment.totalMarks) * 100;
 
         next();
     }
+    next();
 })
+
+submittedAssignmentSchema.pre('updateOne', async function (next) {
+    const update = this.getUpdate();
+
+    // Check if the 'marks' field is being updated
+    if (update.hasOwnProperty('marks')) {
+        const queryFilter = this.getQuery();
+
+        const CurrentSubmittedAssignment = await this.model.findOne(queryFilter);
+        const assignmentId = CurrentSubmittedAssignment.assignment;
+
+
+        try {
+            const assignment = await mongoose.model("Assignment").findById(assignmentId);
+
+            if (!assignment) {
+                throw new Error("Assignment not found");
+            }
+
+            if (update.marks > assignment.totalMarks) {
+                throw new Error("Marks cannot be greater than total marks");
+            }
+
+            if (update.marks < 0) {
+                throw new Error("Marks cannot be negative");
+            }
+
+            // Calculate percentage
+            const percentage = (update.marks / assignment.totalMarks) * 100;
+            const grade = marks >= 90 ? "A" : marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
+
+            // Update the document with the new percentage
+            this.updateOne({}, { percentage, grade });
+
+            next();
+        } catch (error) {
+            next(error);
+        }
+    } else {
+        // If 'marks' field is not being updated, proceed to the next middleware
+        next();
+    }
+});
+
+
 
 export default model("SubmittedAssignment", submittedAssignmentSchema, "submittedAssignments");

@@ -58,7 +58,7 @@ export const getSubjects = async (req, res) => {
     const subjects = await Subject.find(filterObj).populate({
         path: "department",
         select: "id name",
-    });
+    }).select("_id name subjectCode department semester description credits ");
 
     return res.status(httpStatus.OK).json({
         message: "Subjects fetched successfully",
@@ -69,7 +69,7 @@ export const getSubjects = async (req, res) => {
 export const getSubject = async (req, res) => {
     const { id } = req.params;
 
-    const subject = await Subject.findById(id).populate("department");
+    const subject = await Subject.findById(id).populate("department", "id name contactEmail contactPhoneNumber officeAddress hod").select("_id name subjectCode department semester description credits hoursPerWeek resources");;
 
     if (!subject) {
         throw new CustomError(httpStatus.NOT_FOUND, "Subject not found");

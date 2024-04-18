@@ -15,7 +15,6 @@ import StudentUpdateRequest from "./StudentUpdateRequest.js";
 import { studentRegisterInterSchema } from "./student.schema.js";
 
 
-
 export const studentRegister = async (req, res) => {
     const {
         enrollmentNumber,
@@ -129,7 +128,7 @@ export const getSubjects = async (department, semester) => {
         semester
     }).populate("department", "_id name").sort({
         createdAt: -1,
-    }).select("_id name subjectCode department semester description credits resources"); 
+    }).select("_id name subjectCode department semester description credits resources");
 }
 
 export const studentGetSubjects = async (req, res) => {
@@ -138,9 +137,10 @@ export const studentGetSubjects = async (req, res) => {
 
     const subjectList = await getSubjects(department, semester);
 
+
     return res.status(httpStatus.OK).send({
         message: "Student's subjects fetched successfully",
-        subjectList 
+        subjectList
     });
 };
 
@@ -154,10 +154,10 @@ export const studentGetAssignments = async (req, res) => {
         subject: {
             $in: subjects.map(subject => subject._id)
         },
-    }).populate("subject").sort({
+    }).populate("subject","_id name subjectCode").sort({
         dueDate: 1,
         createdAt: -1,
-    });
+    }).select("_id name descrtption totalMarks subject dueDate faculty students");
 
     const userId = req.user._id.toString();
 
@@ -194,8 +194,8 @@ export const studentSubmitAssignment = async (req, res) => {
     const { _id } = req.user;
     const { assignmentId } = req.params;
 
-    const assignment = await Assignment.findById(assignmentId);
-
+    const assignment = await Assignment.findById(assignmentId).select("_id name description totalMarks subject dueDate faculty");
+    
     if (!assignment) {
         throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
     }
@@ -211,7 +211,7 @@ export const studentSubmitAssignment = async (req, res) => {
         assignment: assignmentId,
         subject: assignment.subject,
         file
-    }).select("_id student assignment subject file isLate"); 
+    })
 
     return res.status(httpStatus.CREATED).send({
         message: "Assignment submitted successfully",
@@ -244,59 +244,62 @@ export const studentRegisterCSV = async (req, res) => {
 };
 
 export const studentGetExams = async (req, res) => {
-    try {
-        const { page, limit, faculty, examType, date } = req.query;
-        const { department, semester } = req.user;
+    const { page, limit, faculty, examType, date } = req.query
+    const { department, semester, id:userId } = req.user;
+    let subjects = await getSubjects(department, semester);
+    // console.log(subjects);
 
-        // Get subjects for the student
-        const subjects = await getSubjects(department, semester);
+    //!TODO: add pagination, filter by date, exam type, faculty and isCompleted or not
 
-        // Construct filter object
-        const filterObj = {
-            subject: { $in: subjects.map(subject => subject._id) }
-        };
+    let filterObj = {};
 
-        if (faculty) filterObj['faculty._id'] = faculty;
-        if (examType) filterObj.examType = new RegExp(examType, 'i');
-        if (date) filterObj.date = date;
-
-        // Query exams
-        let exams = await Exam.find(filterObj)
-            .populate("subject")
-            .populate("faculty")
-            .skip((page - 1) * limit)
-            .limit(limit)
-            .sort({ date: 1, createdAt: -1 });
-
-        // Separate completed and remaining exams
-        const completedExams = exams.filter(exam => exam.isCompleted);
-        const remainingExams = exams.filter(exam => !exam.isCompleted);
-
-        // Map exams to required format
-        const mapExam = exam => ({
-            _id: exam._id,
-            name: exam.name,
-            description: exam.description,
-            totalMarks: exam.totalMarks,
-            subject_id: exam.subject._id,
-            subject: exam.subject.name,
-            date: exam.date,
-            examType: exam.examType,
-            duration: exam.duration,
-            isCompleted: exam.isCompleted
-        });
-
-        return res.status(httpStatus.OK).send({
-            message: "Student's exams fetched successfully",
-            completedExams: completedExams.map(mapExam),
-            exams: remainingExams.map(mapExam)
-        });
-    } catch (error) {
-        console.error("Error fetching student exams:", error);
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: "Internal server error" });
+    filterObj.subject = {
+        $in: subjects.map(subject => subject._id)
     }
-};
 
+    if (faculty) {
+        filterObj.faculty = {
+            _id: faculty
+        };
+    }
+
+    if (examType) {
+        filterObj.examType = {
+            $regex: new RegExp(examType),
+            $options: "i",
+        };
+    }
+
+    if (date) {
+        filterObj.date = date;
+    }
+
+
+    let exams = await Exam.find(filterObj).populate("subject", "_id name subjectCode department" ).populate("faculty","_id firstName lastName phoneNumber email").skip((page - 1) * limit).limit(limit).sort({
+        date: 1,
+        createdAt: -1,
+    }).select("_id name descrtption totalMarks subject examType date duration faculty results isCompleted")
+
+    let completedExams = [], remainingExams = [];
+ 
+
+    //filter the isCompleted exams here
+    exams.forEach((exam) => {
+        if (exam.isCompleted) {
+            let userResult = exam.results.find(result => result.student.toString() === userId.toString());
+            completedExams.push({ ...exam.toObject(), isResult: !!userResult });
+            delete exam.results;
+        } else {
+            remainingExams.push(exam);
+        }
+    })
+
+    return res.status(httpStatus.OK).send({
+        message: "Student's exams fetched successfully",
+        completedExams,
+        exams: remainingExams
+    });
+};
 
 export const studentGetTimetable = async (req, res) => {
     const { department, semester } = req.user;
@@ -331,7 +334,16 @@ export const studentGetTimetable = async (req, res) => {
         });
     }
 
+    // const { secure_url: urlPath, original_filename, format } = await generatePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
     const filePath = await generateTimetablePdf({ exams, user: req.user, filename: `${req.user.fullName}_${req.user.id}_exams.pdf` })
+
+    // return res.status(httpStatus.OK).send({
+    //     message: "Student's timetable fetched successfully",
+    //     // urlPath,
+    //     // filename: original_filename + "." + format,
+
+    //     filePath
+    // });
 
     return res.download(filePath, `${req.user.fullName}_${req.user.id}_exams.pdf`, async (err) => {
         if (err) {
@@ -362,7 +374,7 @@ export const studentGetResults = async (req, res) => {
             $in: exams.map(exam => exam._id)
         },
         student: req.user._id
-    }).populate("exam","_id name totalMarks subject date").sort({
+    }).populate("exam", "_id name totalMarks subject date").sort({
         createdAt: -1,
     }).select("_id student exam marks examType percentage");
 
@@ -588,7 +600,7 @@ export const getStudents = async (req, res) => {
     const { semester, department, page, limit, sortBy, sortType } = req.query //sortBy has options - firstname, enrollment, doe, dob
     const filterObj = {};
 
-   if (department && semester) {
+    if (department && semester) {
         filterObj.department = department;
         filterObj.semester = {
             $in: semester.split(",")
@@ -602,7 +614,7 @@ export const getStudents = async (req, res) => {
             $in: semester.split(",")
         };
     }
-    const students = await Student.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: sortType })
+    const students = await Student.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: sortType }).select("_id enrollmentNumber firstName lastName email gender phoneNumber department")
 
     res.status(httpStatus.OK).json({ Students: students })
 }

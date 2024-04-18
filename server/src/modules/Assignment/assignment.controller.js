@@ -187,17 +187,15 @@ export const updateSubmittedAssignment = async (req, res) => {
   const { marks } = req.body;
 
   const submission = await SubmittedAssignment.findById(submissionId).populate("assignment");
+  console.log(submission)
 
   if (!submission) {
     throw new CustomError(httpStatus.NOT_FOUND, "Submission not found");
   }
 
-  submission.marks = marks;
-
-  await submission.save();
+  await SubmittedAssignment.updateOne({ _id: submissionId }, { marks });
 
   return res.status(httpStatus.OK).json({
     message: "Marks updated successfully",
-    submission
   });
 };
