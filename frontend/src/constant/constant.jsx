@@ -1,59 +1,71 @@
-import ProfileIcon from "../assets/ProfileIcon.svg";
-import ResultIcon from "../assets/ResultIcon.svg";
-import PlacementIcon from "../assets/PlacementIcon.svg";
-import EventsIcon from "../assets/EventsIcon.svg";
-import CircularIcon from "../assets/CircularIcon.svg";
-import ExamIcon from "../assets/ExamIcon.svg";
-import HelpIcon from "../assets/HelpIcon.svg";
-import SettingIcon from "../assets/SettingIcon.svg";
+// import ProfileIcon from "../assets/ProfileIcon.svg";
+// import ResultIcon from "../assets/ResultIcon.svg";
+// import PlacementIcon from "../assets/PlacementIcon.svg";
+// import EventsIcon from "../assets/EventsIcon.svg";
+// import CircularIcon from "../assets/CircularIcon.svg";
+// import ExamIcon from "../assets/ExamIcon.svg";
+// import HelpIcon from "../assets/HelpIcon.svg";
+// import SettingIcon from "../assets/SettingIcon.svg";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PersonIcon from "@mui/icons-material/Person";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import SummarizeIcon from "@mui/icons-material/Summarize";
+import EventIcon from "@mui/icons-material/Event";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
+import HelpIcon from "@mui/icons-material/Help";
+import SettingsIcon from "@mui/icons-material/Settings";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import DescriptionIcon from "@mui/icons-material/Description";
 
 export const sideBarNavLinks = [
   {
     link: "profile",
     label: "Profile",
-    svgIcon: ProfileIcon,
+    icon: <AccountCircleIcon />,
   },
   {
     link: "result",
     label: "Result",
-    svgIcon: ResultIcon,
+    icon: <AssessmentIcon />,
   },
   {
     link: "assignments",
     label: "Assignments",
-    svgIcon: ExamIcon,
+    icon: <AssignmentIcon />,
   },
-  {
-    link: "placement",
-    label: "Placement",
-    svgIcon: PlacementIcon,
-  },
+  // {
+  //   link: "placement",
+  //   label: "Placement",
+  //   icon: PlacementIcon,
+  // },
   {
     link: "circulars",
     label: "Circulars",
-    svgIcon: CircularIcon,
+    icon: <DescriptionIcon />,
   },
   {
     link: "events",
     label: "Events",
-    svgIcon: EventsIcon,
+    icon: <EventIcon />,
   },
   {
     link: "exam",
     label: "Exam",
-    svgIcon: ExamIcon,
+    icon: <MenuBookIcon />,
   },
 ];
 export const sideBarExtraNavLinks = [
   {
     link: "help",
     label: "Help",
-    svgIcon: HelpIcon,
+    icon: <HelpIcon />,
   },
   {
     link: "setting",
     label: "Setting",
-    svgIcon: SettingIcon,
+    icon: <SettingsIcon />,
   },
 ];
 
@@ -66,16 +78,16 @@ export const loginPageNavLinks = [
   {
     link: "login/admin",
     label: "Admin Login",
-    svgIcon: ProfileIcon,
+    icon: <AdminPanelSettingsIcon />,
   },
   {
     link: "login/faculty",
     label: "Faculty Login",
-    svgIcon: ResultIcon,
+    icon: <PersonIcon />,
   },
   {
     link: "login/student",
     label: "Student Login",
-    svgIcon: ResultIcon,
+    icon: <PersonIcon />,
   },
 ];

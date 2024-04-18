@@ -8,6 +8,7 @@ import {
   OutlinedInput,
   styled,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Modal from "@mui/material/Modal";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import toast from "react-hot-toast";
@@ -33,25 +34,41 @@ const VisuallyHiddenInput = styled("input")({
 const UploadCircularModal = ({ open, handleClose, getCirculars }) => {
   const [file, setFile] = useState();
   const [circularTitle, setCircularTitle] = useState("");
+  const [isCircularUploading, setIsCircularUploading] = useState(false);
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     formData.append("file", file);
-    const response = await uploadFile(formData);
-    const {
-      response: { secure_url },
-    } = response;
-    const res = await uploadCircular({
-      title: circularTitle,
-      link: secure_url,
-    });
-    if (res) {
-      toast.success("Circular uploaded successfully");
-      getCirculars();
-      setTimeout(() => {
+    setIsCircularUploading(true);
+    try {
+      const response = await uploadFile(formData);
+      const resData = response.data;
+      const {
+        response: { secure_url },
+      } = resData;
+      console.log("secure_url", secure_url);
+      const res = uploadCircular({
+        title: circularTitle,
+        link: secure_url,
+      });
+      // console.log({
+      //   title: circularTitle,
+      //   link: secure_url,
+      // });
+      // console.log("res", res);
+      if (res) {
+        console.log("called");
         handleClose();
-      }, 1000);
+        toast.success("Circular uploaded successfully");
+        setIsCircularUploading(false);
+        getCirculars();
+      }
+    } catch (error) {
+      toast.error("Something went wrong while uploading circular");
+    } finally {
+      handleClose();
+      setIsCircularUploading(false);
     }
   };
 
@@ -91,14 +108,23 @@ const UploadCircularModal = ({ open, handleClose, getCirculars }) => {
               onChange={(e) => setFile(e.target.files[0])}
             />
           </Button>
-          <Button
+          {/* <Button
             variant="contained"
             startIcon={<CloudUploadIcon />}
             className="formControl"
             type="submit"
           >
             Upload
-          </Button>
+          </Button> */}
+          <LoadingButton
+            type="submit"
+            loading={isCircularUploading}
+            loadingPosition="start"
+            startIcon={<CloudUploadIcon />}
+            variant="contained"
+          >
+            <span>Upload</span>
+          </LoadingButton>
         </form>
       </Box>
     </Modal>

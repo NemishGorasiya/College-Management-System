@@ -67,14 +67,14 @@ export const uploadFile = async (formData) => {
       withCredentials: true,
       redirect: "follow",
     });
-    const resData = res.data;
-    return resData;
+    return res;
   } catch (error) {
     console.error(error);
   }
 };
 export const uploadCircular = async (circularData) => {
   try {
+    console.log("res");
     const res = await axios({
       method: "post",
       url: BASE_URL + "/circular",
@@ -84,8 +84,7 @@ export const uploadCircular = async (circularData) => {
       withCredentials: true,
       redirect: "follow",
     });
-    const resData = res.data;
-    return resData;
+    return res;
   } catch (error) {
     console.error(error);
   }

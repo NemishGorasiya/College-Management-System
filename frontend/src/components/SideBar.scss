@@ -26,8 +26,8 @@
       .sideBarIcon {
         height: 24px;
         width: 24px;
-        margin-left: 36px;
-        fill: white;
+        margin-left: 26px;
+        // color: #0f0f0f;
       }
       .sideBarLinkName {
         text-overflow: ellipsis;
@@ -40,10 +40,6 @@
       background: #ffffff;
       border-radius: 13px;
       color: #387adf;
-
-      .sideBarIcon {
-        filter: sepia(1) saturate(10000%) hue-rotate(216deg);
-      }
     }
   }
 }

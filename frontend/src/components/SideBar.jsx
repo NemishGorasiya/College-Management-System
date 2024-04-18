@@ -1,6 +1,7 @@
 import "./SideBar.scss";
 import dashBoardIcon from "../assets/my_result.svg";
 import { NavLink } from "react-router-dom";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import { sideBarNavLinks } from "../constant/constant.jsx";
 import { sideBarExtraNavLinks } from "../constant/constant.jsx";
@@ -14,7 +15,7 @@ export default function SideBar({ isSideBarOpen }) {
       <ul className="sideBarLinksWrapper">
         {isLoginPage ? (
           <div className="sidebarUpperLinks">
-            {loginPageNavLinks.map(({ link, label, svgIcon }) => (
+            {loginPageNavLinks.map(({ link, label, icon }) => (
               <NavLink
                 key={link}
                 to={`/${link}`}
@@ -22,7 +23,7 @@ export default function SideBar({ isSideBarOpen }) {
                   isActive ? "sideBarNavLink activeLink" : "sideBarNavLink"
                 }
               >
-                <img className="sideBarIcon" src={svgIcon} alt="" />
+                <span className="sideBarIcon">{icon}</span>
                 <span className="sideBarLinkName">{label}</span>
               </NavLink>
             ))}
@@ -30,7 +31,7 @@ export default function SideBar({ isSideBarOpen }) {
         ) : (
           <>
             <div className="sidebarUpperLinks">
-              {sideBarNavLinks.map(({ link, label, svgIcon }) => (
+              {sideBarNavLinks.map(({ link, label, icon }) => (
                 <NavLink
                   key={link}
                   to={`/${link}`}
@@ -38,13 +39,13 @@ export default function SideBar({ isSideBarOpen }) {
                     isActive ? "sideBarNavLink activeLink" : "sideBarNavLink"
                   }
                 >
-                  <img className="sideBarIcon" src={svgIcon} alt="" />
+                  <span className="sideBarIcon">{icon}</span>
                   <span className="sideBarLinkName">{label}</span>
                 </NavLink>
               ))}
             </div>
             <div className="sidebarLowerLinks">
-              {sideBarExtraNavLinks.map(({ link, label, svgIcon }) => (
+              {sideBarExtraNavLinks.map(({ link, label, icon }) => (
                 <NavLink
                   key={link}
                   to={link}
@@ -52,7 +53,7 @@ export default function SideBar({ isSideBarOpen }) {
                     isActive ? "sideBarNavLink activeLink" : "sideBarNavLink"
                   }
                 >
-                  <img className="sideBarIcon" src={svgIcon} alt="" />
+                  <span className="sideBarIcon">{icon}</span>
                   <span className="sideBarLinkName">{label}</span>
                 </NavLink>
               ))}
