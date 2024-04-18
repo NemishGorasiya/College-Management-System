@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
-import Subject from "./Subject.js";
 import CustomError from "../../errors/CustomError.js";
+import Subject from "./Subject.js";
 
 export const createSubject = async (req, res) => {
     const {
@@ -55,7 +55,10 @@ export const getSubjects = async (req, res) => {
         };
     }
 
-    const subjects = await Subject.find(filterObj).populate("department");
+    const subjects = await Subject.find(filterObj).populate({
+        path: "department",
+        select: "id name",
+    });
 
     return res.status(httpStatus.OK).json({
         message: "Subjects fetched successfully",
