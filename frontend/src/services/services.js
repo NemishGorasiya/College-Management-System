@@ -67,7 +67,7 @@ export const uploadFile = async (formData) => {
       withCredentials: true,
       redirect: "follow",
     });
-    return res;
+    return res.data;
   } catch (error) {
     console.error(error);
   }
@@ -84,7 +84,7 @@ export const uploadCircular = async (circularData) => {
       withCredentials: true,
       redirect: "follow",
     });
-    return res;
+    return res.data;
   } catch (error) {
     console.error(error);
   }

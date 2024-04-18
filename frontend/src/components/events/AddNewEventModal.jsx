@@ -19,6 +19,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { convertToISO } from "../../utils/utilityFunctions";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -34,30 +35,36 @@ const VisuallyHiddenInput = styled("input")({
 
 const AddNewEventModal = ({ open, handleClose, getEvents }) => {
   const [file, setFile] = useState();
+  const [isEventUploading, setIsEventUploading] = useState();
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     formData.append("file", file);
+    setIsEventUploading(true);
+    try {
+      const response = await uploadFile(formData);
+      const {
+        response: { secure_url },
+      } = response;
+      formData.delete("file");
+      const data = Object.fromEntries(formData.entries());
+      data.poster = secure_url;
+      data.startDate = convertToISO(data.startDate);
+      data.endDate = convertToISO(data.endDate);
 
-    const response = await uploadFile(formData);
-    const {
-      response: { secure_url },
-    } = response;
-
-    formData.delete("file");
-    const data = Object.fromEntries(formData.entries());
-    data.poster = secure_url;
-    data.startDate = convertToISO(data.startDate);
-    data.endDate = convertToISO(data.endDate);
-
-    const res = await createNewEvent(data);
-    if (res) {
-      toast.success("Event Added successfully");
-      getEvents();
-      setTimeout(() => {
-        handleClose();
-      }, 1000);
+      const res = await createNewEvent(data);
+      if (res) {
+        toast.success("Event Added successfully");
+        getEvents();
+        setTimeout(() => {
+          handleClose();
+        }, 1000);
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsEventUploading(false);
     }
   };
 
@@ -121,14 +128,23 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
               onChange={(e) => setFile(e.target.files[0])}
             />
           </Button>
-          <Button
+          {/* <Button
             variant="contained"
             startIcon={<CloudUploadIcon />}
             className="formControl"
             type="submit"
           >
             Upload
-          </Button>
+          </Button> */}
+          <LoadingButton
+            type="submit"
+            loading={isEventUploading}
+            loadingPosition="start"
+            startIcon={<CloudUploadIcon />}
+            variant="contained"
+          >
+            <span>Upload</span>
+          </LoadingButton>
         </form>
       </Box>
     </Modal>

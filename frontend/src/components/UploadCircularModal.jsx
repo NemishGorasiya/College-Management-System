@@ -43,31 +43,22 @@ const UploadCircularModal = ({ open, handleClose, getCirculars }) => {
     setIsCircularUploading(true);
     try {
       const response = await uploadFile(formData);
-      const resData = response.data;
       const {
         response: { secure_url },
-      } = resData;
-      console.log("secure_url", secure_url);
-      const res = uploadCircular({
+      } = response;
+      const res = await uploadCircular({
         title: circularTitle,
         link: secure_url,
       });
-      // console.log({
-      //   title: circularTitle,
-      //   link: secure_url,
-      // });
-      // console.log("res", res);
       if (res) {
         console.log("called");
-        handleClose();
-        toast.success("Circular uploaded successfully");
-        setIsCircularUploading(false);
         getCirculars();
+        toast.success("Circular uploaded successfully");
+        handleClose();
       }
     } catch (error) {
       toast.error("Something went wrong while uploading circular");
     } finally {
-      handleClose();
       setIsCircularUploading(false);
     }
   };
@@ -108,14 +99,6 @@ const UploadCircularModal = ({ open, handleClose, getCirculars }) => {
               onChange={(e) => setFile(e.target.files[0])}
             />
           </Button>
-          {/* <Button
-            variant="contained"
-            startIcon={<CloudUploadIcon />}
-            className="formControl"
-            type="submit"
-          >
-            Upload
-          </Button> */}
           <LoadingButton
             type="submit"
             loading={isCircularUploading}
