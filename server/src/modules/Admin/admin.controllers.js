@@ -5,6 +5,7 @@ import Student from "../Student/Student.js";
 import StudentUpdateRequest from "../Student/StudentUpdateRequest.js";
 import Admin from "./Admin.js";
 import CustomError from "../../errors/CustomError.js";
+import { getUserType } from "../../utils/otpHandler.js";
 
 export const registerAdmin = async (req, res) => {
   const { email, phoneNumber, address, dob, doj, firstName, lastName, profilePicture } = req.body;
@@ -38,6 +39,7 @@ export const loginAdmin = async (req, res) => {
     lastName,
     profilePicture,
     isActive,
+    userType: getUserType(req.user)
   };
 
   return res.status(httpStatus.OK).send({

@@ -13,6 +13,7 @@ import Subject from "../Subject/Subject.js";
 import Student from "./Student.js";
 import StudentUpdateRequest from "./StudentUpdateRequest.js";
 import { studentRegisterInterSchema } from "./student.schema.js";
+import { getUserType } from "../../utils/otpHandler.js";
 
 
 export const studentRegister = async (req, res) => {
@@ -66,7 +67,7 @@ export const studentLogin = async (req, res) => {
     const { enrollmentNumber, _id, firstName, lastName, email } = req.user;
 
     const user = {
-        enrollmentNumber, _id, firstName, lastName, email
+        enrollmentNumber, _id, firstName, lastName, email, userType: getUserType(req.user)
     }
 
     return res.status(httpStatus.OK).send({
@@ -154,7 +155,7 @@ export const studentGetAssignments = async (req, res) => {
         subject: {
             $in: subjects.map(subject => subject._id)
         },
-    }).populate("subject","_id name subjectCode").sort({
+    }).populate("subject", "_id name subjectCode").sort({
         dueDate: 1,
         createdAt: -1,
     }).select("_id name descrtption totalMarks subject dueDate faculty students");
@@ -195,7 +196,7 @@ export const studentSubmitAssignment = async (req, res) => {
     const { assignmentId } = req.params;
 
     const assignment = await Assignment.findById(assignmentId).select("_id name description totalMarks subject dueDate faculty");
-    
+
     if (!assignment) {
         throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
     }
@@ -245,7 +246,7 @@ export const studentRegisterCSV = async (req, res) => {
 
 export const studentGetExams = async (req, res) => {
     const { page, limit, faculty, examType, date } = req.query
-    const { department, semester, id:userId } = req.user;
+    const { department, semester, id: userId } = req.user;
     let subjects = await getSubjects(department, semester);
     // console.log(subjects);
 
@@ -275,13 +276,13 @@ export const studentGetExams = async (req, res) => {
     }
 
 
-    let exams = await Exam.find(filterObj).populate("subject", "_id name subjectCode department" ).populate("faculty","_id firstName lastName phoneNumber email").skip((page - 1) * limit).limit(limit).sort({
+    let exams = await Exam.find(filterObj).populate("subject", "_id name subjectCode department").populate("faculty", "_id firstName lastName phoneNumber email").skip((page - 1) * limit).limit(limit).sort({
         date: 1,
         createdAt: -1,
     }).select("_id name descrtption totalMarks subject examType date duration faculty results isCompleted")
 
     let completedExams = [], remainingExams = [];
- 
+
 
     //filter the isCompleted exams here
     exams.forEach((exam) => {

@@ -3,6 +3,7 @@ import Faculty from "./Faculty.js";
 import Department from "../Department/Department.js";
 import FacultyUpdateRequest from "./FacultyUpdateRequest.js";
 import CustomError from "../../errors/CustomError.js";
+import { getUserType } from "../../utils/otpHandler.js";
 
 export const registerFaculty = async (req, res) => {
     const {
@@ -73,6 +74,7 @@ export const loginFaculty = async (req, res) => {
         lastName,
         phoneNumber,
         email,
+        userType: getUserType(req.user)
     };
 
     return res.status(httpStatus.OK).send({
@@ -140,7 +142,7 @@ export const getFaculty = async (req, res) => {
 
 
     const data = await Faculty.find(filterObj).skip((page - 1) * limit).limit(limit).sort({ [sortBy]: orderBy });
-    
+
     let faculties = []
     for (let faculty of data) {
         const obj = {
