@@ -9,13 +9,16 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import { allowedUsers } from "../constant/constant";
 import { loginUser } from "../services/services";
 import toast from "react-hot-toast";
+import { AuthContext } from "../context/AuthContext";
 
 const LoginPage = ({ userType }) => {
+  const { updateUserType, changeAuthenticationStatus } =
+    useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -29,6 +32,8 @@ const LoginPage = ({ userType }) => {
       const res = await loginUser({ userType, data });
       if (res.status === 200) {
         toast.success("User loggedIn successfully");
+        updateUserType(userType);
+        changeAuthenticationStatus(true);
         navigate("/profile");
       }
     } catch (error) {

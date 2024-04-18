@@ -11,15 +11,14 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import SummarizeIcon from "@mui/icons-material/Summarize";
 import EventIcon from "@mui/icons-material/Event";
-import FactCheckIcon from "@mui/icons-material/FactCheck";
 import HelpIcon from "@mui/icons-material/Help";
 import SettingsIcon from "@mui/icons-material/Settings";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import DescriptionIcon from "@mui/icons-material/Description";
+import RuleIcon from "@mui/icons-material/Rule";
 
-export const sideBarNavLinks = [
+export const sideBarNavLinksForStudent = [
   {
     link: "profile",
     label: "Profile",
@@ -35,11 +34,6 @@ export const sideBarNavLinks = [
     label: "Assignments",
     icon: <AssignmentIcon />,
   },
-  // {
-  //   link: "placement",
-  //   label: "Placement",
-  //   icon: PlacementIcon,
-  // },
   {
     link: "circulars",
     label: "Circulars",
@@ -56,6 +50,77 @@ export const sideBarNavLinks = [
     icon: <MenuBookIcon />,
   },
 ];
+
+export const sideBarNavLinksForAdmin = [
+  {
+    link: "profile",
+    label: "Profile",
+    icon: <AccountCircleIcon />,
+  },
+  {
+    link: "result",
+    label: "Result",
+    icon: <AssessmentIcon />,
+  },
+  {
+    link: "assignments",
+    label: "Assignments",
+    icon: <AssignmentIcon />,
+  },
+  {
+    link: "circulars",
+    label: "Circulars",
+    icon: <DescriptionIcon />,
+  },
+  {
+    link: "events",
+    label: "Events",
+    icon: <EventIcon />,
+  },
+  {
+    link: "exam",
+    label: "Exam",
+    icon: <MenuBookIcon />,
+  },
+  {
+    link: "requests",
+    label: "Requests",
+    icon: <RuleIcon />,
+  },
+];
+export const sideBarNavLinksForFaculty = [
+  {
+    link: "profile",
+    label: "Profile",
+    icon: <AccountCircleIcon />,
+  },
+  {
+    link: "result",
+    label: "Result",
+    icon: <AssessmentIcon />,
+  },
+  {
+    link: "assignments",
+    label: "Assignments",
+    icon: <AssignmentIcon />,
+  },
+  {
+    link: "circulars",
+    label: "Circulars",
+    icon: <DescriptionIcon />,
+  },
+  {
+    link: "events",
+    label: "Events",
+    icon: <EventIcon />,
+  },
+  {
+    link: "exam",
+    label: "Exam",
+    icon: <MenuBookIcon />,
+  },
+];
+
 export const sideBarExtraNavLinks = [
   {
     link: "help",
@@ -74,7 +139,7 @@ export const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export const allowedUsers = ["admin", "faculty", "student"];
 
-export const loginPageNavLinks = [
+export const sideBarNavLinksForNotAuthorized = [
   {
     link: "login/admin",
     label: "Admin Login",

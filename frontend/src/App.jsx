@@ -16,6 +16,7 @@ import toast, { Toaster } from "react-hot-toast";
 import CreateDepartment from "./components/CreateDepartment.jsx";
 import { allowedUsers } from "./constant/constant.jsx";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
+import Requests from "./components/Requests.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -58,6 +59,10 @@ function App() {
         {
           path: "/setting",
           element: <Setting />,
+        },
+        {
+          path: "/requests",
+          element: <Requests />,
         },
       ],
     },

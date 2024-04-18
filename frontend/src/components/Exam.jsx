@@ -9,14 +9,14 @@ import toast from "react-hot-toast";
 export default function Exam() {
   const [exam, setExam] = useState([
     {
-      category: "exams",
+      title: "exams",
       label: "Exams",
       list: [],
       isLoading: true,
     },
     {
-      category: "exams",
-      label: "Exams",
+      title: "completedExams",
+      label: "Completed Exams",
       list: [],
       isLoading: true,
     },

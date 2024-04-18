@@ -6,14 +6,20 @@ import BurgerMenuIcon from "../assets/BurgerMenuIcon.svg";
 import toast from "react-hot-toast";
 import { logoutUser } from "../services/services";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function TopBar({ handleHamBurgerClick }) {
+  const { updateUserType, changeAuthenticationStatus, isAuthenticated } =
+    useContext(AuthContext);
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
       const res = await logoutUser();
       if (res.status === 200) {
         toast.success("User loggedOut successfully");
+        updateUserType(null);
+        changeAuthenticationStatus(false);
         navigate("/login/student");
       }
     } catch (error) {
@@ -32,14 +38,16 @@ export default function TopBar({ handleHamBurgerClick }) {
         <img className="logo" src={ldceLogo} alt="ldceLogo" />
         <span className="collegeName">L.D. College of Engineering</span>
       </div>
-      <div className="topBarRight">
-        <Button className="notificationBell">
-          <img src={notificationBell} alt="" />
-        </Button>
-        <Button onClick={handleLogout} textonly>
-          Log Out
-        </Button>
-      </div>
+      {isAuthenticated && (
+        <div className="topBarRight">
+          <Button className="notificationBell">
+            <img src={notificationBell} alt="" />
+          </Button>
+          <Button onClick={handleLogout} textonly>
+            Log Out
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
