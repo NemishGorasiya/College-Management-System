@@ -3,6 +3,9 @@ import ServiceTitle from "./ServiceTitle";
 import profileImage from "../assets/Nemish_Profile.jpg";
 import ProfileSection from "./profile/ProfileSection";
 import { formatDate } from "../utils/utilityFunctions";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { fetchProfileData } from "../services/services";
 
 const user = {
   _id: "660ce687966f7f6303f10fe8",
@@ -30,27 +33,72 @@ const user = {
   id: "660ce687966f7f6303f10fe8",
 };
 const personalInfo = [
-  { label: "First Name", value: user.firstName },
-  { label: "Last Name", value: user.lastName },
-  { label: "Date of Birth", value: formatDate(user.dob) },
-  { label: "Email", value: user.email },
-  { label: "Gender", value: user.gender },
-  { label: "Blood Group", value: user.bloodGroup },
-  { label: "Phone Number", value: user.phoneNumber },
-  { label: "Father's Name", value: user.fatherName },
-  { label: "Mother's Name", value: user.motherName },
-  { label: "Parent's Phone Number", value: user.parentPhoneNumber },
-  { label: "Address", value: user.address },
+  { label: "Full Name", value: fullName },
+  { label: "First Name", value: firstName },
+  { label: "Last Name", value: lastName },
+  { label: "Date of Birth", value: dob },
+  { label: "Email", value: email },
+  { label: "Gender", value: gender },
+  { label: "Blood Group", value: bloodGroup },
+  { label: "Phone Number", value: phoneNumber },
+  { label: "Father's Name", value: fatherName },
+  { label: "Mother's Name", value: motherName },
+  { label: "Parent's Phone Number", value: parentPhoneNumber },
+  { label: "Address", value: address },
 ];
 
 const academicInfo = [
-  { label: "Enrollment Number", value: user.enrollmentNumber },
-  { label: "Semester", value: user.semester },
-  { label: "Pass Out Year", value: user.passOutYear },
-  { label: "Department", value: user.department },
+  { label: "Id", value: id },
+  { label: "Enrollment Number", value: enrollmentNumber },
+  { label: "Date of Admission", value: doa },
+  { label: "Semester", value: semester },
+  { label: "Pass Out Year", value: passOutYear },
+  { label: "Department", value: department },
+];
+const personalInfo = [
+  { label: "Full Name", value: fullName },
+  { label: "First Name", value: firstName },
+  { label: "Last Name", value: lastName },
+  { label: "Date of Birth", value: dob },
+  { label: "Email", value: email },
+  { label: "Gender", value: gender },
+  { label: "Blood Group", value: bloodGroup },
+  { label: "Phone Number", value: phoneNumber },
+  { label: "Father's Name", value: fatherName },
+  { label: "Mother's Name", value: motherName },
+  { label: "Parent's Phone Number", value: parentPhoneNumber },
+  { label: "Address", value: address },
 ];
 
+const academicInfo = [
+  { label: "Id", value: id },
+  { label: "Enrollment Number", value: enrollmentNumber },
+  { label: "Date of Admission", value: doa },
+  { label: "Semester", value: semester },
+  { label: "Pass Out Year", value: passOutYear },
+  { label: "Department", value: department },
+  { label: "Designation", value: designation },
+];
+
+const [personalInfo, setPersonalInfo] = useState({
+  isLoading: true,
+});
+const [academicInfo, setAcademicInfo] = useState({
+  isLoading: true,
+});
+
 export default function Profile() {
+  const getProfileData = async () => {
+    try {
+      const res = await fetchProfileData();
+      const {}
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getProfileData();
+  }, []);
+
   return (
     <div className="profileContainer">
       <ServiceTitle serviceTitle="Personal details" />

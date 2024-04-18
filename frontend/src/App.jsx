@@ -15,6 +15,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import toast, { Toaster } from "react-hot-toast";
 import CreateDepartment from "./components/CreateDepartment.jsx";
 import { allowedUsers } from "./constant/constant.jsx";
+import { AuthContextProvider } from "./context/AuthContext.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -60,16 +61,6 @@ function App() {
         },
       ],
     },
-    // {
-    //   path: "/login",
-    //   element: <Layout />,
-    //   children: [
-    //     {
-    //       index: true,
-    //       element: <LoginPage />,
-    //     },
-    //   ],
-    // },
     {
       path: "/login",
       element: <Layout />,
@@ -96,8 +87,10 @@ function App() {
 
   return (
     <>
-      <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
-      <RouterProvider router={router} />
+      <AuthContextProvider>
+        <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
+        <RouterProvider router={router} />
+      </AuthContextProvider>
     </>
   );
 }

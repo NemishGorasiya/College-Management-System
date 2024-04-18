@@ -272,3 +272,21 @@ export const adminLogin = async ({ data }) => {
     console.error(error);
   }
 };
+
+export const fetchProfileData = async () => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: BASE_URL + "/user/my-profile",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow",
+      credentials: "include",
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
