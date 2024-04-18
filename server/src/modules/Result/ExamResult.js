@@ -30,31 +30,53 @@ const examResultSchema = new Schema({
 });
 
 examResultSchema.pre("save", async function (next) {
-    // Check if the marks are less than total marks
-    const exam = await this.model("Exam").findById(this.exam);
+    
+        
+        if (this.isNew) {
+            // Check if the marks are less than total marks
+            const exam = await this.model("Exam").findById(this.exam);
 
-    //Check if the student has already taken the exam
-    const result = await this.model("ExamResult").findOne({ student: this.student, exam: this.exam })
+            if (!exam) {
+                throw new CustomError(httpStatus.NOT_FOUND, "Exam not found");
+            }
 
-    if (result) {
-        throw new CustomError(httpStatus.BAD_REQUEST, "Student has already taken the exam");
-    }
+            if (this.marks > exam.totalMarks) {
+                throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be greater than total marks");
+            }
 
-    // add the exam type to the result
-    this.examType = exam.examType;
+            // Check if the student has already taken the exam
+            const existingResult = await this.model("ExamResult").findOne({ student: this.student, exam: this.exam });
 
-    //save the result in the exam
-    if (!exam.results) {
-        exam.results = [];
-    }
+            if (existingResult) {
+                throw new CustomError(httpStatus.BAD_REQUEST, "Student has already taken the exam");
+            }
 
-    exam.results = [...exam.results, { student: this.student, marks: this.marks }]
+            // Add the exam type to the result
+            this.examType = exam.examType;
 
-    this.percentage = (this.marks / exam.totalMarks) * 100;
+            // Save the result in the exam
+            if (!exam.results) {
+                exam.results = [];
+            }
 
-    await this.model("Exam").findByIdAndUpdate(this.exam, exam);
+            exam.results.push({ student: this.student, marks: this.marks });
 
-    next();
+            this.percentage = (this.marks / exam.totalMarks) * 100;
+
+            await this.model("Exam").findByIdAndUpdate(this.exam, exam);
+            next();
+        }else{
+            if(this.isModified("marks")){
+                const exam = await this.model("Exam").findById(this.exam);
+                this.percentage=(this.marks/exam.totalMarks)*100;
+                next()
+            }
+            else{
+                next()
+            }
+        }
+       
+  
 });
 
 examResultSchema.index({ student: 1, exam: 1 }, { unique: true });

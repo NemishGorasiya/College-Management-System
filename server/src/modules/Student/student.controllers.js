@@ -301,7 +301,6 @@ export const studentGetExams = async (req, res) => {
         exams: remainingExams
     });
 };
-
 export const studentGetTimetable = async (req, res) => {
     const { department, semester } = req.user;
     let { examType } = req.params;
@@ -600,6 +599,7 @@ export function getExamType(examType) {
 export const getStudents = async (req, res) => {
     const { semester, department, page, limit, sortBy, sortType } = req.query //sortBy has options - firstname, enrollment, doe, dob
     const filterObj = {};
+
 
     if (department && semester) {
         filterObj.department = department;

@@ -3,7 +3,6 @@ import Assignment from "./Assignment.js";
 import CustomError from "../../errors/CustomError.js";
 import SubmittedAssignment from "./SubmittedAssignment.js";
 import Student from "../Student/Student.js";
-import { populate } from "dotenv";
 
 
 export const createAssignment = async (req, res) => {
@@ -47,7 +46,7 @@ export const getOwnAssignments = async (req, res) => {
   }).sort({
     createdAt: -1, //recently created first
     dueDate: 1 //due date in ascending order (earliest due date first)
-  });
+  }).select("_id name description totalMarks subject dueDate faculty student");
 
   return res.status(httpStatus.OK).json(assignment);
 };
@@ -65,7 +64,7 @@ export const updateAssignment = async (req, res) => {
     return res.status(httpStatus.FORBIDDEN).json({ message: "You are not allowed to update this assignment" });
   }
 
-  for (let key of req.body) {
+  for (let key in req.body) {
     assignment[key] = req.body[key];
   }
 
@@ -107,16 +106,14 @@ export const getAllAssignments = async (req, res) => {
 
   page = parseInt(page);
 
-  const assignments = await Assignment.find(filterObj).populate("subject").populate("faculty").populate({
+
+  const assignments = await Assignment.find(filterObj).limit(limit).skip((page - 1) * limit).sort({ createdAt: -1, dueDate: 1 }).populate("subject", "_id name subjectCode department semester credits").populate("faculty", "_id firstName lastName email department").populate({
     path: "students",
     populate: [
       { path: "student", select: "_id firstName lastName email" },
       { path: "submission", select: "_id marks grade percentage isLate" }
     ]
-  }).sort({
-    createdAt: -1, //recently created first
-    dueDate: 1 //due date in ascending order (earliest due date first)
-  }).limit(limit).skip((page - 1) * limit);
+  }).select("_id name description totalMarks subject dueDate faculty students");
 
 
   return res.status(httpStatus.OK).json({
@@ -128,7 +125,7 @@ export const getAllAssignments = async (req, res) => {
 export const getAssignmentSubmissions = async (req, res) => {
   const { assignmentId } = req.params;
 
-  const assignment = await Assignment.findById(assignmentId);
+  const assignment = await Assignment.findById(assignmentId).select("_id name description totalMarks subject dueDate faculty");
 
   if (!assignment) {
     throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
@@ -136,9 +133,9 @@ export const getAssignmentSubmissions = async (req, res) => {
 
   const submissions = await SubmittedAssignment.find({
     assignment: assignmentId
-  }).populate("student").sort({
+  }).populate("student","_id entollmentNumber firstName lastName email semster").sort({
     createdAt: -1,
-  });
+  }).select("_id students assignment file isLate");
 
   return res.status(httpStatus.OK).json({
     message: "Submissions fetched successfully",
@@ -150,13 +147,13 @@ export const getAssignmentSubmissions = async (req, res) => {
 export const getAssignment = async (req, res) => {
   const { assignmentId } = req.params;
 
-  const assignment = await Assignment.findById(assignmentId).populate("subject").populate({
+  const assignment = await Assignment.findById(assignmentId).populate("subject","_id name subjectCode department semester credits").populate({
     path: "students",
     populate: [
       { path: "student", select: "_id name email" },
       { path: "submission" }
     ]
-  });
+  }).select("_id name description totalMarks subject dueDate faculty students");
 
   if (!assignment) {
     throw new CustomError(httpStatus.NOT_FOUND, "Assignment not found");
@@ -190,7 +187,7 @@ export const updateSubmittedAssignment = async (req, res) => {
   const { marks } = req.body;
 
   const submission = await SubmittedAssignment.findById(submissionId).populate("assignment");
-  console.log(submission)
+
 
   if (!submission) {
     throw new CustomError(httpStatus.NOT_FOUND, "Submission not found");
