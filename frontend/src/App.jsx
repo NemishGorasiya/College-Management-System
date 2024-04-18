@@ -6,20 +6,21 @@ import Placement from "./components/Placement.jsx";
 import Events from "./components/Events.jsx";
 import Circulars from "./components/Circulars.jsx";
 import Exam from "./components/Exam.jsx";
-import HomePage from "./pages/HomePage.jsx";
+import Layout from "./pages/Layout.jsx";
 import Help from "./components/Help.jsx";
 import Setting from "./components/Setting.jsx";
 import Assignments from "./components/Assignments.jsx";
 import RegistrationPage from "./pages/RegistrationPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import toast, { Toaster } from "react-hot-toast";
+import CreateDepartment from "./components/CreateDepartment.jsx";
+import { allowedUsers } from "./constant/constant.jsx";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <HomePage />,
-
+      element: <Layout />,
       children: [
         {
           path: "/profile",
@@ -59,13 +60,37 @@ function App() {
         },
       ],
     },
+    // {
+    //   path: "/login",
+    //   element: <Layout />,
+    //   children: [
+    //     {
+    //       index: true,
+    //       element: <LoginPage />,
+    //     },
+    //   ],
+    // },
     {
       path: "/login",
-      element: <LoginPage />,
+      element: <Layout />,
+      children: allowedUsers.map((userType) => ({
+        path: userType,
+        element: <LoginPage userType={userType} />,
+      })),
     },
     {
       path: "/register",
-      element: <RegistrationPage />,
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <RegistrationPage />,
+        },
+      ],
+    },
+    {
+      path: "/create/department",
+      element: <CreateDepartment />,
     },
   ]);
 

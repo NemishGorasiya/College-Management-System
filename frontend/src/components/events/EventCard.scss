@@ -1,35 +1,84 @@
 .eventCardWrapper {
-    border: 1px solid #00000033;
-    border-radius: 13px;
-    display: flex;
-    flex-direction: column;
-    .eventImage {
-        height: 175px;
-        width: 100%;
-        object-fit: cover;
-        border-top-left-radius: inherit;
-        border-top-right-radius: inherit;
-    }
-    .eventDetailsWrapper {
-        padding: 10px;
+	border: 1px solid #00000033;
+	border-radius: 13px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
 
-        .eventTitle {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 5px;
-    text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        width: 100%;
+	.crudButtonWrapper {
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		color: red;
+		display: flex;
+		gap: 5px;
+
+		.crudButton {
+			background: #fff;
+			padding: 5px;
+		}
+	}
+
+	.eventImage {
+		height: 175px;
+		width: 100%;
+		object-fit: cover;
+		border-top-left-radius: inherit;
+		border-top-right-radius: inherit;
+	}
+	.eventDetailsWrapper {
+		padding: 10px;
+
+		.eventTitle {
+			font-size: 18px;
+			font-weight: 600;
+			margin-bottom: 5px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: 100%;
+		}
+		.eventDate {
+			font-size: 16px;
+			font-weight: 500;
+			margin-bottom: 5px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: 100%;
+		}
+	}
 }
-.eventDate {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 5px;
-    text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        width: 100%;
-        }
-    }
+
+.eventDetailsModal {
+	.dialogBox {
+		padding: 0;
+
+		.eventImage {
+			width: 100%;
+			max-height: 300px;
+			object-fit: cover;
+			border-top-left-radius: inherit;
+			border-top-right-radius: inherit;
+		}
+
+		.eventDetailsWrapper {
+			padding: 12px;
+
+			.eventTitle {
+				font-size: 22px;
+				font-weight: 600;
+				margin-bottom: 5px;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+				width: 100%;
+			}
+			.eventTiming {
+				font-size: 18px;
+				font-weight: 500;
+				margin-bottom: 5px;
+			}
+		}
+	}
 }
