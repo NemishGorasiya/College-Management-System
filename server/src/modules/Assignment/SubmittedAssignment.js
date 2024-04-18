@@ -53,7 +53,7 @@ submittedAssignmentSchema.pre("save", async function (next) {
 
     assignment.students.push({
         student: this.student,
-        subimission: this.id
+        submission: this.id
     });
 
     await assignment.save();
@@ -63,30 +63,6 @@ submittedAssignmentSchema.pre("save", async function (next) {
 
 //save and update handler
 
-submittedAssignmentSchema.pre("save", async function (next) {
-    if (this.isModified("marks")) {
-        const assignment = await this.model("Assignment").findById(this.assignment);
-
-        if (!assignment) {
-            throw new CustomError(httpStatus.BAD_REQUEST, "Assignment not found");
-        }
-
-        if (this.marks > assignment.totalMarks) {
-            throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be greater than total marks");
-        }
-
-        if (this.marks < 0) {
-            throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be negative");
-        }
-
-        this.grade = marks >= 90 ? "A" : marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
-
-        this.percentage = (this.marks / assignment.totalMarks) * 100;
-
-        next();
-    }
-    next();
-})
 
 submittedAssignmentSchema.pre('updateOne', async function (next) {
     const update = this.getUpdate();
@@ -116,7 +92,7 @@ submittedAssignmentSchema.pre('updateOne', async function (next) {
 
             // Calculate percentage
             const percentage = (update.marks / assignment.totalMarks) * 100;
-            const grade = marks >= 90 ? "A" : marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
+            const grade = percentage >= 90 ? "A" : percentage >= 80 ? "B" : percentage >= 70 ? "C" : percentage >= 60 ? "D" : "F";
 
             // Update the document with the new percentage
             this.updateOne({}, { percentage, grade });
