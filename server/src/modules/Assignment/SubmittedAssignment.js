@@ -77,7 +77,9 @@ submittedAssignmentSchema.pre("save", async function (next) {
 
         if (this.marks < 0) {
             throw new CustomError(httpStatus.BAD_REQUEST, "Marks cannot be negative");
-        } marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
+        }
+
+        this.grade = marks >= 90 ? "A" : marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
 
         this.percentage = (this.marks / assignment.totalMarks) * 100;
 
@@ -88,7 +90,6 @@ submittedAssignmentSchema.pre("save", async function (next) {
 
 submittedAssignmentSchema.pre('updateOne', async function (next) {
     const update = this.getUpdate();
-    console.log(this)
 
     // Check if the 'marks' field is being updated
     if (update.hasOwnProperty('marks')) {
@@ -115,9 +116,10 @@ submittedAssignmentSchema.pre('updateOne', async function (next) {
 
             // Calculate percentage
             const percentage = (update.marks / assignment.totalMarks) * 100;
+            const grade = marks >= 90 ? "A" : marks >= 80 ? "B" : this.marks >= 70 ? "C" : this.marks >= 60 ? "D" : "F";
 
             // Update the document with the new percentage
-            this.updateOne({}, { percentage });
+            this.updateOne({}, { percentage, grade });
 
             next();
         } catch (error) {
