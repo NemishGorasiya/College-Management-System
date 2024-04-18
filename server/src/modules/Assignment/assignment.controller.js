@@ -107,13 +107,16 @@ export const getAllAssignments = async (req, res) => {
 
   page = parseInt(page);
 
-  const assignments = await Assignment.find(filterObj).limit(limit).skip((page - 1) * limit).sort({ createdAt: -1, dueDate: 1 }).populate("subject").populate("faculty").populate({
+  const assignments = await Assignment.find(filterObj).populate("subject").populate("faculty").populate({
     path: "students",
     populate: [
       { path: "student", select: "_id firstName lastName email" },
       { path: "submission", select: "_id marks grade percentage isLate" }
     ]
-  });
+  }).sort({
+    createdAt: -1, //recently created first
+    dueDate: 1 //due date in ascending order (earliest due date first)
+  }).limit(limit).skip((page - 1) * limit);
 
 
   return res.status(httpStatus.OK).json({

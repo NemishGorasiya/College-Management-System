@@ -7,7 +7,7 @@ import Student from "../modules/Student/Student.js";
 import { config } from "dotenv";
 config();
 
-const getUserType = (user) => {
+export const getUserType = (user) => {
   if (user instanceof Student) {
     return "student";
   } else if (user instanceof Faculty) {
