@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { allowedUsers, bloodGroups, semesters } from "../constant/constatnt";
+import { allowedUsers, bloodGroups, semesters } from "../constant/constant.jsx";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";

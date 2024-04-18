@@ -11,7 +11,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
-import { allowedUsers } from "../constant/constatnt";
+import { allowedUsers } from "../constant/constant";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
