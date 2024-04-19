@@ -77,11 +77,11 @@ export const sideBarNavLinksForAdmin = [
     label: "Events",
     icon: <EventIcon />,
   },
-  {
-    link: "exam",
-    label: "Exam",
-    icon: <MenuBookIcon />,
-  },
+  // {
+  //   link: "exam",
+  //   label: "Exam",
+  //   icon: <MenuBookIcon />,
+  // },
   {
     link: "requests",
     label: "Requests",

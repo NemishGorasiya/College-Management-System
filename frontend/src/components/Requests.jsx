@@ -21,6 +21,12 @@ const Requests = () => {
       list: [],
       isLoading: true,
     },
+    {
+      title: "approvedRequests",
+      label: "Approved Requests",
+      list: [],
+      isLoading: true,
+    },
   ]);
   const getRequests = async () => {
     try {
@@ -36,6 +42,12 @@ const Requests = () => {
           title: "facultyRequests",
           label: "Faculty Requests",
           list: res.facultyRequests,
+          isLoading: false,
+        },
+        {
+          title: "approvedRequests",
+          label: "Approved Requests",
+          list: res.approvedRequests,
           isLoading: false,
         },
       ]);
@@ -67,7 +79,7 @@ const Requests = () => {
                     />
                   ))
                 ) : (
-                  <h4>No Pending Requests</h4>
+                  <h4>No Requests Found</h4>
                 )}
               </div>
             )}

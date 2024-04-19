@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./Events.scss";
 import ServiceTitle from "./ServiceTitle";
 import YearMonthFilter from "./YearMonthFilter";
@@ -6,10 +6,10 @@ import EventCard from "./events/EventCard";
 import { fetchEvents } from "../services/services";
 import UploadCircularButton from "./UploadCircularButton";
 import AddNewEventButton from "./events/AddNewEventButton";
-import { useOutletContext } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Events() {
-  const { userType } = useOutletContext();
+  const { userType } = useContext(AuthContext);
   const [events, setEvents] = useState({
     list: [],
     isLoading: true,

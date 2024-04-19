@@ -70,7 +70,6 @@ function App() {
           element: <RegistrationPage />,
         },
       ],
-      errorElement: <Navigate to="/login/student" />,
     },
     {
       path: "/login",
