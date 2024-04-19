@@ -1,7 +1,9 @@
 import httpStatus from "http-status";
 import CustomError from "../../errors/CustomError.js";
-import { otpEmailGeneration } from "../../utils/otpHandler.js";
+import { getUserType, otpEmailGeneration } from "../../utils/otpHandler.js";
 import OTP from "../OTP/OTP.js";
+import Student from "../Student/Student.js";
+import Faculty from "../Faculty/Faculty.js";
 
 export const userLogout = async (req, res) => {
     req.logout({
@@ -67,12 +69,30 @@ export const changePassword = async (req, res) => {
     })
 };
 
-export const getProfile = async (req, res) => {
-    delete req["user"]["hash"]
-    delete req["user"]["salt"]
-
+    export const getProfile = async (req, res) => {
+        delete req["user"]["hash"]
+        delete req["user"]["salt"]
+     
+        const userType = getUserType(req.user);
+     
+        let user ;
+        switch (userType) {
+            case 'admin':
+                user=req.user;
+                break;
+            case 'student':
+                user= await Student.findById(req.user._id).populate("department","_id name contactEmail contactPhoneNumber").select("_id enrollmentNumber firstName lastName dob doa email gender bloodGroup phoneNumber fatherName motherName parentPhoneNumber address passOutYear department age profilePicture")
+                break;
+            case 'faculty':
+                user = await Faculty.findById(req.user._id)
+                break;
+            default:
+                user = {};
+                break;
+        }
+     
     return res.status(httpStatus.OK).send({
         message: "Profile fetched successfully",
-        user: req.user,
+        user,
     })
 };
