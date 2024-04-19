@@ -75,7 +75,7 @@ export const deleteAdmin = async (req, res) => {
 };
 
 export const updateRequestsAdmin = async (req, res) => {
-  const studentRequests = await StudentUpdateRequest.find({ status: "PENDING" }).populate("student").select({
+  const studentRequests = await StudentUpdateRequest.find().populate("student").populate("actionBy").select({
     student: {
       password: 0,
       isActive: 0,
@@ -91,7 +91,7 @@ export const updateRequestsAdmin = async (req, res) => {
     }
   });
 
-  const facultyRequests = await FacultyUpdateRequest.find({ status: "PENDING" }).populate("faculty").select({
+  const facultyRequests = await FacultyUpdateRequest.find().populate("faculty").populate("actionBy").select({
     faculty: {
       password: 0,
       isActive: 0,
@@ -106,10 +106,29 @@ export const updateRequestsAdmin = async (req, res) => {
     }
   });
 
+  let studentRequestsArray = [], facultyRequestsArray = [], approvedRequestsArray = [];
+
+  for (let item of studentRequests) {
+    if (item.status === "PENDING") {
+      studentRequestsArray.push(item);
+    } else {
+      approvedRequestsArray.push(item);
+    }
+  }
+
+  for (let item of facultyRequests) {
+    if (item.status === "PENDING") {
+      facultyRequestsArray.push(item);
+    } else {
+      approvedRequestsArray.push(item);
+    }
+  }
+
   return res.status(httpStatus.OK).json({
     message: "Requests fetched successfully",
-    studentRequests,
-    facultyRequests,
+    studentRequests: studentRequestsArray,
+    facultyRequests: facultyRequestsArray,
+    approvedRequests: approvedRequestsArray,
   })
 };
 
