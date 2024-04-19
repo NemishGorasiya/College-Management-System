@@ -1,4 +1,8 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import "./App.css";
 import Profile from "./components/Profile.jsx";
 import Result from "./components/Result.jsx";
@@ -17,12 +21,12 @@ import CreateDepartment from "./components/CreateDepartment.jsx";
 import { allowedUsers } from "./constant/constant.jsx";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
 import Requests from "./components/Requests.jsx";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
-      element: <Layout />,
+      element: <ProtectedRoute />,
       children: [
         {
           path: "/profile",
@@ -36,10 +40,7 @@ function App() {
           path: "/assignments",
           element: <Assignments />,
         },
-        {
-          path: "/placement",
-          element: <Placement />,
-        },
+
         {
           path: "/events",
           element: <Events />,
@@ -64,7 +65,12 @@ function App() {
           path: "/requests",
           element: <Requests />,
         },
+        {
+          path: "/register",
+          element: <RegistrationPage />,
+        },
       ],
+      errorElement: <Navigate to="/login/student" />,
     },
     {
       path: "/login",
@@ -73,20 +79,6 @@ function App() {
         path: userType,
         element: <LoginPage userType={userType} />,
       })),
-    },
-    {
-      path: "/register",
-      element: <Layout />,
-      children: [
-        {
-          index: true,
-          element: <RegistrationPage />,
-        },
-      ],
-    },
-    {
-      path: "/create/department",
-      element: <CreateDepartment />,
     },
   ]);
 
