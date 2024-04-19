@@ -13,9 +13,7 @@ import { checkIsAuthenticated } from "../utils/utilityFunctions.js";
 
 export default function SideBar({ isSideBarOpen }) {
   const { userType } = useContext(AuthContext);
-  console.log("u type", userType);
   const isAuthenticated = checkIsAuthenticated(userType);
-  console.log("is ", isAuthenticated);
   let sideBarNavLinks;
   switch (userType) {
     case "student":

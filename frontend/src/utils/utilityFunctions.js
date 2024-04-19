@@ -30,3 +30,7 @@ export const checkIsAuthenticated = (currUserType) => {
   });
   return flag;
 };
+
+export const handleFallBackImage = (event, fallBackImage) => {
+  event.target.src = fallBackImage;
+};
