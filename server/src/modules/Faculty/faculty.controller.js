@@ -67,7 +67,7 @@ export const registerFaculty = async (req, res) => {
 
 export const loginFaculty = async (req, res) => {
     const { _id, firstName, lastName, phoneNumber, email, semesters,
-        department, } = req.user;
+        department, isHOD } = req.user;
 
     const user = {
         _id,
@@ -77,6 +77,7 @@ export const loginFaculty = async (req, res) => {
         email,
         semesters,
         department,
+        isHOD,
         userType: getUserType(req.user)
     };
 
