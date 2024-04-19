@@ -15,6 +15,7 @@ import { allowedUsers } from "../constant/constant";
 import { loginUser } from "../services/services";
 import toast from "react-hot-toast";
 import { AuthContext } from "../context/AuthContext";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const LoginPage = ({ userType }) => {
   const { updateUserType, changeAuthenticationStatus } =
@@ -22,7 +23,7 @@ const LoginPage = ({ userType }) => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
+  // const [userType, setUserType] = useLocalStorage();
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     const fd = new FormData(event.target);

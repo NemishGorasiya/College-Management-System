@@ -3,9 +3,11 @@ import TopBar from "../components/TopBar";
 import SideBar from "../components/SideBar";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function Layout() {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const [userType, setUserType] = useLocalStorage();
   const handleHamBurgerClick = () => {
     setIsSideBarOpen((prevState) => !prevState);
   };
@@ -13,9 +15,9 @@ export default function Layout() {
     <div className="Layout">
       <TopBar handleHamBurgerClick={handleHamBurgerClick} />
       <div className="contentWrapper">
-        <SideBar isSideBarOpen={isSideBarOpen} />
+        <SideBar userType={userType} isSideBarOpen={isSideBarOpen} />
         <div className="mainContent">
-          <Outlet />
+          <Outlet userType={userType} />
         </div>
       </div>
     </div>
