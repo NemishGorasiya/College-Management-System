@@ -1,3 +1,6 @@
+import { allowedUsers } from "../constant/constant";
+import useLocalStorage from "../hooks/useLocalStorage";
+
 export const formatDate = (date) => {
   const dateToFormat = new Date(date);
   const formattedDate = new Intl.DateTimeFormat("en-US", {
@@ -19,4 +22,11 @@ export const DateToTime = (date) => {
 export const convertToISO = (dateString) => {
   const date = new Date(dateString);
   return date.toISOString();
+};
+
+export const checkIsAuthenticated = (currUserType) => {
+  const flag = allowedUsers.some((userType) => {
+    return userType === currUserType;
+  });
+  return flag;
 };

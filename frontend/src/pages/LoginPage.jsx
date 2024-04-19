@@ -18,12 +18,10 @@ import { AuthContext } from "../context/AuthContext";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const LoginPage = ({ userType }) => {
-  const { updateUserType, changeAuthenticationStatus } =
-    useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
+  const { updateUserType } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  // const [userType, setUserType] = useLocalStorage();
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     const fd = new FormData(event.target);
@@ -31,11 +29,10 @@ const LoginPage = ({ userType }) => {
     console.log(data);
     try {
       const res = await loginUser({ userType, data });
-      if (res.status === 200) {
+      if (res) {
         toast.success("User loggedIn successfully");
-        updateUserType(userType);
-        changeAuthenticationStatus(true);
         navigate("/profile");
+        updateUserType(userType);
       }
     } catch (error) {
       toast.error("Invalid credentials");

@@ -1,26 +1,20 @@
 import { createContext, useState } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [userType, setUserType] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userType, setUserType] = useLocalStorage("userType", null);
 
   const updateUserType = (userType) => {
     setUserType(userType);
-  };
-
-  const changeAuthenticationStatus = (status) => {
-    setIsAuthenticated(status);
   };
 
   return (
     <AuthContext.Provider
       value={{
         userType,
-        isAuthenticated,
         updateUserType,
-        changeAuthenticationStatus,
       }}
     >
       {children}

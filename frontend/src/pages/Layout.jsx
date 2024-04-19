@@ -3,21 +3,24 @@ import TopBar from "../components/TopBar";
 import SideBar from "../components/SideBar";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import useLocalStorage from "../hooks/useLocalStorage";
 
-export default function Layout() {
+export default function Layout({ userInfo }) {
+  const { isAuthenticated, userType } = userInfo || {};
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const [userType, setUserType] = useLocalStorage();
   const handleHamBurgerClick = () => {
     setIsSideBarOpen((prevState) => !prevState);
   };
   return (
     <div className="Layout">
-      <TopBar handleHamBurgerClick={handleHamBurgerClick} />
+      <TopBar handleHamBurgerClick={handleHamBurgerClick} isAuthenticated />
       <div className="contentWrapper">
-        <SideBar userType={userType} isSideBarOpen={isSideBarOpen} />
+        <SideBar
+          isSideBarOpen={isSideBarOpen}
+          userType={userType}
+          isAuthenticated={isAuthenticated ?? false}
+        />
         <div className="mainContent">
-          <Outlet userType={userType} />
+          <Outlet context={userType} />
         </div>
       </div>
     </div>

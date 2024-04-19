@@ -6,44 +6,48 @@ import EventCard from "./events/EventCard";
 import { fetchEvents } from "../services/services";
 import UploadCircularButton from "./UploadCircularButton";
 import AddNewEventButton from "./events/AddNewEventButton";
+import { useOutletContext } from "react-router-dom";
 
 export default function Events() {
-	const [events, setEvents] = useState({
-		list: [],
-		isLoading: true,
-	});
-	const { list: eventsList, isLoading: isEventsLoading } = events;
-	const getEvents = async () => {
-		const res = await fetchEvents();
-		console.log(res);
-		setEvents({
-			list: res.events,
-			isLoading: false,
-		});
-	};
-	useEffect(() => {
-		getEvents();
-	}, []);
-	return (
-		<div className="eventsService">
-			<ServiceTitle serviceTitle="Events" />
-			<div className="eventsWrapper">
-				<AddNewEventButton getEvents={getEvents} />
-				<YearMonthFilter />
-				<div className="eventsContainer">
-					{isEventsLoading ? (
-						<h1>Loading...</h1>
-					) : (
-						eventsList.map((event) => (
-							<EventCard
-								key={event._id}
-								eventDetails={event}
-								getEvents={getEvents}
-							/>
-						))
-					)}
-				</div>
-			</div>
-		</div>
-	);
+  const { userType } = useOutletContext();
+  const [events, setEvents] = useState({
+    list: [],
+    isLoading: true,
+  });
+  const { list: eventsList, isLoading: isEventsLoading } = events;
+  const getEvents = async () => {
+    const res = await fetchEvents();
+    console.log(res);
+    setEvents({
+      list: res.events,
+      isLoading: false,
+    });
+  };
+  useEffect(() => {
+    getEvents();
+  }, []);
+  return (
+    <div className="eventsService">
+      <ServiceTitle serviceTitle="Events" />
+      <div className="eventsWrapper">
+        {userType === "admin" && <AddNewEventButton getEvents={getEvents} />}
+
+        <YearMonthFilter />
+        <div className="eventsContainer">
+          {isEventsLoading ? (
+            <h1>Loading...</h1>
+          ) : (
+            eventsList.map((event) => (
+              <EventCard
+                key={event._id}
+                eventDetails={event}
+                getEvents={getEvents}
+                userType={userType}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

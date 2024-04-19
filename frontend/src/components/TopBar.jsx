@@ -8,18 +8,18 @@ import { logoutUser } from "../services/services";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import useLocalStorage from "../hooks/useLocalStorage";
 
-export default function TopBar({ handleHamBurgerClick }) {
-  const { updateUserType, changeAuthenticationStatus, isAuthenticated } =
-    useContext(AuthContext);
+export default function TopBar({ handleHamBurgerClick, isAuthenticated }) {
   const navigate = useNavigate();
+  const { updateUserType } = useContext(AuthContext);
+  // const [userInfo, setUserInfo] = useLocalStorage("userInfo", null);
   const handleLogout = async () => {
     try {
       const res = await logoutUser();
       if (res.status === 200) {
         toast.success("User loggedOut successfully");
-        updateUserType(null);
-        changeAuthenticationStatus(false);
+        updateUserType("");
         navigate("/login/student");
       }
     } catch (error) {

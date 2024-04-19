@@ -9,11 +9,13 @@ import { sideBarExtraNavLinks } from "../constant/constant.jsx";
 // import { loginPageNavLinks } from "../constant/constant.jsx";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { checkIsAuthenticated } from "../utils/utilityFunctions.js";
 
 export default function SideBar({ isSideBarOpen }) {
-  const path = window.location.pathname;
-  const isLoginPage = path.startsWith("/login");
-  const { userType, isAuthenticated } = useContext(AuthContext);
+  const { userType } = useContext(AuthContext);
+  console.log("u type", userType);
+  const isAuthenticated = checkIsAuthenticated(userType);
+  console.log("is ", isAuthenticated);
   let sideBarNavLinks;
   switch (userType) {
     case "student":
