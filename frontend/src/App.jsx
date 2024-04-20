@@ -1,20 +1,23 @@
+import { Toaster } from "react-hot-toast";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
+import Assignments from "./components/Assignments.jsx";
+import Circulars from "./components/Circulars.jsx";
+import CreateDepartment from "./components/CreateDepartment.jsx";
+import Events from "./components/Events.jsx";
+import Exam from "./components/Exam.jsx";
+import Help from "./components/Help.jsx";
+import Placement from "./components/Placement.jsx";
 import Profile from "./components/Profile.jsx";
 import Result from "./components/Result.jsx";
-import Placement from "./components/Placement.jsx";
-import Events from "./components/Events.jsx";
-import Circulars from "./components/Circulars.jsx";
-import Exam from "./components/Exam.jsx";
-import Layout from "./pages/Layout.jsx";
-import Help from "./components/Help.jsx";
 import Setting from "./components/Setting.jsx";
-import Assignments from "./components/Assignments.jsx";
-import RegistrationPage from "./pages/RegistrationPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
-import toast, { Toaster } from "react-hot-toast";
-import CreateDepartment from "./components/CreateDepartment.jsx";
+import HomePage from "./components/home-page/HomePage.jsx";
+import Team from "./components/home-page/Team.jsx";
 import { allowedUsers } from "./constant/constant.jsx";
+import HomePageLayout from "./pages/HomePageLayout.jsx";
+import Layout from "./pages/Layout.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import RegistrationPage from "./pages/RegistrationPage.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -92,6 +95,20 @@ function App() {
       path: "/create/department",
       element: <CreateDepartment />,
     },
+    {
+      path: "/home",
+      element: <HomePageLayout />,
+      children: [
+        {
+          path: "/home/",
+          element: <HomePage />
+        },
+        {
+          path: "/home/team",
+          element: <Team />
+        }
+      ]
+    }
   ]);
 
   return (
