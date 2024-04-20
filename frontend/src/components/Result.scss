@@ -1,9 +1,22 @@
 .resultService {
-  .resultWrapper {
-    padding: 20px 0 0;
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    margin-bottom: 20px;
-  }
+	.resultDownloadSelectWrapper {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-top: 20px;
+
+		.examTypeSelect {
+			width: 200px;
+		}
+		.downloadButton {
+			height: 56px;
+		}
+	}
+	.resultWrapper {
+		padding: 20px 0 0;
+		display: grid;
+		grid-gap: 20px;
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		margin-bottom: 20px;
+	}
 }
