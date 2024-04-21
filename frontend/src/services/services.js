@@ -315,6 +315,29 @@ export const registerStudent = async ({ data }) => {
 		console.error(error);
 	}
 };
+export const requestEditProfile = async ({ userType, data, userId }) => {
+	try {
+		const res = await axios({
+			method: "patch",
+			url:
+				BASE_URL +
+				`/${userType}/update/request?${
+					userType === "student" ? "studentId" : "facultyId"
+				}=${userId}`,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			redirect: "follow",
+			credentials: "include",
+			withCredentials: true,
+			data: data,
+		});
+		console.log(res.data);
+		return res.data;
+	} catch (error) {
+		console.error(error);
+	}
+};
 
 export const adminLogin = async ({ data }) => {
 	try {

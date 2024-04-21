@@ -5,7 +5,7 @@ import ProfileSection from "./profile/ProfileSection";
 import { formatDate, handleFallBackImage } from "../utils/utilityFunctions";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { fetchProfileData } from "../services/services";
+import { fetchProfileData, requestEditProfile } from "../services/services";
 import fallbackProfileImageMale from "../assets/fallbackProfileImageMale.png";
 import CloseIcon from "@mui/icons-material/Close";
 import fallbackProfileImageFemale from "../assets/fallbackProfileImageFemale.png";
@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { modalStyle } from "./modal/modalStyle";
+import toast from "react-hot-toast";
 
 export default function Profile() {
 	const { userType } = useContext(AuthContext);
@@ -35,10 +36,23 @@ export default function Profile() {
 		list: [],
 		isLoading: true,
 	});
+	const [userId, setUserId] = useState(null);
 
-	const handleEditFormSubmit = (event) => {
+	const handleEditFormSubmit = async (event) => {
 		event.preventDefault();
-		console.log("form submitted");
+		const fd = new FormData(event.target);
+		const data = Object.fromEntries(fd.entries());
+		console.log("form submitted", data);
+		try {
+			const res = await requestEditProfile({ userType, data, userId });
+			if (res) {
+				toast.success("Profile update request sent successfully");
+			} else {
+				toast.error("Something went wrong");
+			}
+		} catch (error) {
+			console.error(error);
+		}
 	};
 	const [profilePicture, setProfilePicture] = useState(null);
 	const getProfileData = useCallback(async () => {
@@ -46,6 +60,7 @@ export default function Profile() {
 			const res = await fetchProfileData();
 			const { user } = res;
 			console.log("profile", user);
+			setUserId(user.id);
 			const {
 				fullName = "",
 				dob = "",
@@ -204,11 +219,6 @@ export default function Profile() {
 									</FormControl>
 								)
 						)}
-						<FormControl variant="outlined" className="formControl">
-							<InputLabel>sdoksd</InputLabel>
-							<OutlinedInput />
-						</FormControl>
-
 						<Button
 							type="submit"
 							variant="contained"
