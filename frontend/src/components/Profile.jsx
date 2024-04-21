@@ -118,9 +118,10 @@ export default function Profile() {
 			}
 
 			setProfilePicture(
-				profilePicture ?? gender === "MALE"
-					? fallbackProfileImageMale
-					: fallbackProfileImageFemale
+				profilePicture ??
+					(gender === "MALE"
+						? fallbackProfileImageMale
+						: fallbackProfileImageFemale)
 			);
 
 			setPersonalInfo({
