@@ -1,9 +1,13 @@
 import ServiceTitle from "./ServiceTitle";
+import "./Assignments.scss";
 
 export default function Assignments() {
-	return (
-		<div>
-			<ServiceTitle serviceTitle="Assignments" />
-		</div>
-	);
+  return (
+    <div className="assignments">
+      <ServiceTitle serviceTitle="Assignments" />
+      <div className="assignmentsContentWrapper">
+        <h1>Work in progress...</h1>
+      </div>
+    </div>
+  );
 }
