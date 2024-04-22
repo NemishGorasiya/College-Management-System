@@ -17,16 +17,27 @@
         img {
           height: 100%;
           width: 100%;
+          border-radius: inherit;
         }
         .imageUploadBtn {
           position: absolute;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
+          opacity: 0;
+          transition: all 0.3s ease;
+          border-radius: 50%;
+          svg {
+            font-size: 50px;
+          }
+        }
+        &:hover {
+          .imageUploadBtn {
+            opacity: 1;
+          }
         }
       }
       .editBtn {
-        // font-size: 12px;
         max-width: 200px;
       }
     }
@@ -49,6 +60,14 @@
         height: 56px;
       }
     }
+  }
+}
+.uploadProfileImageModal {
+  .dialogBox {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
 }
 
