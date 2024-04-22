@@ -33,6 +33,8 @@ const LoginPage = ({ userType }) => {
         toast.success("User loggedIn successfully");
         navigate("/profile");
         updateUserType(userType);
+      } else {
+        toast.error("Invalid credentials");
       }
     } catch (error) {
       toast.error("Invalid credentials");
