@@ -99,10 +99,24 @@ export default function Profile() {
   const handleEditFormSubmit = async (event) => {
     event.preventDefault();
     const fd = new FormData(event.target);
+    console.log("fd", fd);
     const data = Object.fromEntries(fd.entries());
     console.log("form submitted", data);
+    let editedData = {};
+
+    // Compare updatedData with initial personalInfo and academicInfo
+    personalInfo.list.forEach((detail) => {
+      if (data[detail.name] != detail.value) {
+        editedData[detail.name] = data[detail.name];
+      }
+    });
+
     try {
-      const res = await requestEditProfile({ userType, data, userId });
+      const res = await requestEditProfile({
+        userType,
+        data: editedData,
+        userId,
+      });
       if (res) {
         toast.success("Profile update request sent successfully");
       } else {
@@ -138,10 +152,14 @@ export default function Profile() {
         designation = "",
         profilePicture = "",
         doj = "",
+        firstName = "",
+        lastName = "",
       } = user;
 
       let personalInfo = [
-        { label: "Full Name", value: fullName, name: "fullName" },
+        { label: "First Name", value: firstName, name: "firstName" },
+        { label: "Last Name", value: lastName, name: "lastName" },
+        // { label: "Full Name", value: fullName, name: "fullName" },
         { label: "Date of Birth", value: formatDate(dob), name: "dob" },
         { label: "Email", value: email, name: "email" },
         { label: "Gender", value: gender, name: "gender" },
