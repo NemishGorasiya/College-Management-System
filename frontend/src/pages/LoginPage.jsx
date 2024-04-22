@@ -9,17 +9,19 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import { allowedUsers } from "../constant/constant";
 import { loginUser } from "../services/services";
 import toast from "react-hot-toast";
+import { AuthContext } from "../context/AuthContext";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const LoginPage = ({ userType }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const { updateUserType } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     const fd = new FormData(event.target);
@@ -27,9 +29,10 @@ const LoginPage = ({ userType }) => {
     console.log(data);
     try {
       const res = await loginUser({ userType, data });
-      if (res.status === 200) {
+      if (res) {
         toast.success("User loggedIn successfully");
         navigate("/profile");
+        updateUserType(userType);
       }
     } catch (error) {
       toast.error("Invalid credentials");

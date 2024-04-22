@@ -128,14 +128,6 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
               onChange={(e) => setFile(e.target.files[0])}
             />
           </Button>
-          {/* <Button
-            variant="contained"
-            startIcon={<CloudUploadIcon />}
-            className="formControl"
-            type="submit"
-          >
-            Upload
-          </Button> */}
           <LoadingButton
             type="submit"
             loading={isEventUploading}

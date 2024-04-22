@@ -1,80 +1,100 @@
 import ServiceTitle from "./ServiceTitle";
 import "./Result.scss";
-import updateCaptchImage from "../assets/retry.png";
-import Button from "../UI/Button.jsx";
+import { useContext, useEffect, useState } from "react";
+import { downloadResult, fetchResults } from "../services/services.js";
+import ResultCard from "./ResultCard.jsx";
+import { toast } from "react-hot-toast";
+import {
+	FormControl,
+	InputLabel,
+	MenuItem,
+	Select,
+	Button,
+} from "@mui/material";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 export default function Result() {
+	const [results, setResults] = useState({
+		list: [],
+		isLoading: true,
+	});
+	const { userType } = useContext(AuthContext);
+	const [exapTypeSelected, setExamTypeSelected] = useState("");
+	const { list: resultList, isLoading: isResultsLoading } = results;
+	const getResults = async () => {
+		try {
+			const res = await fetchResults();
+			console.log("results", res);
+			const { results } = res;
+
+			setResults({
+				list: results,
+				isLoading: false,
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	};
+	const handleExamTypeChange = (e) => {
+		setExamTypeSelected(e.target.value);
+	};
+
+	const handleDownloadResult = async () => {
+		if (exapTypeSelected === "" || exapTypeSelected === undefined) {
+			return;
+		}
+		try {
+			const res = await downloadResult(exapTypeSelected);
+			console.log("results", res);
+			if (!res) {
+				toast.error("Result not found");
+			}
+		} catch (error) {
+			toast.error("Something went wrong while downloading result");
+			console.log("ccccc");
+		}
+	};
+
+	useEffect(() => {
+		getResults();
+	}, []);
 	return (
 		<div className="resultService">
 			<ServiceTitle serviceTitle="Result" />
-			<div className="resultWapper">
-				<table className="resultInputForm">
-					<tr className="inputGroup">
-						<td className="resultInputLabel">
-							<label htmlFor="Name">Name</label>
-						</td>
-						<td className="resultFormInput">
-							<span>Gorasiya Nemish Sureshbhai</span>
-						</td>
-					</tr>
-					<tr className="inputGroup">
-						<td className="resultInputLabel">
-							<label htmlFor="enNo">Enrollment No.</label>
-						</td>
-						<td className="resultFormInput">
-							<input type="text" id="enNo" />
-						</td>
-					</tr>
-					<tr className="inputGroup">
-						<td className="resultInputLabel">
-							<label htmlFor="sem">Semester</label>
-						</td>
-						<td className="resultFormInput">
-							<select className="semInput" name="" id="sem">
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-								<option value="6">6</option>
-								<option value="7">7</option>
-								<option value="8">8</option>
-							</select>
-						</td>
-					</tr>
-					<tr className="inputGroup">
-						<td className="resultInputLabel">
-							<label htmlFor="enNo">Captcha</label>
-						</td>
-						<td className="resultFormInput captchaInput">
-							<input className="captchaInput" type="text" id="enNo" />
-							<img
-								className="captchaImage"
-								src="https://picsum.photos/200/300"
-								alt=""
-							/>
-							<img
-								className="updateCaptchImage"
-								src={updateCaptchImage}
-								alt=""
-							/>
-						</td>
-						<td className="resultCaptchImage"></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>
-							<Button style={{ width: "80px" }}>Search</Button>
-						</td>
-					</tr>
-				</table>
+			{userType === "student" && (
+				<div className="resultDownloadSelectWrapper">
+					<FormControl variant="outlined" className="examTypeSelect">
+						<InputLabel htmlFor="examType">Exam</InputLabel>
+						<Select label="examType" onChange={handleExamTypeChange}>
+							<MenuItem key={1} value="midsem">
+								Mid-Semester
+							</MenuItem>
+							<MenuItem key={2} value="internal">
+								Internal Submissions
+							</MenuItem>
+							<MenuItem key={3} value="viva">
+								Viva
+							</MenuItem>
+						</Select>
+					</FormControl>
+					<Button
+						className="downloadButton"
+						variant="contained"
+						onClick={handleDownloadResult}
+					>
+						Download
+					</Button>
+				</div>
+			)}
 
-				<div className="resultImage">
-					<img src="https://placehold.co/600x400" alt="" />
-				</div>
-				<div className="printBtnWrapper">
-					<Button>Print</Button>
-				</div>
+			<div className="resultWrapper">
+				{isResultsLoading ? (
+					<h1>Loading...</h1>
+				) : (
+					resultList.map((result) => (
+						<ResultCard key={result.id} result={result} />
+					))
+				)}
 			</div>
 		</div>
 	);
