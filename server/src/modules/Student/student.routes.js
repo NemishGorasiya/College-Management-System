@@ -18,6 +18,7 @@ import {
   studentGetResults,
   studentGetSubjects,
   studentGetTimetable,
+  studentGetUpdateRequests,
   studentLogin,
   studentRegister,
   studentRegisterCSV,
@@ -57,6 +58,12 @@ router
     validate(studentLoginSchema, { keyByField: true }),
     passport.authenticate("student", { failureRedirect: "/api/error" }),
     studentLogin
+  )
+  .get(
+    "/get-update-requests",
+    isAuthenticated,
+    checkPermissions(Student),
+    studentGetUpdateRequests
   )
   .patch(
     "/update/request",

@@ -117,6 +117,33 @@ export const updateFaculty = async (req, res) => {
     return res.status(httpStatus.OK).json({ message: "Faculty update request created successfully" });
 };
 
+export const facultyGetUpdateRequests = async (req, res) => {
+    const { page, limit } = req.query;
+
+    const facultyUpdateRequests = await FacultyUpdateRequest.find({
+        faculty: req.user._id,
+    }).skip((page - 1) * limit).limit(limit).sort({
+        createdAt: -1,
+    }).populate("faculty").populate("actionBy").select("_id student changes status actionBy");
+
+    const acc = facultyUpdateRequests.reduce((acc, curr) => {
+        if (curr.status === "APPROVED") {
+            acc.approved.push(curr);
+        } else if (curr.status === "PENDING") {
+            acc.pending.push(curr);
+        } else {
+            acc.rejected.push(curr);
+        }
+        return acc;
+    }, {
+        approved: [],
+        pending: [],
+        rejected: []
+    })
+
+    return res.status(httpStatus.OK).json({ message: "Faculty update requests fetched successfully", facultyUpdateRequests: acc });
+};
+
 export const deleteFaculty = async (req, res) => {
     const { facultyId } = req.params;
 

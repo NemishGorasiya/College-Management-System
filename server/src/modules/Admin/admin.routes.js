@@ -6,12 +6,12 @@ import {
   isAuthenticated,
 } from "../../middlewares/middlewares.js";
 import {
-  approveRequest,
+  approveRequestHandler,
   deleteAdmin,
   loginAdmin,
   registerAdmin,
   updateAdmin,
-  updateRequestsAdmin,
+  updateRequestsAdmin
 } from "./admin.controllers.js";
 import Admin from "./Admin.js";
 import { adminDeleteSchema, adminLoginSchema, adminRegisterSchema, adminUpdateSchema } from "./admin.schema.js";
@@ -43,10 +43,10 @@ router
     updateRequestsAdmin
   )
   .post(
-    "/requests/:requestId/approve",
+    "/requests/:requestId/:action",
     isAuthenticated,
     checkPermissions(Admin),
-    approveRequest
+    approveRequestHandler
   );
 
 
