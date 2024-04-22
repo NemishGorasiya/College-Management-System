@@ -5,11 +5,17 @@ import ProfileSection from "./profile/ProfileSection";
 import { formatDate, handleFallBackImage } from "../utils/utilityFunctions";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { fetchProfileData, requestEditProfile } from "../services/services";
+import {
+  fetchProfileData,
+  requestEditProfile,
+  uploadFile,
+} from "../services/services";
 import fallbackProfileImageMale from "../assets/fallbackProfileImageMale.png";
 import CloseIcon from "@mui/icons-material/Close";
 import fallbackProfileImageFemale from "../assets/fallbackProfileImageFemale.png";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+
 import {
   Box,
   Button,
@@ -19,16 +25,40 @@ import {
   Modal,
   OutlinedInput,
   Stack,
+  styled,
 } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { modalStyle } from "./modal/modalStyle";
 import toast from "react-hot-toast";
+import LoadingButton from "@mui/lab/LoadingButton";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export default function Profile() {
   const { userType } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [isUploadProfileImageModalOpen, setIsUploadProfileImageModalOpen] =
+    useState(false);
+  const handleUploadProfileImageModalOpen = () =>
+    setIsUploadProfileImageModalOpen(true);
+  const handleUploadProfileImageModalClose = () =>
+    setIsUploadProfileImageModalOpen(false);
+
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [isProfileImageUploading, setIsProfileImageUploading] = useState(false);
+
   const [personalInfo, setPersonalInfo] = useState({
     list: [],
     isLoading: true,
@@ -39,13 +69,54 @@ export default function Profile() {
   });
   const [userId, setUserId] = useState(null);
 
+  const handleImageUpload = async () => {
+    const fd = new FormData();
+    fd.append("file", profileImageFile);
+    try {
+      setIsProfileImageUploading(true);
+      const response = await uploadFile(fd);
+      const {
+        response: { secure_url },
+      } = response;
+      const res = await requestEditProfile({
+        userType,
+        data: { profilePicture: secure_url },
+        userId,
+      });
+      if (res) {
+        toast.success("Image edit request sent successfully");
+      } else {
+        toast.error("Something went wrong");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsProfileImageUploading(false);
+      handleUploadProfileImageModalClose();
+    }
+  };
+
   const handleEditFormSubmit = async (event) => {
     event.preventDefault();
     const fd = new FormData(event.target);
+    console.log("fd", fd);
     const data = Object.fromEntries(fd.entries());
     console.log("form submitted", data);
+    let editedData = {};
+
+    // Compare updatedData with initial personalInfo and academicInfo
+    personalInfo.list.forEach((detail) => {
+      if (data[detail.name] != detail.value) {
+        editedData[detail.name] = data[detail.name];
+      }
+    });
+
     try {
-      const res = await requestEditProfile({ userType, data, userId });
+      const res = await requestEditProfile({
+        userType,
+        data: editedData,
+        userId,
+      });
       if (res) {
         toast.success("Profile update request sent successfully");
       } else {
@@ -81,10 +152,14 @@ export default function Profile() {
         designation = "",
         profilePicture = "",
         doj = "",
+        firstName = "",
+        lastName = "",
       } = user;
 
       let personalInfo = [
-        { label: "Full Name", value: fullName, name: "fullName" },
+        { label: "First Name", value: firstName, name: "firstName" },
+        { label: "Last Name", value: lastName, name: "lastName" },
+        // { label: "Full Name", value: fullName, name: "fullName" },
         { label: "Date of Birth", value: formatDate(dob), name: "dob" },
         { label: "Email", value: email, name: "email" },
         { label: "Gender", value: gender, name: "gender" },
@@ -159,9 +234,9 @@ export default function Profile() {
                 }}
               />
               <Button
-                onClick={handleOpen}
+                onClick={handleUploadProfileImageModalOpen}
                 className="imageUploadBtn"
-                variant="outlined"
+                variant="text"
               >
                 <CloudUploadIcon />
               </Button>
@@ -238,6 +313,46 @@ export default function Profile() {
               Submit Edit Request
             </Button>
           </form>
+        </Box>
+      </Modal>
+      <Modal
+        open={isUploadProfileImageModalOpen}
+        className="uploadProfileImageModal"
+      >
+        <Box className="dialogBox" sx={modalStyle}>
+          <IconButton
+            onClick={handleUploadProfileImageModalClose}
+            sx={{
+              position: "absolute",
+              right: 5,
+              top: 5,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Button
+            component="label"
+            variant="contained"
+            startIcon={<AttachFileIcon />}
+            className="formControl"
+            style={{ height: "56px" }}
+          >
+            Choose file
+            <VisuallyHiddenInput
+              type="file"
+              onChange={(e) => setProfileImageFile(e.target.files[0])}
+            />
+          </Button>
+          <LoadingButton
+            onClick={handleImageUpload}
+            loading={isProfileImageUploading}
+            loadingPosition="start"
+            startIcon={<CloudUploadIcon />}
+            variant="contained"
+            style={{ height: "56px" }}
+          >
+            <span>Upload</span>
+          </LoadingButton>
         </Box>
       </Modal>
     </>

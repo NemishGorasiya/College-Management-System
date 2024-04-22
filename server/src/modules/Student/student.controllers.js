@@ -107,6 +107,33 @@ export const studentUpdate = async (req, res) => {
     return res.status(httpStatus.OK).json({ message: "Student update request created successfully", studentUpdateRequest: studentUpdateRequest.id });
 };
 
+export const studentGetUpdateRequests = async (req, res) => {
+    const { page, limit } = req.query;
+
+    const studentUpdateRequests = await StudentUpdateRequest.find({
+        student: req.user._id,
+    }).skip((page - 1) * limit).limit(limit).sort({
+        createdAt: -1,
+    }).populate("student").populate("actionBy").select("_id student changes status actionBy");
+
+    const acc = studentUpdateRequests.reduce((acc, curr) => {
+        if (curr.status === "APPROVED") {
+            acc.approved.push(curr);
+        } else if (curr.status === "PENDING") {
+            acc.pending.push(curr);
+        } else {
+            acc.rejected.push(curr);
+        }
+        return acc;
+    }, {
+        approved: [],
+        pending: [],
+        rejected: []
+    })
+
+    return res.status(httpStatus.OK).json({ message: "Student update requests fetched successfully", studentUpdateRequests: acc });
+};
+
 export const studentDelete = async (req, res) => {
     const { studentId } = req.params;
 

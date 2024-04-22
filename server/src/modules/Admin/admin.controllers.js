@@ -106,11 +106,13 @@ export const updateRequestsAdmin = async (req, res) => {
     }
   });
 
-  let studentRequestsArray = [], facultyRequestsArray = [], approvedRequestsArray = [];
+  let studentRequestsArray = [], facultyRequestsArray = [], approvedRequestsArray = [], rejectedRequestsArray = [];
 
   for (let item of studentRequests) {
     if (item.status === "PENDING") {
       studentRequestsArray.push(item);
+    } else if (item.status === "REJECTED") {
+      rejectedRequestsArray.push(item);
     } else {
       approvedRequestsArray.push(item);
     }
@@ -119,6 +121,8 @@ export const updateRequestsAdmin = async (req, res) => {
   for (let item of facultyRequests) {
     if (item.status === "PENDING") {
       facultyRequestsArray.push(item);
+    } else if (item.status === "REJECTED") {
+      rejectedRequestsArray.push(item);
     } else {
       approvedRequestsArray.push(item);
     }
@@ -129,63 +133,110 @@ export const updateRequestsAdmin = async (req, res) => {
     studentRequests: studentRequestsArray,
     facultyRequests: facultyRequestsArray,
     approvedRequests: approvedRequestsArray,
+    rejectedRequests: rejectedRequestsArray,
   })
 };
 
-export const approveRequest = async (req, res) => {
-  const { requestId } = req.params;
+export const approveRequestHandler = async (req, res) => {
+  const { requestId, action } = req.params;
 
-  const studentRequest = await StudentUpdateRequest.findById({ _id: requestId });
+  const actionType = getAction(action);
 
-  const facultyRequest = await FacultyUpdateRequest.findById({ _id: requestId });
 
-  if (!studentRequest && !facultyRequest) {
-    return res.status(httpStatus.NOT_FOUND).json({ message: "Request not found" });
-  }
+  if (actionType === "REJECTED") {
 
-  if (studentRequest && studentRequest.status === "APPROVED") {
-    return res.status(httpStatus.BAD_REQUEST).json({ message: "Request already approved" });
-  } else if (facultyRequest && facultyRequest.status === "APPROVED") {
-    return res.status(httpStatus.BAD_REQUEST).json({ message: "Request already approved" });
-  }
+    const studentRequest = await StudentUpdateRequest.findById({ _id: requestId });
 
-  let changed;
+    const facultyRequest = await FacultyUpdateRequest.findById({ _id: requestId });
 
-  if (studentRequest) {
-    studentRequest.status = "APPROVED";
-    studentRequest.actionBy = req.user._id; //admin id
-    await studentRequest.save();
-
-    //make changes to the student
-    const student = await Student.findById({ _id: studentRequest.student });
-
-    for (let item in studentRequest.changes) {
-      student[item] = studentRequest.changes[item];
+    if (!studentRequest && !facultyRequest) {
+      return res.status(httpStatus.NOT_FOUND).json({ message: "Request not found" });
     }
 
-    await student.save();
+    if (studentRequest && (studentRequest.status === "APPROVED" || studentRequest.status === "REJECTED")) {
+      return res.status(httpStatus.BAD_REQUEST).json({ message: "Request is already acted upon" });
+    } else if (facultyRequest && (facultyRequest.status === "APPROVED" || facultyRequest.status === "REJECTED")) {
+      return res.status(httpStatus.BAD_REQUEST).json({ message: "Request is already acted upon" });
+    }
 
-    changed = studentRequest.changes;
+    if (studentRequest) {
+      studentRequest.status = "REJECTED";
+      studentRequest.actionBy = req.user._id; //admin id
+      await studentRequest.save();
+    } else if (facultyRequest) {
+      facultyRequest.status = "REJECTED";
+      facultyRequest.actionBy = req.user._id; //admin id
+      await facultyRequest.save();
+    } else {
+      return res.status(httpStatus.NOT_FOUND).json({ message: "Request not found" });
+    }
+
+    return res.status(httpStatus.OK).json({ message: "Request rejected successfully" });
+
   } else {
-    facultyRequest.status = "APPROVED";
-    facultyRequest.actionBy = req.user._id; //admin id
-    await facultyRequest.save();
 
-    //make changes to the faculty
-    const faculty = await Faculty.findById({ _id: facultyRequest.faculty });
+    let changed;
 
-    for (let item in facultyRequest.changes) {
-      faculty[item] = facultyRequest.changes[item];
+    const studentRequest = await StudentUpdateRequest.findById({ _id: requestId });
+
+    const facultyRequest = await FacultyUpdateRequest.findById({ _id: requestId });
+
+    if (!studentRequest && !facultyRequest) {
+      return res.status(httpStatus.NOT_FOUND).json({ message: "Request not found" });
     }
 
-    await faculty.save();
+    if (studentRequest && (studentRequest.status === "APPROVED" || studentRequest.status === "REJECTED")) {
+      return res.status(httpStatus.BAD_REQUEST).json({ message: "Request already approved" });
+    } else if (facultyRequest && (facultyRequest.status === "APPROVED" || facultyRequest.status === "REJECTED")) {
+      return res.status(httpStatus.BAD_REQUEST).json({ message: "Request already approved" });
+    }
 
-    changed = facultyRequest.changes;
+
+    if (studentRequest) {
+      studentRequest.status = "APPROVED";
+      studentRequest.actionBy = req.user._id; //admin id
+      await studentRequest.save();
+
+      //make changes to the student
+      const student = await Student.findById({ _id: studentRequest.student });
+
+      for (let item in studentRequest.changes) {
+        student[item] = studentRequest.changes[item];
+      }
+
+      await student.save();
+
+      changed = studentRequest.changes;
+    } else {
+      facultyRequest.status = "APPROVED";
+      facultyRequest.actionBy = req.user._id; //admin id
+      await facultyRequest.save();
+
+      //make changes to the faculty
+      const faculty = await Faculty.findById({ _id: facultyRequest.faculty });
+
+      for (let item in facultyRequest.changes) {
+        faculty[item] = facultyRequest.changes[item];
+      }
+
+      await faculty.save();
+
+      changed = facultyRequest.changes;
+    }
+
+    return res.status(httpStatus.OK).json({
+      message: "Request approved successfully",
+      updated: changed,
+    })
   }
+};
 
-
-  return res.status(httpStatus.OK).json({
-    message: "Request approved successfully",
-    updated: changed,
-  })
+const getAction = (action) => {
+  if (action === "approve") {
+    return "APPROVED";
+  } else if (action === "reject") {
+    return "REJECTED";
+  } else {
+    throw new CustomError(httpStatus.BAD_REQUEST, "Invalid action type specified");
+  }
 }
