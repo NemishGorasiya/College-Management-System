@@ -3,6 +3,7 @@ import CustomError from "../../errors/CustomError.js";
 import httpStatus from 'http-status';
 import Faculty from "../Faculty/Faculty.js";
 import { isAfter } from 'date-fns';
+import { InternalSubmissions, Lab, MidSemester, Project, Quiz, Viva } from '../../constants/constants.js';
 
 // Define sub-schema for different types of exams
 const examSchema = new Schema({
@@ -25,7 +26,7 @@ const examSchema = new Schema({
     },
     examType: {
         type: String,
-        enum: ["Mid-Semester", "Internal Submissions", "Viva", "Quiz", "Project", "Lab"], //no ENd-Semester exams because they are handled by the university
+        enum: [MidSemester, InternalSubmissions, Viva, Quiz, Project, Lab], //no ENd-Semester exams because they are handled by the university
         validate: {
             validator: function (v) {
                 //assert the totalMarks and exam-type are consistent
@@ -126,14 +127,14 @@ examSchema.pre("save", function (next) {
         //handle HOD exams - Viva, Mid-Semester and Internal Exams
         //handlle normal exams - Quiz, Project, Lab - created by faculty
         switch (this.examType) {
-            case "Viva":
-            case "Mid-Semester":
-            case "Internal Submissions":
+            case Viva:
+            case MidSemester:
+            case InternalSubmissions:
                 handleHODexams(this, next);
                 break;
-            case "Quiz":
-            case "Project":
-            case "Lab":
+            case Quiz:
+            case Project:
+            case Lab:
                 handleNormalExams(this, next);
                 break;
             default:
@@ -142,7 +143,7 @@ examSchema.pre("save", function (next) {
     } else {
         next();
     }
-   
+
 });
 
 examSchema.pre("updateOne", function (next) {
@@ -150,14 +151,14 @@ examSchema.pre("updateOne", function (next) {
         //handle HOD exams - Viva, Mid-Semester and Internal Exams
         //handlle normal exams - Quiz, Project, Lab - created by faculty
         switch (this.examType) {
-            case "Viva":
-            case "Mid-Semester":
-            case "Internal Submissions":
+            case Viva:
+            case MidSemester:
+            case InternalSubmissions:
                 handleHODexams(this, next);
                 break;
-            case "Quiz":
-            case "Project":
-            case "Lab":
+            case Quiz:
+            case Project:
+            case Lab:
                 handleNormalExams(this, next);
                 break;
             default:
@@ -175,5 +176,5 @@ examSchema.methods.getResults = async function () {
     return results;
 }
 
- 
+
 export default model("Exam", examSchema, "exams");

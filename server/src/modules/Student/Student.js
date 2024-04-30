@@ -2,6 +2,7 @@ import { Schema, Types, model } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
 import CustomError from '../../errors/CustomError.js';
 import httpStatus from 'http-status';
+import { FEMALE, MALE, OTHERS } from '../../constants/constants.js';
 
 const studentSchema = new Schema({
     enrollmentNumber: {
@@ -32,7 +33,7 @@ const studentSchema = new Schema({
     },
     gender: {
         type: String,
-        enum: ["MALE", "FEMALE", "OTHERS"],
+        enum: [MALE, FEMALE, OTHERS],
         required: true,
     },
     bloodGroup: {

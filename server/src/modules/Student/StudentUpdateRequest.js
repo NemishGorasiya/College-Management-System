@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { APPROVED, PENDING, REJECTED } from "../../constants/constants";
 
 const studentUpdateRequestSchema = new Schema({
     student: {
@@ -12,8 +13,8 @@ const studentUpdateRequestSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["PENDING", "APPROVED", "REJECTED"],
-        default: "PENDING",
+        enum: [PENDING, APPROVED, REJECTED],
+        default: PENDING,
     },
     actionBy: {
         type: Schema.Types.ObjectId,

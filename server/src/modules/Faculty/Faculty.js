@@ -1,5 +1,6 @@
 import { Schema, Types, model } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
+import { AssistantProfessor, AssociateProfessor, Lecturer, Professor } from "../../constants/constants";
 
 const facultySchema = new Schema({
     firstName: {
@@ -18,7 +19,7 @@ const facultySchema = new Schema({
     designation: {
         type: String,
         required: true,
-        enum: ["PROFESSOR", "ASSOCIATE_PROFESSOR", "ASSISTANT_PROFESSOR", "LECTURER"],
+        enum: [Professor, AssociateProfessor, AssistantProfessor, Lecturer],
     },
     address: {
         type: String,

@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { ABET, AICTE, DepartmentLogo, NAAC, NBA } from '../../constants/constants';
 
 const departmentSchema = new Schema({
     name: {
@@ -32,13 +33,13 @@ const departmentSchema = new Schema({
     },
     accreditation: {
         type: String,
-        enum: ["NBA", "NAAC", "ABET", "AICTE", "UGC"],
+        enum: [NBA, NAAC, ABET, AICTE, UGC],
         required: true,
     },
     departmentLogo: {
         type: String,
         required: true,
-        default: "https://placehold.co/600x400/EEE/31343C?font=montserrat&text=Montserrat",
+        default: DepartmentLogo,
     },
     doe: {
         type: Date,
