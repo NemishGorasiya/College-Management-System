@@ -1,6 +1,6 @@
 import { Schema, Types, model } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
-import { AssistantProfessor, AssociateProfessor, Lecturer, Professor } from "../../constants/constants";
+import { AssistantProfessor, AssociateProfessor, Lecturer, Professor } from "../../constants/constants.js";
 
 const facultySchema = new Schema({
     firstName: {

@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { APPROVED, PENDING, REJECTED } from "../../constants/constants";
+import { APPROVED, PENDING, REJECTED } from "../../constants/constants.js";
 
 const facultyUpdateRequestSchema = new Schema({
     faculty: {

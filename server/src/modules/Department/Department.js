@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { ABET, AICTE, DepartmentLogo, NAAC, NBA } from '../../constants/constants';
+import { ABET, AICTE, DepartmentLogo, NAAC, NBA, UGC } from '../../constants/constants.js';
 
 const departmentSchema = new Schema({
     name: {
