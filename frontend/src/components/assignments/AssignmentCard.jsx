@@ -1,6 +1,5 @@
-import ServiceTitle from "./ServiceTitle";
-import "./Assignments.scss";
-import AssignmentCard from "./assignments/AssignmentCard";
+import { formatDate } from "../../utils/utilityFunctions";
+
 const data = {
 	_id: "663d139ba6e4aec71f39159d",
 	name: "Java Assignment",
@@ -47,34 +46,30 @@ const data = {
 	id: "663d139ba6e4aec71f39159d",
 };
 
-export default function Assignments() {
+const AssignmentCard = () => {
+	const {
+		name: assignmentTitle,
+		totalMarks,
+		subject: { name: subjectName },
+		dueDate,
+	} = data;
 	return (
-		<div className="assignments">
-			<ServiceTitle serviceTitle="Assignments" />
-			<div className="assignmentsContentWrapper">
-				<div className="assignmentsContainer">
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-					<AssignmentCard />
-				</div>
-			</div>
+		<div className="assignmentCardWrapper">
+			<p className="assignmentTitle">{assignmentTitle}</p>
+			<p className="assignmentDetail">
+				<span className="assignmentDetailLabel">Subject : </span>
+				<span className="assignmentDetailValue">{subjectName}</span>
+			</p>
+			<p className="assignmentDetail">
+				<span className="assignmentDetailLabel">Total Marks : </span>
+				<span className="assignmentDetailValue">{totalMarks}</span>
+			</p>
+			<p className="assignmentDetail">
+				<span className="assignmentDetailLabel">Due Date : </span>
+				<span className="assignmentDetailValue">{formatDate(dueDate)}</span>
+			</p>
 		</div>
 	);
-}
+};
+
+export default AssignmentCard;
