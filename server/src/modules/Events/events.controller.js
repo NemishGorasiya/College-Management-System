@@ -5,24 +5,24 @@ import Event from "./Event.js";
 
 export const getEvents = async (req, res) => {
     //query params - based on months and year
+    //query params - based on months and year
     let { date } = req.query;
     const filterObj = {};
 
-    if (!date) {
-        date = format(new Date(), 'yyyy-MM-dd')
+    let startDate = new Date(TIME_QUANTUM), endDate = addMonths(new Date(), 1);
+
+    if (date) {
+        const month = getMonth(date) + 1;
+        const year = getYear(date);
+        startDate = new Date(`${year}-${month}-01`);
+        endDate = addMonths(startDate, 1);
     }
 
-    //fetches latest dated events only
-    const month = getMonth(date) + 1;
-    const year = getYear(date);
-    const startDate = new Date(`${year}-${month}-01`);
-    const endDate = addMonths(startDate, 1);
 
-
-    filterObj.startDate = {
+    filterObj.createdAt = {
         $gte: startDate,
         $lt: endDate,
-    }
+    };
 
     const eventList = await Event.find(filterObj);
 

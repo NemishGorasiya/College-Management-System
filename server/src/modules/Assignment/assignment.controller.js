@@ -133,9 +133,9 @@ export const getAssignmentSubmissions = async (req, res) => {
 
   const submissions = await SubmittedAssignment.find({
     assignment: assignmentId
-  }).populate("student","_id entollmentNumber firstName lastName email semster").sort({
+  }).populate("student", "_id enrollmentNumber firstName lastName email semester").sort({
     createdAt: -1,
-  }).select("_id students assignment file isLate");
+  }).select("_id students firstName lastName assignment file isLate");
 
   return res.status(httpStatus.OK).json({
     message: "Submissions fetched successfully",
@@ -147,10 +147,10 @@ export const getAssignmentSubmissions = async (req, res) => {
 export const getAssignment = async (req, res) => {
   const { assignmentId } = req.params;
 
-  const assignment = await Assignment.findById(assignmentId).populate("subject","_id name subjectCode department semester credits").populate({
+  const assignment = await Assignment.findById(assignmentId).populate("subject", "_id name subjectCode department semester credits").populate({
     path: "students",
     populate: [
-      { path: "student", select: "_id name email" },
+      { path: "student", select: "_id name email firstName lastName enrollmentNumber" },
       { path: "submission" }
     ]
   }).select("_id name description totalMarks subject dueDate faculty students");

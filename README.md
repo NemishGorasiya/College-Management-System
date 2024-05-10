@@ -192,3 +192,9 @@ Additional features:
 - When logged in show the students section with the data from the API:
 
 We'll use `pnpm` for package management. checkout at [PNPM](https://pnpm.io/)
+
+
+## changes -
+
+- result populate
+- subject

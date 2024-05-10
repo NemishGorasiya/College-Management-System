@@ -2,22 +2,22 @@ import httpStatus from "http-status";
 import Circular from "./Circular.js";
 import { addMonths, format, getMonth, getYear } from "date-fns";
 import CustomError from "../../errors/CustomError.js";
+import { TIME_QUANTUM } from "../../constants/constants.js";
 
 export const getCirculars = async (req, res) => {
     //query params - based on months and year
     let { date } = req.query;
     const filterObj = {};
 
-    if (!date) {
+    let startDate = new Date(TIME_QUANTUM), endDate = addMonths(new Date(), 1);
 
-        date = format(new Date(), 'yyyy-MM-dd')
+    if (date) {
+        const month = getMonth(date) + 1;
+        const year = getYear(date);
+        startDate = new Date(`${year}-${month}-01`);
+        endDate = addMonths(startDate, 1);
     }
 
-    //fetches latest dated circulars only
-    const month = getMonth(date) + 1;
-    const year = getYear(date);
-    const startDate = new Date(`${year}-${month}-01`);
-    const endDate = addMonths(startDate, 1);
 
     filterObj.createdAt = {
         $gte: startDate,

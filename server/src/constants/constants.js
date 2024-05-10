@@ -29,3 +29,6 @@ export const REJECTED = "REJECTED";
 export const MALE = "MALE";
 export const FEMALE = "FEMALE";
 export const OTHERS = "OTHERS";
+
+//!circular.controller.js
+export const TIME_QUANTUM = -8640000000000000 //minimum date value
