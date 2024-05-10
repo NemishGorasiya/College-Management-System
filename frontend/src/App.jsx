@@ -22,89 +22,89 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import AssignmentSubmissions from "./components/assignments/AssignmentSubmissions.jsx";
 
 function App() {
-	const router = createBrowserRouter([
-		{
-			path: "/",
-			element: <ProtectedRoute />,
-			children: [
-				{
-					path: "/profile",
-					element: <Profile />,
-				},
-				{
-					path: "/result",
-					element: <Result />,
-				},
-				{
-					path: "/assignments",
-					element: <Assignments />,
-				},
-				{
-					path: "/assignments/:assignmentsId",
-					element: <AssignmentSubmissions />,
-				},
-				{
-					path: "/events",
-					element: <Events />,
-				},
-				{
-					path: "/circulars",
-					element: <Circulars />,
-				},
-				{
-					path: "/exam",
-					element: <Exam />,
-				},
-				{
-					path: "/help",
-					element: <Help />,
-				},
-				{
-					path: "/setting",
-					element: <Setting />,
-				},
-				{
-					path: "/requests",
-					element: <Requests />,
-				},
-				{
-					path: "/register",
-					element: <RegistrationPage />,
-				},
-			],
-		},
-		{
-			path: "/login",
-			element: <Layout />,
-			children: allowedUsers.map((userType) => ({
-				path: userType,
-				element: <LoginPage userType={userType} />,
-			})),
-		},
-		{
-			path: "/home",
-			element: <HomePageLayout />,
-			children: [
-				{
-					path: "/home/",
-					element: <HomePage />,
-				},
-				{
-					path: "/home/team",
-					element: <Team />,
-				},
-			],
-		},
-	]);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
+          path: "/result",
+          element: <Result />,
+        },
+        {
+          path: "/assignments",
+          element: <Assignments />,
+        },
+        {
+          path: "/assignment/:assignmentId",
+          element: <AssignmentSubmissions />,
+        },
+        {
+          path: "/events",
+          element: <Events />,
+        },
+        {
+          path: "/circulars",
+          element: <Circulars />,
+        },
+        {
+          path: "/exam",
+          element: <Exam />,
+        },
+        {
+          path: "/help",
+          element: <Help />,
+        },
+        {
+          path: "/setting",
+          element: <Setting />,
+        },
+        {
+          path: "/requests",
+          element: <Requests />,
+        },
+        {
+          path: "/register",
+          element: <RegistrationPage />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <Layout />,
+      children: allowedUsers.map((userType) => ({
+        path: userType,
+        element: <LoginPage userType={userType} />,
+      })),
+    },
+    {
+      path: "/home",
+      element: <HomePageLayout />,
+      children: [
+        {
+          path: "/home/",
+          element: <HomePage />,
+        },
+        {
+          path: "/home/team",
+          element: <Team />,
+        },
+      ],
+    },
+  ]);
 
-	return (
-		<>
-			<AuthContextProvider>
-				<Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
-				<RouterProvider router={router} />
-			</AuthContextProvider>
-		</>
-	);
+  return (
+    <>
+      <AuthContextProvider>
+        <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
+        <RouterProvider router={router} />
+      </AuthContextProvider>
+    </>
+  );
 }
 
 export default App;
