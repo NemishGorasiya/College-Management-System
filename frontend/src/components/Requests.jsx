@@ -27,6 +27,12 @@ const Requests = () => {
       list: [],
       isLoading: true,
     },
+    {
+      title: "rejectedRequests",
+      label: "Rejected Requests",
+      list: [],
+      isLoading: true,
+    },
   ]);
   const getRequests = async () => {
     try {
@@ -48,6 +54,12 @@ const Requests = () => {
           title: "approvedRequests",
           label: "Approved Requests",
           list: res.approvedRequests,
+          isLoading: false,
+        },
+        {
+          title: "rejectedRequests",
+          label: "Rejected Requests",
+          list: res.rejectedRequests,
           isLoading: false,
         },
       ]);

@@ -34,7 +34,51 @@ export const deleteEvent = async (eventId) => {
     console.error(error);
   }
 };
+export const deleteCircular = async (circularId) => {
+  try {
+    const res = await axios({
+      method: "delete",
+      url: BASE_URL + `/circular/${circularId}`,
+      redirect: "follow",
+      credentials: "include",
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const approveRequest = async (requestId) => {
+  try {
+    const res = await axios({
+      method: "post",
+      url: BASE_URL + `/admin/requests/${requestId}/approve`,
+      redirect: "follow",
+      credentials: "include",
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const reviewRequest = async ({ requestId, updatedStatus }) => {
+  try {
+    const res = await axios({
+      method: "post",
+      url: BASE_URL + `/admin/requests/${requestId}/${updatedStatus}`,
+      redirect: "follow",
+      credentials: "include",
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const rejectRequest = async (requestId) => {
   try {
     const res = await axios({
       method: "post",

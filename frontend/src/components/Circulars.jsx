@@ -1,12 +1,18 @@
 import "./Circulars.scss";
 import ServiceTitle from "./ServiceTitle";
 import YearMonthFilter from "./YearMonthFilter";
-import { downloadCircular, fetchCirculars } from "../services/services";
+import {
+  deleteCircular,
+  downloadCircular,
+  fetchCirculars,
+} from "../services/services";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import UploadCircularButton from "./UploadCircularButton";
 import { formatDate } from "../utils/utilityFunctions";
 import { AuthContext } from "../context/AuthContext";
+import { IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Circulars() {
   const { userType } = useContext(AuthContext);
@@ -22,13 +28,24 @@ export default function Circulars() {
       list: response.circulars,
       isLoading: false,
     });
-    console.log(response);
   };
 
   const handleDownload = async ({ url, fileName }) => {
     const response = await downloadCircular({ url, fileName });
     if (response) {
       toast.success("Circular downloaded successfully");
+    }
+  };
+
+  const handleDeleteCircular = async (circularId) => {
+    try {
+      const response = await deleteCircular(circularId);
+      if (response) {
+        toast.success("Circular deleted successfully");
+        getCirculars();
+      }
+    } catch (error) {
+      toast.error("Something went wrong while deleting circular");
     }
   };
 
@@ -39,7 +56,6 @@ export default function Circulars() {
   return (
     <div className="circularsService">
       <ServiceTitle serviceTitle="Important Circulars" />
-
       {isCircularsLoading ? (
         <h1>Loading...</h1>
       ) : (
@@ -63,6 +79,17 @@ export default function Circulars() {
                   {circular.title}
                 </p>
                 <p className="circularDate">{formatDate(circular.createdAt)}</p>
+                {userType === "admin" && (
+                  <IconButton
+                    className="deleteButton"
+                    onClick={() => {
+                      handleDeleteCircular(circular.id);
+                    }}
+                    size="large"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
               </div>
             ))}
           </div>
