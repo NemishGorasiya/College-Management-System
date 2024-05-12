@@ -23,14 +23,12 @@ const CreateDepartment = () => {
 	const handleFormSubmit = (event) => {
 		event.preventDefault();
 		const fd = new FormData(event.target);
-		console.log(typeof researchAreas);
 		fd.append("researchAreas", researchAreas);
 		fd.append("facilities", facilities);
 		fd.append("accreditation", accreditation);
 		const acquisitionChannel = fd.getAll("acquisition");
 		const data = Object.fromEntries(fd.entries());
 		data.acquisition = acquisitionChannel;
-		console.log(data);
 	};
 	return (
 		<div className="createDepartment">

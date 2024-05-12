@@ -101,9 +101,7 @@ export default function Profile() {
 	const handleEditFormSubmit = async (event) => {
 		event.preventDefault();
 		const fd = new FormData(event.target);
-		console.log("fd", fd);
 		const data = Object.fromEntries(fd.entries());
-		console.log("form submitted", data);
 		let editedData = {};
 
 		// Compare updatedData with initial personalInfo and academicInfo
@@ -133,7 +131,6 @@ export default function Profile() {
 		try {
 			const res = await fetchProfileData();
 			const { user } = res;
-			console.log("profile", user);
 			setUserId(user.id);
 			const {
 				fullName = "",
@@ -211,7 +208,6 @@ export default function Profile() {
 				isLoading: false,
 			});
 		} catch (error) {
-			console.log("catch");
 			console.error(error);
 		}
 	}, [userType]);

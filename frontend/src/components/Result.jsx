@@ -24,7 +24,6 @@ export default function Result() {
 	const getResults = async () => {
 		try {
 			const res = await fetchResults();
-			console.log("results", res);
 			const { results } = res;
 
 			setResults({
@@ -45,13 +44,11 @@ export default function Result() {
 		}
 		try {
 			const res = await downloadResult(exapTypeSelected);
-			console.log("results", res);
 			if (!res) {
 				toast.error("Result not found");
 			}
 		} catch (error) {
 			toast.error("Something went wrong while downloading result");
-			console.log("ccccc");
 		}
 	};
 

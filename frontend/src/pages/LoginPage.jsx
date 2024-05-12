@@ -18,68 +18,67 @@ import { AuthContext } from "../context/AuthContext";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const LoginPage = ({ userType }) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const { updateUserType } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    const fd = new FormData(event.target);
-    const data = Object.fromEntries(fd.entries());
-    console.log(data);
-    try {
-      const res = await loginUser({ userType, data });
-      if (res) {
-        toast.success("User loggedIn successfully");
-        navigate("/profile");
-        updateUserType(userType);
-      } else {
-        toast.error("Invalid credentials");
-      }
-    } catch (error) {
-      toast.error("Invalid credentials");
-    }
-  };
-  return (
-    <div className="loginPage">
-      <div className="formContainer">
-        <h2>{userType} Login</h2>
-        <form className="form" onSubmit={handleFormSubmit}>
-          <div className="formControls">
-            <FormControl variant="outlined" className="formControl">
-              <InputLabel htmlFor="username">Username</InputLabel>
-              <OutlinedInput id="username" name="username" label="Username" />
-            </FormControl>
-            <FormControl variant="outlined" className="formControl">
-              <InputLabel htmlFor="password">Password</InputLabel>
-              <OutlinedInput
-                id="password"
-                name="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <Stack className="submitBtnWrapper">
-              <Button type="submit" variant="contained">
-                Login
-              </Button>
-            </Stack>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+	const [showPassword, setShowPassword] = useState(false);
+	const { updateUserType } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const handleClickShowPassword = () => setShowPassword((show) => !show);
+	const handleFormSubmit = async (event) => {
+		event.preventDefault();
+		const fd = new FormData(event.target);
+		const data = Object.fromEntries(fd.entries());
+		try {
+			const res = await loginUser({ userType, data });
+			if (res) {
+				toast.success("User loggedIn successfully");
+				navigate("/profile");
+				updateUserType(userType);
+			} else {
+				toast.error("Invalid credentials");
+			}
+		} catch (error) {
+			toast.error("Invalid credentials");
+		}
+	};
+	return (
+		<div className="loginPage">
+			<div className="formContainer">
+				<h2>{userType} Login</h2>
+				<form className="form" onSubmit={handleFormSubmit}>
+					<div className="formControls">
+						<FormControl variant="outlined" className="formControl">
+							<InputLabel htmlFor="username">Username</InputLabel>
+							<OutlinedInput id="username" name="username" label="Username" />
+						</FormControl>
+						<FormControl variant="outlined" className="formControl">
+							<InputLabel htmlFor="password">Password</InputLabel>
+							<OutlinedInput
+								id="password"
+								name="password"
+								label="Password"
+								type={showPassword ? "text" : "password"}
+								endAdornment={
+									<InputAdornment position="end">
+										<IconButton
+											aria-label="toggle password visibility"
+											onClick={handleClickShowPassword}
+											edge="end"
+										>
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
+									</InputAdornment>
+								}
+							/>
+						</FormControl>
+						<Stack className="submitBtnWrapper">
+							<Button type="submit" variant="contained">
+								Login
+							</Button>
+						</Stack>
+					</div>
+				</form>
+			</div>
+		</div>
+	);
 };
 
 export default LoginPage;
