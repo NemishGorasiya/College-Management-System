@@ -169,6 +169,28 @@ export const uploadCircular = async (circularData) => {
 		console.error(error);
 	}
 };
+export const handleUploadAssignment = async ({
+	assignmentData,
+	assignmentId,
+}) => {
+	console.log("ccccc");
+	console.log(assignmentData);
+	console.log(assignmentId);
+	try {
+		const res = await axios({
+			method: "post",
+			url: BASE_URL + `/student/submit-assignment/${assignmentId}`,
+			headers: { "Content-Type": "application/json" },
+			data: assignmentData,
+			credentials: "include",
+			withCredentials: true,
+			redirect: "follow",
+		});
+		return res.data;
+	} catch (error) {
+		console.error(error);
+	}
+};
 export const createNewEvent = async (eventData) => {
 	try {
 		const res = await axios({

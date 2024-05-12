@@ -51,7 +51,11 @@ export default function Assignments() {
 					<div className="assignmentsContainer">
 						{submittedAssignments.length > 0 ? (
 							submittedAssignments.map((assignment) => (
-								<AssignmentCard key={assignment.id} assignment={assignment} />
+								<AssignmentCard
+									key={assignment.id}
+									assignment={assignment}
+									showAssignment={true}
+								/>
 							))
 						) : (
 							<h1>No submitted assignments found</h1>
@@ -61,7 +65,12 @@ export default function Assignments() {
 					<div className="assignmentsContainer">
 						{nonSubmittedAssignments.length > 0 ? (
 							nonSubmittedAssignments.map((assignment) => (
-								<AssignmentCard key={assignment.id} assignment={assignment} />
+								<AssignmentCard
+									uploadAssignment={true}
+									key={assignment.id}
+									getAssignments={getAssignments}
+									assignment={assignment}
+								/>
 							))
 						) : (
 							<h1>Not submitted any assignment yet</h1>
