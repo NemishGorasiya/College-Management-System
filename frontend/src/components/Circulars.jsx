@@ -2,9 +2,9 @@ import "./Circulars.scss";
 import ServiceTitle from "./ServiceTitle";
 import YearMonthFilter from "./YearMonthFilter";
 import {
-  deleteCircular,
-  downloadCircular,
-  fetchCirculars,
+	deleteCircular,
+	downloadCircular,
+	fetchCirculars,
 } from "../services/services";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -14,87 +14,91 @@ import { AuthContext } from "../context/AuthContext";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+import Loader from "react-js-loader";
+
 export default function Circulars() {
-  const { userType } = useContext(AuthContext);
-  const [circulars, setCirculars] = useState({
-    list: [],
-    isLoading: true,
-  });
-  const { list: circularList, isLoading: isCircularsLoading } = circulars || {};
+	const { userType } = useContext(AuthContext);
+	const [circulars, setCirculars] = useState({
+		list: [],
+		isLoading: true,
+	});
+	const { list: circularList, isLoading: isCircularsLoading } = circulars || {};
 
-  const getCirculars = async () => {
-    const response = await fetchCirculars();
-    setCirculars({
-      list: response.circulars,
-      isLoading: false,
-    });
-  };
+	const getCirculars = async () => {
+		const response = await fetchCirculars();
+		setCirculars({
+			list: response.circulars,
+			isLoading: false,
+		});
+	};
 
-  const handleDownload = async ({ url, fileName }) => {
-    const response = await downloadCircular({ url, fileName });
-    if (response) {
-      toast.success("Circular downloaded successfully");
-    }
-  };
+	const handleDownload = async ({ url, fileName }) => {
+		const response = await downloadCircular({ url, fileName });
+		if (response) {
+			toast.success("Circular downloaded successfully");
+		}
+	};
 
-  const handleDeleteCircular = async (circularId) => {
-    try {
-      const response = await deleteCircular(circularId);
-      if (response) {
-        toast.success("Circular deleted successfully");
-        getCirculars();
-      }
-    } catch (error) {
-      toast.error("Something went wrong while deleting circular");
-    }
-  };
+	const handleDeleteCircular = async (circularId) => {
+		try {
+			const response = await deleteCircular(circularId);
+			if (response) {
+				toast.success("Circular deleted successfully");
+				getCirculars();
+			}
+		} catch (error) {
+			toast.error("Something went wrong while deleting circular");
+		}
+	};
 
-  useEffect(() => {
-    getCirculars();
-  }, []);
+	useEffect(() => {
+		getCirculars();
+	}, []);
 
-  return (
-    <div className="circularsService">
-      <ServiceTitle serviceTitle="Important Circulars" />
-      {isCircularsLoading ? (
-        <h1>Loading...</h1>
-      ) : (
-        <div className="circularsWrapper">
-          {userType === "admin" && (
-            <UploadCircularButton getCirculars={getCirculars} />
-          )}
-          <YearMonthFilter />
-          <div className="circularsContainer">
-            {circularList.map((circular) => (
-              <div key={circular.id} className="circular">
-                <p
-                  className="circularLink"
-                  onClick={() => {
-                    handleDownload({
-                      url: circular.link,
-                      fileName: circular.title,
-                    });
-                  }}
-                >
-                  {circular.title}
-                </p>
-                <p className="circularDate">{formatDate(circular.createdAt)}</p>
-                {userType === "admin" && (
-                  <IconButton
-                    className="deleteButton"
-                    onClick={() => {
-                      handleDeleteCircular(circular.id);
-                    }}
-                    size="large"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+	return (
+		<div className="circularsService">
+			<ServiceTitle serviceTitle="Important Circulars" />
+			{isCircularsLoading ? (
+				<div className="loaderWrapper" style={{ display: "flex" }}>
+					<Loader type="spinner-default" bgColor="#0000FF" size="60" />
+				</div>
+			) : (
+				<div className="circularsWrapper">
+					{userType === "admin" && (
+						<UploadCircularButton getCirculars={getCirculars} />
+					)}
+					<YearMonthFilter />
+					<div className="circularsContainer">
+						{circularList.map((circular) => (
+							<div key={circular.id} className="circular">
+								<p
+									className="circularLink"
+									onClick={() => {
+										handleDownload({
+											url: circular.link,
+											fileName: circular.title,
+										});
+									}}
+								>
+									{circular.title}
+								</p>
+								<p className="circularDate">{formatDate(circular.createdAt)}</p>
+								{userType === "admin" && (
+									<IconButton
+										className="deleteButton"
+										onClick={() => {
+											handleDeleteCircular(circular.id);
+										}}
+										size="large"
+									>
+										<DeleteIcon />
+									</IconButton>
+								)}
+							</div>
+						))}
+					</div>
+				</div>
+			)}
+		</div>
+	);
 }

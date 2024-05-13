@@ -129,7 +129,7 @@ export const sideBarExtraNavLinks = [
 	},
 	{
 		link: "setting",
-		label: "Setting",
+		label: "Settings",
 		icon: <SettingsIcon />,
 	},
 ];

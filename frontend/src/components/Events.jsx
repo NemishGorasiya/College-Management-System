@@ -8,6 +8,8 @@ import UploadCircularButton from "./UploadCircularButton";
 import AddNewEventButton from "./events/AddNewEventButton";
 import { AuthContext } from "../context/AuthContext";
 
+import Loader from "react-js-loader";
+
 export default function Events() {
 	const { userType } = useContext(AuthContext);
 	const [events, setEvents] = useState({
@@ -34,7 +36,9 @@ export default function Events() {
 				<YearMonthFilter />
 				<div className="eventsContainer">
 					{isEventsLoading ? (
-						<h1>Loading...</h1>
+						<div className="loaderWrapper" style={{ display: "flex" }}>
+							<Loader type="spinner-default" bgColor="#0000FF" size="60" />
+						</div>
 					) : (
 						eventsList.map((event) => (
 							<EventCard

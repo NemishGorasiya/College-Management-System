@@ -257,11 +257,11 @@ export const fetchCirculars = async () => {
 		console.error(error);
 	}
 };
-export const fetchResults = async () => {
+export const fetchResults = async ({ url }) => {
 	try {
 		const res = await axios({
 			method: "get",
-			url: BASE_URL + "/student/results",
+			url: BASE_URL + url,
 			headers: { "Content-Type": "application/json" },
 			credentials: "include",
 			withCredentials: true,
@@ -303,11 +303,11 @@ export const fetchRequests = async () => {
 		console.error(error);
 	}
 };
-export const fetchExams = async () => {
+export const fetchExams = async ({ url }) => {
 	try {
 		const res = await axios({
 			method: "get",
-			url: BASE_URL + "/student/exams/",
+			url: BASE_URL + url,
 			headers: { "Content-Type": "application/json" },
 			credentials: "include",
 			withCredentials: true,

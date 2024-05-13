@@ -6,6 +6,8 @@ import { fetchAssignments } from "../services/services";
 import { AuthContext } from "../context/AuthContext";
 import ServiceSubTitle from "./ServiceSubTitle";
 
+import Loader from "react-js-loader";
+
 export default function Assignments() {
 	const [assignments, setAssignments] = useState({
 		list: [],
@@ -44,7 +46,9 @@ export default function Assignments() {
 		<div className="assignments">
 			<ServiceTitle serviceTitle="Assignments" />
 			{isLoading ? (
-				<h1>Loading...</h1>
+				<div className="loaderWrapper" style={{ display: "flex" }}>
+					<Loader type="spinner-default" bgColor="#0000FF" size="60" />
+				</div>
 			) : userType === "student" ? (
 				<div className="assignmentsContentWrapper">
 					<ServiceSubTitle serviceSubTitle={"Submitted Assignments"} />

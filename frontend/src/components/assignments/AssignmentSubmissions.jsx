@@ -9,6 +9,8 @@ import { fetchAssignmentSubmissionDetails } from "../../services/services";
 import AssignmentCard from "./AssignmentCard";
 import { AuthContext } from "../../context/AuthContext";
 
+import Loader from "react-js-loader";
+
 const AssignmentSubmissions = () => {
 	const { assignmentId } = useParams();
 
@@ -60,7 +62,9 @@ const AssignmentSubmissions = () => {
 				<div className="submittedAssignmentsWrapper">
 					<ServiceSubTitle serviceSubTitle={"Submitted Assignments"} />
 					{isLoading ? (
-						<h1>Loading...</h1>
+						<div className="loaderWrapper" style={{ display: "flex" }}>
+							<Loader type="spinner-default" bgColor="#0000FF" size="60" />
+						</div>
 					) : (
 						<div className="cardsWrapper">
 							{submittedStudentsList.length > 0 ? (
@@ -81,7 +85,9 @@ const AssignmentSubmissions = () => {
 						serviceSubTitle={"Students who has not submitted "}
 					/>
 					{isLoading ? (
-						<h1>Loading...</h1>
+						<div className="loaderWrapper" style={{ display: "flex" }}>
+							<Loader type="spinner-default" bgColor="#0000FF" size="60" />
+						</div>
 					) : (
 						<div className="cardsWrapper">
 							{nonSubmittedStudents.length > 0 ? (

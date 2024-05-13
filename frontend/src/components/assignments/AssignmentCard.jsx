@@ -13,12 +13,14 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { modalStyle } from "../modal/modalStyle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import CloseIcon from "@mui/icons-material/Close";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { handleUploadAssignment, uploadFile } from "../../services/services";
 import toast from "react-hot-toast";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import { AuthContext } from "../../context/AuthContext";
 
 const VisuallyHiddenInput = styled("input")({
 	clip: "rect(0 0 0 0)",
@@ -60,6 +62,8 @@ const AssignmentCard = ({
 		noOfStudentsNotSubmitted = 0,
 	} = assignment;
 
+	const { userType } = useContext(AuthContext);
+
 	const handleFormSubmit = async (event) => {
 		event.preventDefault();
 		const formData = new FormData(event.target);
@@ -89,7 +93,14 @@ const AssignmentCard = ({
 	let subjectName = typeof subject === "string" ? subject : subject.name;
 	return (
 		<>
-			<Link to={`/assignment/${assignmentId}`}>
+			<Link
+				to={
+					userType === "admin" || userType === "faculty"
+						? `/assignment/${assignmentId}`
+						: ""
+				}
+				style={{ textDecoration: "none" }}
+			>
 				<div className="assignmentCardWrapper">
 					<p className="assignmentTitle">{assignmentTitle}</p>
 					{isDetailedCard && (
@@ -121,6 +132,7 @@ const AssignmentCard = ({
 							Upload Assignment
 						</Button>
 					)}
+
 					{isDetailedCard && (
 						<>
 							<p className="assignmentDetail">
