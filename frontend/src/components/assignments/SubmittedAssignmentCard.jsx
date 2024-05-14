@@ -12,9 +12,10 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import "./SubmittedAssignmentCard.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import { modalStyle } from "../modal/modalStyle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { updateAssignmnetMarks } from "../../services/services";
 import toast from "react-hot-toast";
+import { AuthContext } from "../../context/AuthContext";
 
 const SubmittedAssignmentCard = ({ submissionDetail }) => {
 	const {
@@ -23,6 +24,7 @@ const SubmittedAssignmentCard = ({ submissionDetail }) => {
 	} = submissionDetail;
 	const [open, setOpen] = useState(false);
 	const [marks, setMarks] = useState("");
+	const { userType } = useContext(AuthContext);
 
 	const handleMarksChange = ({ target: { value } }) => {
 		setMarks(value);
@@ -85,17 +87,19 @@ const SubmittedAssignmentCard = ({ submissionDetail }) => {
 						variant="contained"
 						startIcon={<PictureAsPdfIcon />}
 					>
-						Review Assignment
+						View Assignment
 					</Button>
 				</a>
-				<Button
-					className="downloadButton"
-					component="label"
-					variant="contained"
-					onClick={handleOpen}
-				>
-					Give Marks
-				</Button>
+				{userType === "faculty" && (
+					<Button
+						className="downloadButton"
+						component="label"
+						variant="contained"
+						onClick={handleOpen}
+					>
+						Give Marks
+					</Button>
+				)}
 			</div>
 			<Modal open={open} className="editProfileModal">
 				<Box

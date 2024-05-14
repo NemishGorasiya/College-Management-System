@@ -10,7 +10,7 @@ import Loader from "react-js-loader";
 
 export default function Assignments() {
 	const [assignments, setAssignments] = useState({
-		list: [],
+		list: {},
 		isLoading: true,
 	});
 	const { userType } = useContext(AuthContext);
@@ -22,16 +22,25 @@ export default function Assignments() {
 		let url;
 		if (userType === "student") {
 			url = "/student/assignments";
-		} else {
+		} else if (userType === "faculty") {
 			url = "/assignment";
+		} else if (userType === "admin") {
+			url = "/assignment/all";
 		}
 		try {
 			const response = await fetchAssignments({ url });
 			if (response) {
-				setAssignments({
-					list: response,
-					isLoading: false,
-				});
+				if (userType === "admin") {
+					setAssignments({
+						list: response.assignments,
+						isLoading: false,
+					});
+				} else {
+					setAssignments({
+						list: response,
+						isLoading: false,
+					});
+				}
 			}
 		} catch (error) {
 			console.error(error);
