@@ -2,6 +2,7 @@ import { addMonths, format, getMonth, getYear, isAfter, isBefore } from "date-fn
 import httpStatus from "http-status";
 import CustomError from "../../errors/CustomError.js";
 import Event from "./Event.js";
+import { TIME_QUANTUM } from "../../constants/constants.js";
 
 export const getEvents = async (req, res) => {
     //query params - based on months and year
