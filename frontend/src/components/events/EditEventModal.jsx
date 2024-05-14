@@ -143,10 +143,10 @@ const EditEventModal = ({ open, handleClose, getEvents, eventDetails }) => {
 						type="submit"
 						loading={isEventUploading}
 						loadingPosition="start"
-						startIcon={<CloudUploadIcon />}
 						variant="contained"
+						style={{ height: "56px" }}
 					>
-						<span>Upload</span>
+						<span>Edit Event</span>
 					</LoadingButton>
 				</form>
 			</Box>

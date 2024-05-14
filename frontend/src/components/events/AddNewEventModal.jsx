@@ -134,6 +134,7 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
 						loadingPosition="start"
 						startIcon={<CloudUploadIcon />}
 						variant="contained"
+						style={{ height: "56px" }}
 					>
 						<span>Upload</span>
 					</LoadingButton>
