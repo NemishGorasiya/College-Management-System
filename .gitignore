@@ -2,3 +2,6 @@
 *.rdb
 server/src/config/multer.config.js
 server\src\utils\arrayData.utils.cjs
+
+#IDEA files
+.idea

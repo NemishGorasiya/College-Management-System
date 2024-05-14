@@ -4,6 +4,7 @@ import CustomError from "../../errors/CustomError.js";
 import { getSubjects } from "../Student/student.controllers.js";
 import Exam from "./Exam.js";
 import Admin from "../Admin/Admin.js";
+import { MongooseError } from "mongoose";
 
 export const createExam = async (req, res) => {
   const { name, description, totalMarks, subject, examType, date, duration } =
@@ -110,6 +111,10 @@ export const createExamSemester = async (req, res) => {
         i++;
       }
     } catch (error) {
+      if (error instanceof MongooseError) {
+        throw new CustomError(httpStatus.BAD_REQUEST, error.message)
+      }
+
       date = addDays(date, 1);
     }
   }
