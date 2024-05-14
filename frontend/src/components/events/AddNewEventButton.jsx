@@ -4,30 +4,30 @@ import EventIcon from "@mui/icons-material/Event";
 import { useState } from "react";
 
 const AddNewEventButton = ({ getEvents }) => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+	const [open, setOpen] = useState(false);
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
 
-  return (
-    <>
-      <Button
-        component="label"
-        role={undefined}
-        variant="contained"
-        tabIndex={-1}
-        startIcon={<EventIcon />}
-        sx={{ marginBottom: "20px" }}
-        onClick={handleOpen}
-      >
-        Add New Event
-      </Button>
-      <AddNewEventModal
-        getEvents={getEvents}
-        open={open}
-        handleClose={handleClose}
-      />
-    </>
-  );
+	return (
+		<>
+			<Button
+				component="label"
+				role={undefined}
+				variant="contained"
+				tabIndex={-1}
+				startIcon={<EventIcon />}
+				sx={{ marginBottom: "20px", height: "56px", width: "250px" }}
+				onClick={handleOpen}
+			>
+				Add New Event
+			</Button>
+			<AddNewEventModal
+				getEvents={getEvents}
+				open={open}
+				handleClose={handleClose}
+			/>
+		</>
+	);
 };
 
 export default AddNewEventButton;
