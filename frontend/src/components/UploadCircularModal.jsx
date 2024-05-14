@@ -104,6 +104,7 @@ const UploadCircularModal = ({ open, handleClose, getCirculars }) => {
 						loadingPosition="start"
 						startIcon={<CloudUploadIcon />}
 						variant="contained"
+						style={{ height: "56px" }}
 					>
 						<span>Upload</span>
 					</LoadingButton>

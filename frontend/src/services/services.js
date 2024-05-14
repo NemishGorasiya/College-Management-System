@@ -241,10 +241,11 @@ export const logoutUser = async () => {
 	}
 };
 
-export const fetchCirculars = async () => {
+export const fetchCirculars = async ({ queryParams }) => {
 	try {
 		const res = await axios({
 			method: "get",
+			params: queryParams,
 			url: BASE_URL + "/circular",
 			headers: { "Content-Type": "application/json" },
 			credentials: "include",
@@ -320,10 +321,11 @@ export const fetchExams = async ({ url }) => {
 	}
 };
 
-export const fetchEvents = async () => {
+export const fetchEvents = async ({ queryParams }) => {
 	try {
 		const res = await axios({
 			method: "get",
+			params: queryParams,
 			url: BASE_URL + "/events",
 			headers: { "Content-Type": "application/json" },
 			credentials: "include",
