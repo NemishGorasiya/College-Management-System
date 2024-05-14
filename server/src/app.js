@@ -58,7 +58,7 @@ app.use(cors({
     credentials: true,
 }))
 app.use(actuator(actuatorConfig));
-app.use(status());
+app.use(status()); // http://localhost:3000/status
 
 //passport middleware for the server - to authenticate the user
 app.use(passport.initialize());

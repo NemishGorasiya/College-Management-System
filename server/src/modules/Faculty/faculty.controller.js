@@ -4,6 +4,7 @@ import Department from "../Department/Department.js";
 import FacultyUpdateRequest from "./FacultyUpdateRequest.js";
 import CustomError from "../../errors/CustomError.js";
 import { getUserType } from "../../utils/otpHandler.js";
+import Admin from "../Admin/Admin.js";
 
 export const registerFaculty = async (req, res) => {
     const {
@@ -89,7 +90,7 @@ export const loginFaculty = async (req, res) => {
 
 export const updateFaculty = async (req, res) => {
     let _id;
-    if (req.user instanceof Faculty) {
+    if (req.user instanceof Admin) {
         _id = req.query.facultyId;
         console.log(_id);
         if (!_id) {
