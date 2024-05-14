@@ -35,8 +35,8 @@ const examSchema = new Schema({
                 switch (v) {
                     case "Mid-Semester":
                         return this.totalMarks === 30; //mid-semester has 30 totalMarks
-                    case "End-Semester":
-                        return this.totalMarks === 70; //end-semester has 70 totalMarks
+                    case "Internal Submissions":
+                        return this.totalMarks === 80; //end-semester has 70 totalMarks
                     case "Quiz":
                         return this.totalMarks ? this.totalMarks < 100 : false; //quiz has totalMarks less than 100
                     case "Lab":

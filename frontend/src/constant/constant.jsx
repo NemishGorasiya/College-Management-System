@@ -19,119 +19,119 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import RuleIcon from "@mui/icons-material/Rule";
 
 export const sideBarNavLinksForStudent = [
-  {
-    link: "profile",
-    label: "Profile",
-    icon: <AccountCircleIcon />,
-  },
-  {
-    link: "result",
-    label: "Result",
-    icon: <AssessmentIcon />,
-  },
-  {
-    link: "assignments",
-    label: "Assignments",
-    icon: <AssignmentIcon />,
-  },
-  {
-    link: "circulars",
-    label: "Circulars",
-    icon: <DescriptionIcon />,
-  },
-  {
-    link: "events",
-    label: "Events",
-    icon: <EventIcon />,
-  },
-  {
-    link: "exam",
-    label: "Exam",
-    icon: <MenuBookIcon />,
-  },
+	{
+		link: "profile",
+		label: "Profile",
+		icon: <AccountCircleIcon />,
+	},
+	{
+		link: "result",
+		label: "Result",
+		icon: <AssessmentIcon />,
+	},
+	{
+		link: "assignments",
+		label: "Assignments",
+		icon: <AssignmentIcon />,
+	},
+	{
+		link: "circulars",
+		label: "Circulars",
+		icon: <DescriptionIcon />,
+	},
+	{
+		link: "events",
+		label: "Events",
+		icon: <EventIcon />,
+	},
+	{
+		link: "exam",
+		label: "Exam",
+		icon: <MenuBookIcon />,
+	},
 ];
 
 export const sideBarNavLinksForAdmin = [
-  {
-    link: "profile",
-    label: "Profile",
-    icon: <AccountCircleIcon />,
-  },
-  {
-    link: "result",
-    label: "Result",
-    icon: <AssessmentIcon />,
-  },
-  {
-    link: "assignments",
-    label: "Assignments",
-    icon: <AssignmentIcon />,
-  },
-  {
-    link: "circulars",
-    label: "Circulars",
-    icon: <DescriptionIcon />,
-  },
-  {
-    link: "events",
-    label: "Events",
-    icon: <EventIcon />,
-  },
-  // {
-  //   link: "exam",
-  //   label: "Exam",
-  //   icon: <MenuBookIcon />,
-  // },
-  {
-    link: "requests",
-    label: "Requests",
-    icon: <RuleIcon />,
-  },
+	{
+		link: "profile",
+		label: "Profile",
+		icon: <AccountCircleIcon />,
+	},
+	// {
+	//   link: "result",
+	//   label: "Result",
+	//   icon: <AssessmentIcon />,
+	// },
+	{
+		link: "assignments",
+		label: "Assignments",
+		icon: <AssignmentIcon />,
+	},
+	{
+		link: "circulars",
+		label: "Circulars",
+		icon: <DescriptionIcon />,
+	},
+	{
+		link: "events",
+		label: "Events",
+		icon: <EventIcon />,
+	},
+	// {
+	//   link: "exam",
+	//   label: "Exam",
+	//   icon: <MenuBookIcon />,
+	// },
+	{
+		link: "requests",
+		label: "Requests",
+		icon: <RuleIcon />,
+	},
 ];
 export const sideBarNavLinksForFaculty = [
-  {
-    link: "profile",
-    label: "Profile",
-    icon: <AccountCircleIcon />,
-  },
-  {
-    link: "result",
-    label: "Result",
-    icon: <AssessmentIcon />,
-  },
-  {
-    link: "assignments",
-    label: "Assignments",
-    icon: <AssignmentIcon />,
-  },
-  {
-    link: "circulars",
-    label: "Circulars",
-    icon: <DescriptionIcon />,
-  },
-  {
-    link: "events",
-    label: "Events",
-    icon: <EventIcon />,
-  },
-  {
-    link: "exam",
-    label: "Exam",
-    icon: <MenuBookIcon />,
-  },
+	{
+		link: "profile",
+		label: "Profile",
+		icon: <AccountCircleIcon />,
+	},
+	{
+		link: "result",
+		label: "Result",
+		icon: <AssessmentIcon />,
+	},
+	{
+		link: "assignments",
+		label: "Assignments",
+		icon: <AssignmentIcon />,
+	},
+	{
+		link: "circulars",
+		label: "Circulars",
+		icon: <DescriptionIcon />,
+	},
+	{
+		link: "events",
+		label: "Events",
+		icon: <EventIcon />,
+	},
+	{
+		link: "exam",
+		label: "Exam",
+		icon: <MenuBookIcon />,
+	},
 ];
 
 export const sideBarExtraNavLinks = [
-  {
-    link: "help",
-    label: "Help",
-    icon: <HelpIcon />,
-  },
-  {
-    link: "setting",
-    label: "Setting",
-    icon: <SettingsIcon />,
-  },
+	{
+		link: "help",
+		label: "Help",
+		icon: <HelpIcon />,
+	},
+	{
+		link: "setting",
+		label: "Settings",
+		icon: <SettingsIcon />,
+	},
 ];
 
 export const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
@@ -140,19 +140,19 @@ export const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
 export const allowedUsers = ["admin", "faculty", "student"];
 
 export const sideBarNavLinksForNotAuthorized = [
-  {
-    link: "login/admin",
-    label: "Admin Login",
-    icon: <AdminPanelSettingsIcon />,
-  },
-  {
-    link: "login/faculty",
-    label: "Faculty Login",
-    icon: <PersonIcon />,
-  },
-  {
-    link: "login/student",
-    label: "Student Login",
-    icon: <PersonIcon />,
-  },
+	{
+		link: "login/admin",
+		label: "Admin Login",
+		icon: <AdminPanelSettingsIcon />,
+	},
+	{
+		link: "login/faculty",
+		label: "Faculty Login",
+		icon: <PersonIcon />,
+	},
+	{
+		link: "login/student",
+		label: "Student Login",
+		icon: <PersonIcon />,
+	},
 ];

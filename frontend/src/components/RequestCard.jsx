@@ -6,7 +6,7 @@ import { modalStyle } from "./modal/modalStyle";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import "./RequestCard.scss";
 import toast from "react-hot-toast";
-import { approveRequest } from "../services/services";
+import { approveRequest, reviewRequest } from "../services/services";
 
 const RequestCard = ({ requestDetails, getRequests }) => {
   const [open, setOpen] = useState(false);
@@ -29,11 +29,29 @@ const RequestCard = ({ requestDetails, getRequests }) => {
   const { fullName: fullNameOfUpdater } = actionBy || {};
   const changesArr = Object.keys(changes);
 
-  const handelApproveRequest = async (requestId) => {
+  // const handelApproveRequest = async (requestId) => {
+  //   try {
+  //     const res = await approveRequest(requestId);
+  //     if (res) {
+  //       toast.success("Request approved successfully");
+  //       getRequests();
+  //       handleClose();
+  //     }
+  //   } catch (error) {
+  //     toast.error("Something went wrong while approving request");
+  //     console.error(error);
+  //   }
+  // };
+
+  const handleReviewRequest = async ({ requestId, updatedStatus }) => {
     try {
-      const res = await approveRequest(requestId);
+      const res = await reviewRequest({ requestId, updatedStatus });
       if (res) {
-        toast.success("Request approved successfully");
+        toast.success(
+          `Request ${
+            updatedStatus === "approve" ? "approved" : "rejected"
+          } successfully`
+        );
         getRequests();
         handleClose();
       }
@@ -124,18 +142,26 @@ const RequestCard = ({ requestDetails, getRequests }) => {
               <Button
                 className="approveBtn"
                 onClick={() => {
-                  handelApproveRequest(_id);
+                  handleReviewRequest({
+                    requestId: _id,
+                    updatedStatus: "approve",
+                  });
                 }}
                 variant="contained"
               >
                 Approve
               </Button>
               <Button
-                className="cancelBtn"
-                onClick={handleClose}
+                className="rejectBtn"
+                onClick={() => {
+                  handleReviewRequest({
+                    requestId: _id,
+                    updatedStatus: "reject",
+                  });
+                }}
                 variant="contained"
               >
-                Cancel
+                Reject
               </Button>
             </div>
           )}

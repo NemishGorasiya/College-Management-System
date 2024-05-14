@@ -1,5 +1,13 @@
 .assignments {
-  .assignmentsContentWrapper {
-    margin-top: 20px;
-  }
+	.assignmentsContentWrapper {
+		padding: 20px 0 0;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		.assignmentsContainer {
+			display: grid;
+			grid-gap: 20px;
+			grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		}
+	}
 }

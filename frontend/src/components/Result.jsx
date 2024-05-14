@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from "react";
 import { downloadResult, fetchResults } from "../services/services.js";
 import ResultCard from "./ResultCard.jsx";
 import { toast } from "react-hot-toast";
+
+import Loader from "react-js-loader";
 import {
 	FormControl,
 	InputLabel,
@@ -23,8 +25,8 @@ export default function Result() {
 	const { list: resultList, isLoading: isResultsLoading } = results;
 	const getResults = async () => {
 		try {
-			const res = await fetchResults();
-			console.log("results", res);
+			const url = userType === "student" ? "/student/results" : "/result/own";
+			const res = await fetchResults({ url });
 			const { results } = res;
 
 			setResults({
@@ -45,13 +47,11 @@ export default function Result() {
 		}
 		try {
 			const res = await downloadResult(exapTypeSelected);
-			console.log("results", res);
 			if (!res) {
 				toast.error("Result not found");
 			}
 		} catch (error) {
 			toast.error("Something went wrong while downloading result");
-			console.log("ccccc");
 		}
 	};
 
@@ -89,7 +89,9 @@ export default function Result() {
 
 			<div className="resultWrapper">
 				{isResultsLoading ? (
-					<h1>Loading...</h1>
+					<div className="loaderWrapper" style={{ display: "flex" }}>
+						<Loader type="spinner-default" bgColor="#0000FF" size="60" />
+					</div>
 				) : (
 					resultList.map((result) => (
 						<ResultCard key={result.id} result={result} />

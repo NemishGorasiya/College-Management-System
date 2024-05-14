@@ -1,0 +1,28 @@
+.submittedAssignmentCardWrapper {
+  border: 1px solid #00000033;
+  border-radius: 13px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
+  cursor: pointer;
+
+  .studentName {
+    font-weight: 600;
+  }
+  .submissionDetail {
+    .submissionDetailLabel {
+      font-weight: 500;
+    }
+    .status {
+      padding: 5px;
+      color: #000;
+      border-radius: 5px;
+    }
+  }
+  .downloadButtonWrapper {
+    .downloadButton {
+      width: 100%;
+    }
+  }
+}

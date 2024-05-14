@@ -136,3 +136,6 @@ dist
 
 # Redis files
 *.rdb 
+
+#IDEA files
+.idea

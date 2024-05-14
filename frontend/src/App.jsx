@@ -19,6 +19,7 @@ import Layout from "./pages/Layout.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegistrationPage from "./pages/RegistrationPage.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import AssignmentSubmissions from "./components/assignments/AssignmentSubmissions.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -38,7 +39,10 @@ function App() {
           path: "/assignments",
           element: <Assignments />,
         },
-
+        {
+          path: "/assignment/:assignmentId",
+          element: <AssignmentSubmissions />,
+        },
         {
           path: "/events",
           element: <Events />,
