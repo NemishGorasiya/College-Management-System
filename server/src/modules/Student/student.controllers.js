@@ -411,7 +411,7 @@ export const studentGetResults = async (req, res) => {
     });
 };
 
-export const studentGetFinalResult = async (req, res) => {
+const getFinalResultHelperFunction = async (req, res) => {
     const { department, semester } = req.user;
     let { examType } = req.params;
 
@@ -454,8 +454,23 @@ export const studentGetFinalResult = async (req, res) => {
         throw new CustomError(httpStatus.BAD_REQUEST, "Student has not taken all exams");
     };
 
+    let flag = false;
+
+    for (let i = 0; i < results.length; i++) {
+        if (finalResultExists) {
+            if (!finalResultExists.examResults.includes(results[i]._id)) {
+                flag = true;
+                break;
+            }
+        }
+    }
+
     let finalResult;
-    if (finalResultExists) {
+
+    if (finalResultExists && !flag) {
+        //final result already exists
+        finalResult = finalResultExists;
+    } else if (finalResultExists && flag) {
         //update the final result
         finalResultExists.examResults = results.map(result => result._id);  //update the exam results
         finalResult = finalResultExists;
@@ -522,9 +537,17 @@ export const studentGetFinalResult = async (req, res) => {
             }
         });
 
+    return {
+        finalResult: finalResultPopulated,
+    }
+}
+
+export const studentGetFinalResult = async (req, res) => {
+    const finalResult = await getFinalResultHelperFunction(req, res);
+
     return res.status(httpStatus.OK).send({
-        message: "Final result created successfully",
-        finalResultPopulated
+        message: "Student's final result fetched successfully",
+        finalResult: finalResult.finalResult
     });
 };
 
@@ -535,7 +558,7 @@ export const studentGetFinalResultDownload = async (req, res) => {
     examType = getExamType(examType);
 
     //check if the student already made the final result
-    const finalResultExists = await FinalResult.findOne({
+    let finalResultExists = await FinalResult.findOne({
         student: req.user._id,
         semester,
         examType,
@@ -590,7 +613,10 @@ export const studentGetFinalResultDownload = async (req, res) => {
 
 
     if (!finalResultExists) {
-        throw new CustomError(httpStatus.NOT_FOUND, "Final result not found");
+        //can we create the final result here?
+        const result = await getFinalResultHelperFunction(req, res);
+        finalResultExists = result.finalResult;
+        // throw new CustomError(httpStatus.NOT_FOUND, "Final result not found");
     }
 
     const filePath = await generateFinalResultPdf({ finalResult: finalResultExists, user: req.user, filename: `${req.user.fullName}_${req.user.id}_finalResult.pdf` })
@@ -624,9 +650,9 @@ export function getExamType(examType) {
 
 
 export const getStudents = async (req, res) => {
-    const { semester, department, page, limit, sortBy, sortType } = req.query //sortBy has options - firstname, enrollment, doe, dob
+    let { semester, department, page, limit, sortBy, sortType } = req.query //sortBy has options - firstname, enrollment, doe, dob
     const filterObj = {};
-
+    sortType = sortType === "asc" ? 1 : -1;
 
     if (department && semester) {
         filterObj.department = department;
