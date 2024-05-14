@@ -21,7 +21,7 @@ const UploadCircularButton = ({ getCirculars }) => {
 				variant="contained"
 				tabIndex={-1}
 				startIcon={<CloudUploadIcon />}
-				sx={{ marginBottom: "20px" }}
+				sx={{ marginBottom: "20px", height: "56px", width: "250px" }}
 				onClick={handleOpen}
 			>
 				Upload New Circular

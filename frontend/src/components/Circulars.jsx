@@ -1,20 +1,22 @@
 import "./Circulars.scss";
 import ServiceTitle from "./ServiceTitle";
-import YearMonthFilter from "./YearMonthFilter";
 import {
 	deleteCircular,
 	downloadCircular,
 	fetchCirculars,
 } from "../services/services";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import UploadCircularButton from "./UploadCircularButton";
 import { formatDate } from "../utils/utilityFunctions";
 import { AuthContext } from "../context/AuthContext";
-import { IconButton } from "@mui/material";
+import { FormControl, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import Loader from "react-js-loader";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function Circulars() {
 	const { userType } = useContext(AuthContext);
@@ -22,15 +24,19 @@ export default function Circulars() {
 		list: [],
 		isLoading: true,
 	});
+	const [filteredDate, setFilteredDate] = useState("");
 	const { list: circularList, isLoading: isCircularsLoading } = circulars || {};
 
-	const getCirculars = async () => {
-		const response = await fetchCirculars();
+	const getCirculars = useCallback(async () => {
+		const queryParams = {
+			date: filteredDate,
+		};
+		const response = await fetchCirculars({ queryParams });
 		setCirculars({
 			list: response.circulars,
 			isLoading: false,
 		});
-	};
+	}, [filteredDate]);
 
 	const handleDownload = async ({ url, fileName }) => {
 		const response = await downloadCircular({ url, fileName });
@@ -53,7 +59,7 @@ export default function Circulars() {
 
 	useEffect(() => {
 		getCirculars();
-	}, []);
+	}, [getCirculars]);
 
 	return (
 		<div className="circularsService">
@@ -67,7 +73,22 @@ export default function Circulars() {
 					{userType === "admin" && (
 						<UploadCircularButton getCirculars={getCirculars} />
 					)}
-					<YearMonthFilter />
+					<FormControl
+						variant="outlined"
+						style={{ display: "block", width: "250px" }}
+						className="formControl"
+					>
+						<LocalizationProvider dateAdapter={AdapterDayjs}>
+							<DatePicker
+								id="filter"
+								name="filter"
+								format="MMM-YYYY"
+								label="Filter"
+								onChange={(e) => setFilteredDate(`${e.$y}-${e.$M + 1}-${e.$D}`)}
+								views={["year", "month"]}
+							/>
+						</LocalizationProvider>
+					</FormControl>
 					<div className="circularsContainer">
 						{circularList.map((circular) => (
 							<div key={circular.id} className="circular">
