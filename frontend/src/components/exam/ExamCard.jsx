@@ -21,7 +21,9 @@ const ExamCard = ({ examDetails }) => {
     results,
   } = examDetails;
   const { name: subjectName, subjectCode } = subject;
-  const { fullName: facultyName, email: facultyEmail } = faculty;
+  const { firstName, lastName, email: facultyEmail } = faculty;
+
+  const facultyName = `${firstName} ${lastName}`;
   const { marks } = results[0] || {};
 
   const handleCardClick = () => {

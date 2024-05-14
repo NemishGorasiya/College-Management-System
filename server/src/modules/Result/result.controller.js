@@ -72,6 +72,12 @@ export const getOwnResults = async (req, res) => {
         exam: {
             $in: exam.map(exam => exam._id)
         }
+    }).populate({
+        path: "exam",
+        populate: {
+            path: "subject",
+            select: "name subjectCode credits semester",
+        }
     });
 
     return res.status(httpStatus.OK).send({
@@ -114,7 +120,7 @@ export const updateResult = async (req, res) => {
     if (!result) {
         throw new CustomError(httpStatus.NOT_FOUND, "Result not found");
     }
-    
+
     if (result.exam.faculty.toString() !== req.user._id.toString() && !(req.user instanceof Admin)) {
         throw new CustomError(httpStatus.FORBIDDEN, "Faculty can only update their exam results");
     }

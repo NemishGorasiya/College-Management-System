@@ -270,7 +270,13 @@ export const getOwnExams = async (req, res) => {
   let exams = await Exam.find(filterObj)
     .skip((page - 1) * limit)
     .limit(limit)
-    .sort({ date: 1 }).select("_id name description totalMarks subject examType date duration faculty results");
+    .sort({ date: 1 }).select("_id name description totalMarks subject examType date duration faculty results").populate({
+      path: "subject",
+      select: "name subjectCode semester department"
+    }).populate({
+      path: "faculty",
+      select: "firstName lastName email fullName",
+    });
 
   if (isCompleted == "true") {
     exams = exams.filter((exam) => exam.isCompleted === true);

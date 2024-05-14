@@ -7,7 +7,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { formatDate } from "../utils/utilityFunctions";
 
 const ResultCard = ({ result }) => {
-	const [subjectDetails, setSubjectDetails] = useState({});
+	const [subjectDetails, setSubjectDetails] = useState(result.exam.subject);
 	const { id, examType, marks, grade, exam } = result;
 	const { name: examTitle, totalMarks, subject: subjectId, date } = exam;
 
@@ -16,21 +16,21 @@ const ResultCard = ({ result }) => {
 	const handleClose = () => setOpen(false);
 
 	const { name: subjectName, subjectCode, credits } = subjectDetails || {};
-	const getSubjectDetails = useCallback(async (subjectId) => {
-		try {
-			const res = await fetchSubjectDetails(subjectId);
-			const { subject } = res;
-			if (res) {
-				setSubjectDetails(subject);
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	}, []);
+	// const getSubjectDetails = useCallback(async (subjectId) => {
+	// 	try {
+	// 		const res = await fetchSubjectDetails(subjectId);
+	// 		const { subject } = res;
+	// 		if (res) {
+	// 			setSubjectDetails(subject);
+	// 		}
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// }, []);
 
-	useEffect(() => {
-		getSubjectDetails(subjectId);
-	}, [getSubjectDetails, subjectId]);
+	// useEffect(() => {
+	// 	getSubjectDetails(subjectId);
+	// }, [getSubjectDetails, subjectId]);
 	return (
 		<>
 			<div className="resultCardWrapper" onClick={handleOpen}>
