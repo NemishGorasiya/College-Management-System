@@ -60,18 +60,13 @@ const AssignmentCard = ({
 		dueDate,
 		noOfStudentsSubmitted = 0,
 		noOfStudentsNotSubmitted = 0,
-		students
+		students,
 	} = assignment;
 
+	const { submission } = students;
+	const { file: submittedAssignment, grade, marks: achievedMarks } = submission;
+
 	const { userType } = useContext(AuthContext);
-
-	let achievedMarks = "PENDING";
-
-	if (students) {
-		achievedMarks = students?.submission?.marks || "PENDING";
-		// if (students[0] !== null || students[0] !== undefined) {
-		// }
-	}
 
 	const handleFormSubmit = async (event) => {
 		event.preventDefault();
@@ -123,10 +118,14 @@ const AssignmentCard = ({
 						<span className="assignmentDetailLabel">Subject : </span>
 						<span className="assignmentDetailValue">{subjectName}</span>
 					</p>
-					<p className="assignmentDetail">
-						<span className="assignmentDetailLabel">Achieved Marks : </span>
-						<span className="assignmentDetailValue">{achievedMarks}</span>
-					</p>
+
+					{showAssignment && (
+						<p className="assignmentDetail">
+							<span className="assignmentDetailLabel">Achieved Marks : </span>
+							<span className="assignmentDetailValue">{achievedMarks}</span>
+						</p>
+					)}
+
 					<p className="assignmentDetail">
 						<span className="assignmentDetailLabel">Total Marks : </span>
 						<span className="assignmentDetailValue">{totalMarks}</span>
@@ -143,6 +142,17 @@ const AssignmentCard = ({
 							onClick={handleOpen}
 						>
 							Upload Assignment
+						</Button>
+					)}
+					{showAssignment && (
+						<Button
+							component="label"
+							variant="contained"
+							startIcon={<PictureAsPdfIcon />}
+							sx={{ marginTop: "auto" }}
+							onClick={() => window.open(submittedAssignment, "_blank")}
+						>
+							View Assignment
 						</Button>
 					)}
 
