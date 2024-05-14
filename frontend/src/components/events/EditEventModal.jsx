@@ -13,7 +13,7 @@ import { modalStyle } from "../modal/modalStyle";
 import CloseIcon from "@mui/icons-material/Close";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { createNewEvent, uploadFile } from "../../services/services";
+import { createNewEvent, editEvent, uploadFile } from "../../services/services";
 import toast from "react-hot-toast";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -33,27 +33,32 @@ const VisuallyHiddenInput = styled("input")({
 	width: 1,
 });
 
-const AddNewEventModal = ({ open, handleClose, getEvents }) => {
+const EditEventModal = ({ open, handleClose, getEvents, eventDetails }) => {
 	const [file, setFile] = useState();
 	const [isEventUploading, setIsEventUploading] = useState();
+	const { _id, description, endDate, name, poster, startDate } = eventDetails;
 
 	const handleFormSubmit = async (event) => {
 		event.preventDefault();
-		const formData = new FormData(event.target);
-		formData.append("file", file);
-		setIsEventUploading(true);
-		try {
-			const response = await uploadFile(formData);
-			const {
-				response: { secure_url },
-			} = response;
+		let secure_url = poster;
+		if (file) {
+			const formData = new FormData();
+			formData.append("file", file);
+			setIsEventUploading(true);
+			const res = await uploadFile(formData);
+			secure_url = res.response.secure_url;
 			formData.delete("file");
+		}
+		try {
+			const formData = new FormData(event.target);
 			const data = Object.fromEntries(formData.entries());
 			data.poster = secure_url;
-			data.startDate = convertToISO(data.startDate);
-			data.endDate = convertToISO(data.endDate);
+			data.startDate = data.startDate
+				? convertToISO(data.startDate)
+				: startDate;
+			data.endDate = data.endDate ? convertToISO(data.endDate) : endDate;
 
-			const res = await createNewEvent(data);
+			const res = await editEvent({ data, eventId: _id });
 			if (res) {
 				toast.success("Event Added successfully");
 				getEvents();
@@ -84,7 +89,12 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
 				<form action="" onSubmit={handleFormSubmit}>
 					<FormControl variant="outlined" className="formControl">
 						<InputLabel htmlFor="name">Event Title</InputLabel>
-						<OutlinedInput id="name" name="name" label="Event Title" />
+						<OutlinedInput
+							defaultValue={name}
+							id="name"
+							name="name"
+							label="Event Title"
+						/>
 					</FormControl>
 					<FormControl variant="outlined" className="formControl">
 						<LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -112,6 +122,7 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
 							id="description"
 							name="description"
 							label="Event Description"
+							defaultValue={description}
 						/>
 					</FormControl>
 					<Button
@@ -143,4 +154,4 @@ const AddNewEventModal = ({ open, handleClose, getEvents }) => {
 	);
 };
 
-export default AddNewEventModal;
+export default EditEventModal;

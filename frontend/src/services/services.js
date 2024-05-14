@@ -208,6 +208,23 @@ export const createNewEvent = async (eventData) => {
 		console.error(error);
 	}
 };
+export const editEvent = async ({ data: eventData, eventId }) => {
+	try {
+		const res = await axios({
+			method: "patch",
+			url: BASE_URL + `/events/${eventId}`,
+			headers: { "Content-Type": "application/json" },
+			data: eventData,
+			credentials: "include",
+			withCredentials: true,
+			redirect: "follow",
+		});
+		const resData = res.data;
+		return resData;
+	} catch (error) {
+		console.error(error);
+	}
+};
 
 export const loginUser = async ({ userType, data }) => {
 	try {

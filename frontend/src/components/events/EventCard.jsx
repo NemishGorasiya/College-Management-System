@@ -8,11 +8,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { deleteEvent } from "../../services/services";
 import toast from "react-hot-toast";
+import AddNewEventModal from "./AddNewEventModal";
+import EditEventModal from "./EditEventModal";
 
 export default function EventCard({ eventDetails, getEvents, userType }) {
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
+	const [openEditModal, setOpenEditModal] = useState(false);
+	const handleOpenEditModal = () => setOpenEditModal(true);
+	const handleCloseEditModal = () => setOpenEditModal(false);
 
 	const handleDeleteEvent = async (eventId) => {
 		try {
@@ -26,7 +31,6 @@ export default function EventCard({ eventDetails, getEvents, userType }) {
 			console.error(error);
 		}
 	};
-	const handleEditEvent = (eventId) => {};
 
 	const { _id, description, endDate, name, poster, startDate } = eventDetails;
 	return (
@@ -42,9 +46,7 @@ export default function EventCard({ eventDetails, getEvents, userType }) {
 				{userType === "admin" && (
 					<div className="crudButtonWrapper">
 						<IconButton
-							onClick={() => {
-								handleEditEvent(_id);
-							}}
+							onClick={handleOpenEditModal}
 							className="crudButton"
 							size="large"
 						>
@@ -84,6 +86,12 @@ export default function EventCard({ eventDetails, getEvents, userType }) {
 					</div>
 				</Box>
 			</Modal>
+			<EditEventModal
+				eventDetails={eventDetails}
+				open={openEditModal}
+				getEvents={getEvents}
+				handleClose={handleCloseEditModal}
+			/>
 		</>
 	);
 }

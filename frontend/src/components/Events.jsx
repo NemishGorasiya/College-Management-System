@@ -22,9 +22,10 @@ export default function Events() {
 	const [filteredDate, setFilteredDate] = useState("");
 	const { list: eventsList, isLoading: isEventsLoading } = events;
 	const getEvents = useCallback(async () => {
-		const queryParams = {
-			date: filteredDate,
-		};
+		const queryParams = {};
+		if (filteredDate) {
+			queryParams.date = filteredDate;
+		}
 		const res = await fetchEvents({ queryParams });
 		setEvents({
 			list: res.events,
