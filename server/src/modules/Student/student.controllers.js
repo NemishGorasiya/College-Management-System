@@ -182,10 +182,19 @@ export const studentGetAssignments = async (req, res) => {
         subject: {
             $in: subjects.map(subject => subject._id)
         },
-    }).populate("subject", "_id name subjectCode").sort({
-        dueDate: 1,
-        createdAt: -1,
-    }).select("_id name descrtption totalMarks subject dueDate faculty students");
+    })
+        .populate("subject", "_id name subjectCode")
+        .populate({
+            path: "students",
+            populate: {
+                path: "submission",
+                select: "_id file marks grade percentage isLate"
+            }
+        })
+        .sort({
+            dueDate: 1,
+            createdAt: -1,
+        }).select("_id name descrtption totalMarks subject dueDate faculty students");
 
     const userId = req.user._id.toString();
 
@@ -207,7 +216,8 @@ export const studentGetAssignments = async (req, res) => {
         subject_id: assignment.subject._id,
         subject: assignment.subject.name,
         dueDate: assignment.dueDate,
-        faculty: assignment.faculty
+        faculty: assignment.faculty,
+        students: assignment.students.find(student => student.student.toString() === userId),
     });
 
     return res.status(httpStatus.OK).send({
@@ -401,7 +411,19 @@ export const studentGetResults = async (req, res) => {
             $in: exams.map(exam => exam._id)
         },
         student: req.user._id
-    }).populate("exam", "_id name totalMarks subject date").sort({
+    }).populate({
+        path: "exam",
+        populate: {
+            path: "subject",
+            select: {
+                _id: 1,
+                name: 1,
+                subjectCode: 1,
+                credits: 1,
+            }
+        },
+        select: "_id name totalMarks subject date"
+    }).sort({
         createdAt: -1,
     }).select("_id student exam marks examType percentage");
 

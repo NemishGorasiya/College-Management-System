@@ -87,7 +87,13 @@ export const getOwnResults = async (req, res) => {
 };
 
 export const getAllResults = async (req, res) => {
-    const results = await ExamResult.find();
+    const results = await ExamResult.find().populate({
+        path: "exam",
+        populate: {
+            path: "subject",
+            select: "name subjectCode credits semester",
+        }
+    });
 
     return res.status(httpStatus.OK).send({
         message: "Results fetched successfully",

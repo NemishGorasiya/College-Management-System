@@ -60,9 +60,18 @@ const AssignmentCard = ({
 		dueDate,
 		noOfStudentsSubmitted = 0,
 		noOfStudentsNotSubmitted = 0,
+		students
 	} = assignment;
 
 	const { userType } = useContext(AuthContext);
+
+	let achievedMarks = "PENDING";
+
+	if (students) {
+		achievedMarks = students?.submission?.marks || "PENDING";
+		// if (students[0] !== null || students[0] !== undefined) {
+		// }
+	}
 
 	const handleFormSubmit = async (event) => {
 		event.preventDefault();
@@ -113,6 +122,10 @@ const AssignmentCard = ({
 					<p className="assignmentDetail">
 						<span className="assignmentDetailLabel">Subject : </span>
 						<span className="assignmentDetailValue">{subjectName}</span>
+					</p>
+					<p className="assignmentDetail">
+						<span className="assignmentDetailLabel">Achieved Marks : </span>
+						<span className="assignmentDetailValue">{achievedMarks}</span>
 					</p>
 					<p className="assignmentDetail">
 						<span className="assignmentDetailLabel">Total Marks : </span>
