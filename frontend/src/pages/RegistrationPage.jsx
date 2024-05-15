@@ -25,9 +25,10 @@ const RegistrationPage = () => {
 	const handleRegistration = (event) => {
 		event.preventDefault();
 		const fd = new FormData(event.target);
-		const acquisitionChannel = fd.getAll("acquisition");
+		// const acquisitionChannel = fd.getAll("acquisition");
 		const data = Object.fromEntries(fd.entries());
-		data.acquisition = acquisitionChannel;
+		// data.acquisition = acquisitionChannel;
+		data.department = "660cdaff05dc0154e90275d8";
 		registerStudent({ data });
 	};
 
@@ -101,13 +102,13 @@ const RegistrationPage = () => {
 							<FormControl variant="outlined" className="formControl">
 								<InputLabel htmlFor="gender">Gender</InputLabel>
 								<Select label="Gender" id="gender" name="gender">
-									<MenuItem key={1} value="male">
+									<MenuItem key={1} value="MALE">
 										Male
 									</MenuItem>
-									<MenuItem key={2} value="female">
+									<MenuItem key={2} value="FEMALE">
 										Female
 									</MenuItem>
-									<MenuItem key={3} value="other">
+									<MenuItem key={3} value="OTHERS">
 										Other
 									</MenuItem>
 								</Select>

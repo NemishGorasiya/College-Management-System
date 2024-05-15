@@ -87,6 +87,16 @@ export const sideBarNavLinksForAdmin = [
 		label: "Requests",
 		icon: <RuleIcon />,
 	},
+	{
+		link: "register?user=student",
+		label: "New Student",
+		icon: <PersonIcon />,
+	},
+	{
+		link: "register?user=faculty",
+		label: "New Faculty",
+		icon: <PersonIcon />,
+	},
 ];
 export const sideBarNavLinksForFaculty = [
 	{

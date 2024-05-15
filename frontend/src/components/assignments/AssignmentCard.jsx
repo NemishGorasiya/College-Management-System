@@ -63,8 +63,9 @@ const AssignmentCard = ({
 		students,
 	} = assignment;
 
-	const { submission } = students;
-	const { file: submittedAssignment, grade, marks: achievedMarks } = submission;
+	const { submission } = students ?? {};
+	const { file: submittedAssignment, grade, marks: achievedMarks } =
+		submission ?? {};
 
 	const { userType } = useContext(AuthContext);
 

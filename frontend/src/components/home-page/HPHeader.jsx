@@ -18,10 +18,10 @@ export default function HPHeader() {
 			name: "About",
 			link: "about",
 		},
-		{
-			name: "Achievements",
-			link: "achievements",
-		},
+		// {
+		// 	name: "Achievements",
+		// 	link: "achievements",
+		// },
 		{
 			name: "Placements",
 			link: "placements",
@@ -58,6 +58,7 @@ export default function HPHeader() {
 
 	return (
 		<header
+			style={{ background: "#ebf1ff" }}
 			className={
 				(isSticky === true
 					? " border-b border-opacity-50 border-purple-300 shadown-md "
